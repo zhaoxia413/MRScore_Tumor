@@ -1,6 +1,7 @@
 library(tidyverse)
 library(data.table)
 library(GEOquery)
+options(stringsAsFactors = F)
 #mc1="GSE13015.Rdata"
 mc3="GSE40012.Rdata"
 mc5="GSE65682.Rdata"
@@ -372,7 +373,24 @@ ggplot(stat_meta1,aes(reorder(Type,SampleLength),SampleLength,fill=SampleLength)
         axis.title.x = element_blank())+
   geom_text(aes(x=Type,y=SampleLength+5,label=SampleLength))+
   facet_wrap(~Dataset,scales = "free")
-##DEGs by limma
+##bar plot of the nomalized data
+expr<-as.matrix(expr)
+gsms <- str_c(meta$Healthy0.Infection,sep = "",collapse = "")
+sml <- c()
+for (i in 1:nchar(gsms)) { sml[i] <- substr(gsms,i,i) }
+sml <- paste("G", sml, sep="")
+fl <- as.factor(sml)
+labels <- c("Healthy","Event")
+palette(c("#f4dfdf","#dfeaf4", "#AABBCC"))
+pdf("../dataset/dataset_alidation/validation_results/coco-bar.pdf",width = 25,height = 6)
+boxplot(expr, boxwex=0.6, notch=T, main=title, outline=FALSE, las=2, col=fl)
+legend("topleft", labels, fill=palette(), bty="n")
+dev.off()
+##DEGs by limma each-event to Healthy
 library(limma)
-
-
+library(tidyverse)
+expr<-read.csv("../dataset/dataset_alidation/validation_results/coco_3LargeExpr.csv",row.names = 1,header = T)
+meta<-read.csv("../dataset/dataset_alidation/validation_results/coco_3LargeMeta.csv",row.names = 1,header = T)
+expr[1:5,1:5]
+meta[1:5,1:5]
+levels(factor(meta$Type))
