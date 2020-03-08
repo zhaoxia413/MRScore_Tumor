@@ -351,8 +351,28 @@ GSEs.COCO.combined$genes[1:5,1:5]
 GSEs.COCO.combined$pheno[1:5,1:5]
 write.csv(GSEs.COCO.combined$genes,"../dataset/dataset_alidation/validation_results/coco_3LargeExpr.csv",row.names = T)
 write.csv(GSEs.COCO.combined$pheno,"../dataset/dataset_alidation/validation_results/coco_3LargeMeta.csv",row.names = T)
-##what is the reduce function??
-x <- list(c(0, 1), c(2, 3), c(4, 5))
-y <- list(c(6, 7), c(8, 9))
-Reduce(x, y, intersect)
+##plot stat of the 3 large datasets
+meta<-GSEs.COCO.combined$pheno
+expr<-GSEs.COCO.combined$genes
+levels(factor(meta$Type))
+stat_meta<-meta%>%group_by(Type)%>%summarise(SampleLength=n())
+stat_meta1<-meta%>%group_by(Type,Dataset)%>%summarise(SampleLength=n())
+ggplot(stat_meta,aes(reorder(Type,SampleLength),SampleLength,fill=SampleLength))+
+  geom_col()+
+  scale_fill_gsea()+
+  theme_stata()+
+  theme(axis.text.x = element_text(angle = 45,hjust = 1,vjust = 1),
+        axis.title.x = element_blank())+
+  geom_text(aes(x=Type,y=SampleLength+10,label=SampleLength))
+ggplot(stat_meta1,aes(reorder(Type,SampleLength),SampleLength,fill=SampleLength))+
+  geom_col()+
+  scale_fill_gsea()+
+  theme_stata()+
+  theme(axis.text.x = element_text(angle = 60,hjust = 1,vjust = 1),
+        axis.title.x = element_blank())+
+  geom_text(aes(x=Type,y=SampleLength+5,label=SampleLength))+
+  facet_wrap(~Dataset,scales = "free")
+##DEGs by limma
+library(limma)
+
 
