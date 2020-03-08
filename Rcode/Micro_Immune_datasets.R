@@ -347,10 +347,10 @@ GSEs_COCONUT <- COCONUT(GSEs=largeGSEs,
                         byPlatform=FALSE)
 GSEs.COCO.combined <- combineCOCOoutput(GSEs_COCONUT)
 str(GSEs.COCO.combined)
-write.csv(GSEs.COCO.combined$genes,"TEST.csv")
-GSEs.COCO.combined$genes
+GSEs.COCO.combined$genes[1:5,1:5]
 GSEs.COCO.combined$pheno[1:5,1:5]
-GSEs.COCO.combined$class.cntl0.dis1
+write.csv(GSEs.COCO.combined$genes,"../dataset/dataset_alidation/validation_results/coco_3LargeExpr.csv",row.names = T)
+write.csv(GSEs.COCO.combined$pheno,"../dataset/dataset_alidation/validation_results/coco_3LargeMeta.csv",row.names = T)
 ##what is the reduce function??
 x <- list(c(0, 1), c(2, 3), c(4, 5))
 y <- list(c(6, 7), c(8, 9))
