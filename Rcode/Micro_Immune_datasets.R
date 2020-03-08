@@ -279,19 +279,8 @@ ggplot(groupStat1,aes(reorder(Type,SampleLength),SampleLength,fill=SampleLength)
         axis.title.x = element_blank())+
   geom_text(aes(x=Type,y=SampleLength+30,label=SampleLength))+
   facet_grid(~Dataset,scales = "free")
-##co_normalize
-library(COCONUT)
-#test
-data(GSEs.test)
-GSEs.COCONUT <- COCONUT(GSEs=GSEs.test,
-                        control.0.col="Healthy0.Sepsis1",
-                        byPlatform=FALSE)
-GSEs.COCO.combined <- combineCOCOoutput(GSEs.COCONUT)
-str(GSEs.COCO.combined)
-GSEs.COCO.combined$genes[1:5,1:5]
-write.csv(GSEs.test$GSE28750$pheno,"COO.test.csv",row.names = T)
-write.csv(GSEs.test$GSE28750$genes,"COO.test.csv",row.names = T)
-  ##Rdata make
+
+##Rdata make
 names(exprall)
 names(groupList)
 exprall[[1]][1:5,1:5]
@@ -319,16 +308,6 @@ GSEs6<-list(pheno=groupList[[6]],gene=exprall[[6]])
 GSEs7<-list(pheno=groupList[[7]],gene=exprall[[7]])
 GSEs8<-list(pheno=groupList[[8]],gene=exprall[[8]])
 GSEs9<-list(pheno=groupList[[9]],gene=exprall[[9]])
-datasetsInfo<-list(GEOid=GEOid,filesPath=filesPath)
-save(datasetsInfo,file = "../dataset/dataset_alidation/filteredGSE/datasetsInfo.Rdata")
-load(file = "../dataset/dataset_alidation/filteredGSE/datasetsInfo.Rdata")
-filesPath<-datasetsInfo$filesPath
-datalist<-list.files("../dataset/dataset_alidation/filteredGSE/")
-filesPath<-paste0("../dataset/dataset_alidation/filteredGSE/",datalist)
-for (i in seq(length(filesPath))) {
-  load(file = filesPath[i])
-}
-
 GSEs<-list(GSEs1,GSEs2,GSEs3,GSEs4,GSEs5,GSEs6,GSEs7,GSEs8,GSEs9)
 names(GSEs)<-GEOid
 save(GSEs1,file=filesPath[1])
@@ -342,6 +321,27 @@ save(GSEs8,file=filesPath[8])
 save(GSEs9,file=filesPath[9])
 GSEs[[1]]$pheno[1:5,1:5]
 GSEs[[1]]$gene[1:5,1:5]
+datasetsInfo<-list(GEOid=GEOid,filesPath=filesPath)
+save(datasetsInfo,file = "../dataset/dataset_alidation/filteredGSE/datasetsInfo.Rdata")
+load(file = "../dataset/dataset_alidation/filteredGSE/datasetsInfo.Rdata")
+filesPath<-datasetsInfo$filesPath
+datalist<-list.files("../dataset/dataset_alidation/filteredGSE/")
+filesPath<-paste0("../dataset/dataset_alidation/filteredGSE/",datalist)
+for (i in seq(length(filesPath))) {
+  load(file = filesPath[i])
+}
+##co_normalize
+library(COCONUT)
+#test
+data(GSEs.test)
+GSEs.COCONUT <- COCONUT(GSEs=GSEs.test,
+                        control.0.col="Healthy0.Sepsis1",
+                        byPlatform=FALSE)
+GSEs.COCO.combined <- combineCOCOoutput(GSEs.COCONUT)
+str(GSEs.COCO.combined)
+GSEs.COCO.combined$genes[1:5,1:5]
+write.csv(GSEs.test$GSE28750$pheno,"COO.test.csv",row.names = T)
+write.csv(GSEs.test$GSE28750$genes,"COO.test.csv",row.names = T)
 GSEs_COCONUT <- COCONUT(GSEs=GSEs[1],
                         control.0.col="Healthy0.Infection",
                         byPlatform=FALSE)
