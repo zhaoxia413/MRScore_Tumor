@@ -287,7 +287,8 @@ n.sample=ncol(expr)
 if(n.sample>40) par(cex = 0.5)
 cols <- rainbow(n.sample*1.2)
 boxplot(expr,col=cols,main="expression value",las=2)
-
+boxplot(ex, boxwex=0.6, notch=T, main=title, outline=FALSE, las=2, col=fl)
+legend("topleft", labels, fill=palette(), bty="n")
 write.csv(expr,"../dataset/dataset_alidation/expr_3LUSC-dataset.csv",row.names = F)
 write.csv(exprMat,"../dataset/dataset_alidation/combat_3LUSC-dataset.csv",row.names = F)
 write.csv(group,"../dataset/dataset_alidation/combat_3LUSC-dataset_meta.csv",row.names = F)
@@ -329,7 +330,7 @@ GEO2DEG<-function(exprMat,group){
   print(PCA)
   
   
-  design=model.matrix(~factor(group$Group))
+  design=model.matrix(~factor(group$Group)+0)
   colnames(design)=levels(factor(group$Group))
   mycompare<-str_c(colnames(design),collapse = "-")
   contrast.matrix<-makeContrasts(mycompare,

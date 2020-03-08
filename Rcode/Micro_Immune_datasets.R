@@ -452,3 +452,58 @@ combat_edata[1:5,1:5]
 write.csv(combat_edata,"../dataset/dataset_alidation/validation_results/coco_sva_expr.csv",row.names = T)
 ##DEGs by limma each-event to Healthy
 library(limma)
+combat_edata<-read.csv("../dataset/dataset_alidation/validation_results/coco_sva_expr.csv",row.names = 1,header = T)
+levels(factor(meta$Type))
+#### Viral_infection-Healthy
+event="Viral_infection"
+expr2DEG<-function(event){
+meta_sub<-meta%>%filter(Type=="Healthy"|Type==event)
+combat_edata_sub<-combat_edata[,which(colnames(combat_edata)%in%meta_sub$sampleID)]%>%as.matrix()
+design=model.matrix(~factor(meta_sub$Type)+0)
+colnames(design)=levels(factor(meta_sub$Type))
+mycompare<-str_c(colnames(design),collapse = "-")
+contrast.matrix<-makeContrasts(mycompare,
+                               levels = design)
+fit=lmFit(combat_edata_sub,design)
+fit2 <- contrasts.fit(fit, contrast.matrix) 
+fit2 <- eBayes(fit2) 
+DEG<-topTable(fit2, adjust="fdr",coef=1, n=Inf) %>% na.omit()  ## coef比较分组 n基因数
+message(paste0("finish DEG for",event," vs Healthy analysis !"))
+# Volcano plot
+VolcanoPlot<-EnhancedVolcano(DEG,
+                             lab = rownames(DEG),
+                             x = "logFC",
+                             y = "adj.P.Val",
+                             selectLab = rownames(DEG)[1:5],
+                             xlab = bquote(~Log[2]~ "fold change"),
+                             ylab = bquote(~-Log[10]~italic(P)),
+                             pCutoff = 0.05,## pvalue阈值
+                             FCcutoff = 1,## FC cutoff
+                             xlim = c(-5,5),
+                             transcriptPointSize = 1.8,
+                             transcriptLabSize = 5.0,
+                             colAlpha = 1,
+                             legend=c("NS","Log2 FC"," p-value",
+                                      " p-value & Log2 FC"),
+                             legendPosition = "bottom",
+                             legendLabSize = 10,
+                             legendIconSize = 3.0)
+
+pdf(paste0("../dataset/dataset_alidation/validation_results/",event,"_DEGres.pdf"))
+print(VolcanoPlot)
+dev.off()
+pdf(paste0("../dataset/dataset_alidation/validation_results/",event,"_DEGres.png"))
+print(VolcanoPlot)
+dev.off()
+write.csv(DEG,paste0("../dataset/dataset_alidation/validation_results/",event,"_DEGres.csv"),row.names = T)
+return(DEG)
+}
+event<-levels(factor(meta$Type))
+event
+event<-event[-2]
+DEGres<-list()
+for (i in seq(length(event))) {
+  DEGres[[i]]<-expr2DEG(event = event[i])
+  names(DEGres)[i]<-event[i]
+}
+
