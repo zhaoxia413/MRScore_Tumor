@@ -386,11 +386,69 @@ pdf("../dataset/dataset_alidation/validation_results/coco-bar.pdf",width = 25,he
 boxplot(expr, boxwex=0.6, notch=T, main=title, outline=FALSE, las=2, col=fl)
 legend("topleft", labels, fill=palette(), bty="n")
 dev.off()
-##DEGs by limma each-event to Healthy
-library(limma)
+##Check batch effects
 library(tidyverse)
+library(EnhancedVolcano)
+library(factoextra)
 expr<-read.csv("../dataset/dataset_alidation/validation_results/coco_3LargeExpr.csv",row.names = 1,header = T)
 meta<-read.csv("../dataset/dataset_alidation/validation_results/coco_3LargeMeta.csv",row.names = 1,header = T)
 expr[1:5,1:5]
 meta[1:5,1:5]
+expr<-as.matrix(expr)
 levels(factor(meta$Type))
+res.pca <- prcomp(t(expr), scale = TRUE)
+PCA<-fviz_pca_ind(res.pca,
+                  label = "none",
+                  habillage = meta$Dataset,
+                  addEllipses = TRUE,
+                  ggtheme = theme_minimal(),
+                  ellipse.type = "confidence")
+print(PCA)
+PCA<-fviz_pca_ind(res.pca,
+                  label = "none",
+                  habillage = meta$Type,
+                  addEllipses = TRUE,
+                  ggtheme = theme_minimal(),
+                  ellipse.type = "confidence")
+print(PCA)
+##need to move batch effetcs from different datasets by sva
+library(sva)
+meta%>%group_by(Type,Dataset)%>%summarise(n())
+meta$bachType<-sample(c(1,2,3),nrow(meta),replace = T)
+meta$bachType<-ifelse(meta$Dataset=="GSE28750",1,ifelse(meta$Dataset=="GSE40012",2,3))
+head(meta)
+cbdata<-as.matrix(expr)
+dist_mat <- dist(t(cbdata))
+clustering <- hclust(dist_mat, method = "complete")
+plot(clustering, labels = meta$bachType)
+plot(clustering, labels =meta$Type)
+mod = model.matrix(~as.factor(Dataset), data=meta)
+n.sv = num.sv(cbdata,mod,method="leek")
+combat_edata = ComBat(dat=cbdata, batch=meta$bachType)
+par(cex = 0.7)
+n.sample=ncol(combat_edata)
+if(n.sample>40) par(cex = 0.5)
+cols <- rainbow(n.sample*1.2)
+boxplot(combat_edata,col=cols,main="expression value",las=2)
+boxplot(combat_edata, boxwex=0.6, notch=T, main=title, outline=FALSE, las=2, col=fl)
+legend("topleft", labels, fill=palette(), bty="n")
+##PCA again
+res.pca <- prcomp(t(combat_edata), scale = TRUE)
+PCA<-fviz_pca_ind(res.pca,
+                  label = "none",
+                  habillage = meta$Dataset,
+                  addEllipses = TRUE,
+                  ggtheme = theme_minimal(),
+                  ellipse.type = "confidence")
+print(PCA)
+PCA<-fviz_pca_ind(res.pca,
+                  label = "none",
+                  habillage = meta$Type,
+                  addEllipses = TRUE,
+                  ggtheme = theme_minimal(),
+                  ellipse.type = "confidence")
+print(PCA)
+combat_edata[1:5,1:5]
+write.csv(combat_edata,"../dataset/dataset_alidation/validation_results/coco_sva_expr.csv",row.names = T)
+##DEGs by limma each-event to Healthy
+library(limma)
