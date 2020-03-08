@@ -3,16 +3,16 @@ library(data.table)
 library(GEOquery)
 #mc1="GSE13015.Rdata"
 mc3="GSE40012.Rdata"
-mc5="GSE65682.Rdata"#LUSC tumor:5;normal:43
-mc6="GSE21802.Rdata"#LUSC tumor:5;normal:43
+mc5="GSE65682.Rdata"
+mc6="GSE21802.Rdata"
 #mc7="GSE27131.Rdata"#few data,1456 genes
-mc8="GSE28750.Rdata"#LUSC tumor:5;normal:43
-mc9="GSE42834.Rdata"#LUSC tumor:5;normal:43
-mc10="GSE57065.Rdata"#LUSC tumor:5;normal:43
-mc11="GSE68310.Rdata"#LUSC tumor:5;normal:43
-mc12="GSE69528.Rdata"#LUSC tumor:5;normal:43
-mc13="GSE82050.Rdata"#LUSC tumor:5;normal:43
-mc14="GSE111368.Rdata"#LUSC tumor:5;normal:43
+mc8="GSE28750.Rdata"
+mc9="GSE42834.Rdata"
+mc10="GSE57065.Rdata"
+mc11="GSE68310.Rdata"
+mc12="GSE69528.Rdata"
+mc13="GSE82050.Rdata"
+mc14="GSE111368.Rdata"
 datalist<-list(mc3,mc5,mc6,mc8,mc10,mc11,mc12,mc13,mc14)
 GEOid<-gsub(".Rdata","",datalist)
 downloaded<-list.files("../dataset/dataset_alidation/validate_datasets/")
@@ -38,7 +38,7 @@ for (i in seq(length(deal_id))) {
   print(i)
   deal_expr[[i]]<-fread(deal_id[i])
   deal_expr[[i]]<-deal_expr[[i]][-1,]
-  write.csv(deal_expr[[i]],deal_id[i],row.names = F)
+  write.csv(deal_expr[[i]],deal_id[i],row.names = T)
 }
 for (i in seq(length(expr_list))) {
   print(i)
@@ -283,13 +283,14 @@ ggplot(groupStat1,aes(reorder(Type,SampleLength),SampleLength,fill=SampleLength)
 ##Rdata make
 names(exprall)
 names(groupList)
-exprall[[1]][1:5,1:5]
-groupList[[1]][1:5,1:5]
-for (i in seq(length(exprall))) {
-  rownames(exprall[[i]])<-exprall[[i]]$Symbol
-  exprall[[i]]<-exprall[[i]][,-1]
+exprall[[2]][1:5,1:5]
+groupList[[2]][1:5,1:5]
+nameRow<-function(x){
+  x<-data.frame(row.names = x$Symbol,x[,-1])
+  return(x)
 }
-exprall[[1]][1:5,1:5]
+exprall<-lapply(exprall,nameRow)
+exprall1[[6]][1:5,1:5]
 for (i in seq(length(groupList))) {
   rownames(groupList[[i]])<-groupList[[i]]$sampleID
 }
@@ -298,18 +299,18 @@ filter_GSElist_name<-paste0("filter_",GEOid,".Rdata")
 filesPath<-paste0("../dataset/dataset_alidation/filteredGSE/",filter_GSElist_name)
 filter_GSElist_name
 filesPath
-GSEs1<-list(pheno=groupList[[1]],gene=exprall[[1]])
-GSEs1<-list(pheno=groupList[[1]],gene=exprall[[1]])
-GSEs2<-list(pheno=groupList[[2]],gene=exprall[[2]])
-GSEs3<-list(pheno=groupList[[3]],gene=exprall[[3]])
-GSEs4<-list(pheno=groupList[[4]],gene=exprall[[4]])
-GSEs5<-list(pheno=groupList[[5]],gene=exprall[[5]])
-GSEs6<-list(pheno=groupList[[6]],gene=exprall[[6]])
-GSEs7<-list(pheno=groupList[[7]],gene=exprall[[7]])
-GSEs8<-list(pheno=groupList[[8]],gene=exprall[[8]])
-GSEs9<-list(pheno=groupList[[9]],gene=exprall[[9]])
+GSEs1<-list(pheno=groupList[[1]],genes=exprall[[1]])
+GSEs2<-list(pheno=groupList[[2]],genes=exprall[[2]])
+GSEs3<-list(pheno=groupList[[3]],genes=exprall[[3]])
+GSEs4<-list(pheno=groupList[[4]],genes=exprall[[4]])
+GSEs5<-list(pheno=groupList[[5]],genes=exprall[[5]])
+GSEs6<-list(pheno=groupList[[6]],genes=exprall[[6]])
+GSEs7<-list(pheno=groupList[[7]],genes=exprall[[7]])
+GSEs8<-list(pheno=groupList[[8]],genes=exprall[[8]])
+GSEs9<-list(pheno=groupList[[9]],genes=exprall[[9]])
 GSEs<-list(GSEs1,GSEs2,GSEs3,GSEs4,GSEs5,GSEs6,GSEs7,GSEs8,GSEs9)
 names(GSEs)<-GEOid
+
 save(GSEs1,file=filesPath[1])
 save(GSEs2,file=filesPath[2])
 save(GSEs3,file=filesPath[3])
@@ -320,7 +321,7 @@ save(GSEs7,file=filesPath[7])
 save(GSEs8,file=filesPath[8])
 save(GSEs9,file=filesPath[9])
 GSEs[[1]]$pheno[1:5,1:5]
-GSEs[[1]]$gene[1:5,1:5]
+GSEs[[2]]$genes[1:5,1:5]
 datasetsInfo<-list(GEOid=GEOid,filesPath=filesPath)
 save(datasetsInfo,file = "../dataset/dataset_alidation/filteredGSE/datasetsInfo.Rdata")
 load(file = "../dataset/dataset_alidation/filteredGSE/datasetsInfo.Rdata")
@@ -330,23 +331,28 @@ filesPath<-paste0("../dataset/dataset_alidation/filteredGSE/",datalist)
 for (i in seq(length(filesPath))) {
   load(file = filesPath[i])
 }
+GSEs<-list(GSEs1,GSEs2,GSEs3,GSEs4,GSEs5,GSEs6,GSEs7,GSEs8,GSEs9)
+names(GSEs)<-GEOid
+
 ##co_normalize
 library(COCONUT)
-#test
-data(GSEs.test)
-GSEs.COCONUT <- COCONUT(GSEs=GSEs.test,
-                        control.0.col="Healthy0.Sepsis1",
-                        byPlatform=FALSE)
-GSEs.COCO.combined <- combineCOCOoutput(GSEs.COCONUT)
-str(GSEs.COCO.combined)
-GSEs.COCO.combined$genes[1:5,1:5]
-write.csv(GSEs.test$GSE28750$pheno,"COO.test.csv",row.names = T)
-write.csv(GSEs.test$GSE28750$genes,"COO.test.csv",row.names = T)
-GSEs_COCONUT <- COCONUT(GSEs=GSEs[1],
+sapply(GSEs, function(x){nrow(x$genes)})
+#GSE40012  GSE65682  GSE21802  GSE28750  GSE57065  GSE68310  GSE69528 
+#25137      1909     24614     23347     23348       579      1712 
+#GSE82050 GSE111368 
+#2317      1696 
+largeGSEs<-GSEs[c(1,3,4)]
+GSEs_COCONUT <- COCONUT(GSEs=largeGSEs,
                         control.0.col="Healthy0.Infection",
                         byPlatform=FALSE)
-GSEs_COCO_combined <- combineCOCOoutput(GSEs.COCONUT)
-    
-
-
+GSEs.COCO.combined <- combineCOCOoutput(GSEs_COCONUT)
+str(GSEs.COCO.combined)
+write.csv(GSEs.COCO.combined$genes,"TEST.csv")
+GSEs.COCO.combined$genes
+GSEs.COCO.combined$pheno[1:5,1:5]
+GSEs.COCO.combined$class.cntl0.dis1
+##what is the reduce function??
+x <- list(c(0, 1), c(2, 3), c(4, 5))
+y <- list(c(6, 7), c(8, 9))
+Reduce(x, y, intersect)
 
