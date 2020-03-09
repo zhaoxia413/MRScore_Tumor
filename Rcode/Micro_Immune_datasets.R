@@ -464,46 +464,46 @@ Type<-levels(factor(meta$Type))
 Type
 Type<-Type[-2]
 expr2DEG<-function(event){
-meta_sub<-meta[which(meta$Type%in%c("Healthy",Type[i])),]
-combat_edata_sub<-combat_edata[,which(colnames(combat_edata)%in%meta_sub$sampleID)]%>%as.matrix()
-design=model.matrix(~factor(meta_sub$Type)+0)
-colnames(design)=levels(factor(meta_sub$Type))
-mycompare<-str_c(colnames(design),collapse = "-")
-contrast.matrix<-makeContrasts(mycompare,
-                               levels = design)
-fit=lmFit(combat_edata_sub,design)
-fit2 <- contrasts.fit(fit, contrast.matrix) 
-fit2 <- eBayes(fit2) 
-DEG<-topTable(fit2, adjust="fdr",coef=1, n=Inf) %>% na.omit()  ## coef比较分组 n基因数
-message(paste0("finish DEG for",event," vs Healthy analysis !"))
-# Volcano plot
-VolcanoPlot<-EnhancedVolcano(DEG,
-                             lab = rownames(DEG),
-                             x = "logFC",
-                             y = "adj.P.Val",
-                             selectLab = rownames(DEG)[1:5],
-                             xlab = bquote(~Log[2]~ "fold change"),
-                             ylab = bquote(~-Log[10]~italic(P)),
-                             pCutoff = 0.05,## pvalue阈值
-                             FCcutoff = 1,## FC cutoff
-                             xlim = c(-5,5),
-                             transcriptPointSize = 1.8,
-                             transcriptLabSize = 5.0,
-                             colAlpha = 1,
-                             legend=c("NS","Log2 FC"," p-value",
-                                      " p-value & Log2 FC"),
-                             legendPosition = "bottom",
-                             legendLabSize = 10,
-                             legendIconSize = 3.0)
-
-pdf(paste0("../dataset/dataset_alidation/validation_results/",event,"_DEGres.pdf"))
-print(VolcanoPlot)
-dev.off()
-png(paste0("../dataset/dataset_alidation/validation_results/",event,"_DEGres.png"))
-print(VolcanoPlot)
-dev.off()
-write.csv(DEG,paste0("../dataset/dataset_alidation/validation_results/",event,"_DEGres.csv"),row.names = T)
-return(DEG)
+  meta_sub<-meta[which(meta$Type%in%c("Healthy",Type[i])),]
+  combat_edata_sub<-combat_edata[,which(colnames(combat_edata)%in%meta_sub$sampleID)]%>%as.matrix()
+  design=model.matrix(~factor(meta_sub$Type)+0)
+  colnames(design)=levels(factor(meta_sub$Type))
+  mycompare<-str_c(colnames(design),collapse = "-")
+  contrast.matrix<-makeContrasts(mycompare,
+                                 levels = design)
+  fit=lmFit(combat_edata_sub,design)
+  fit2 <- contrasts.fit(fit, contrast.matrix) 
+  fit2 <- eBayes(fit2) 
+  DEG<-topTable(fit2, adjust="fdr",coef=1, n=Inf) %>% na.omit()  ## coef比较分组 n基因数
+  message(paste0("finish DEG for",event," vs Healthy analysis !"))
+  # Volcano plot
+  VolcanoPlot<-EnhancedVolcano(DEG,
+                               lab = rownames(DEG),
+                               x = "logFC",
+                               y = "adj.P.Val",
+                               selectLab = rownames(DEG)[1:5],
+                               xlab = bquote(~Log[2]~ "fold change"),
+                               ylab = bquote(~-Log[10]~italic(P)),
+                               pCutoff = 0.05,## pvalue阈值
+                               FCcutoff = 1,## FC cutoff
+                               xlim = c(-5,5),
+                               transcriptPointSize = 1.8,
+                               transcriptLabSize = 5.0,
+                               colAlpha = 1,
+                               legend=c("NS","Log2 FC"," p-value",
+                                        " p-value & Log2 FC"),
+                               legendPosition = "bottom",
+                               legendLabSize = 10,
+                               legendIconSize = 3.0)
+  
+  pdf(paste0("../dataset/dataset_alidation/validation_results/",event,"_DEGres.pdf"))
+  print(VolcanoPlot)
+  dev.off()
+  png(paste0("../dataset/dataset_alidation/validation_results/",event,"_DEGres.png"))
+  print(VolcanoPlot)
+  dev.off()
+  write.csv(DEG,paste0("../dataset/dataset_alidation/validation_results/",event,"_DEGres.csv"),row.names = T)
+  return(DEG)
 }
 
 DEGres<-list()
@@ -522,7 +522,7 @@ for (i in seq(length(Type))) {
   DEGresSig[[i]]<-data.frame(Gene=rownames(DEGresSig[[i]]),DEGresSig[[i]])
   names(DEGres)[i]<-Type[i]
   names(DEGresSig)[i]<-Type[i]
-  }
+}
 names(DEGresSig)
 DEGresSig[[1]][1:5,1:5]
 sapply(DEGresSig, nrow)
@@ -610,8 +610,8 @@ my_comparisons<-list(c("Healthy", "Bacterial_infection"),
                      c("Healthy", "Viral_infection"))
 my_comparisons1<-list(c("Healthy", "Other"))
 my_comparisons2<-list(c("Healthy", "Bacterial_infection"),
-                     c("Healthy", "Other"),
-                     c("Bacterial_infection", "Other"))
+                      c("Healthy", "Other"),
+                      c("Bacterial_infection", "Other"))
 my_comparisons3<-list(c("Healthy", "Viral_infection"),
                       c("Healthy", "Other"),
                       c("Viral_infection", "Other"))
@@ -625,8 +625,8 @@ my_comparisons4<-list(c("Healthy", "Viral_infection"),
 
 fun_to_plot <- function(data, group, variable,comparisons) {
   p <- ggboxplot(data, x=group, y=variable,fill = group, 
-                #palette = c("#00AFBB", "#E7B800", "#FC4E07"), 
-                add = "jitter")+
+                 #palette = c("#00AFBB", "#E7B800", "#FC4E07"), 
+                 add = "jitter")+
     stat_compare_means(comparisons = comparisons,label.y = c(0.8, 1,1.2,1.4,1.6,1.8,2))+
     scale_fill_aaas()+
     theme(axis.text.x = element_text(angle = 45,vjust = 1,hjust = 1),
@@ -685,8 +685,9 @@ write.csv(newdata,"../validate_datasets/MicroImmuneML_data.csv",row.names = F)
 library(randomForest)
 library(pROC)
 library(data.table)
-newdata<-fread("../validate_datasets/MicroImmuneML_data.csv")
+newdata<-fread("../dataset/dataset_alidation/validate_datasets/MicroImmuneML_data.csv")
 head(newdata)
+
 set.seed(1000)
 trainIndex<-sample(nrow(newdata),nrow(newdata)*0.8)
 trainData<-newdata[trainIndex,]
@@ -694,7 +695,7 @@ testData<-newdata[-trainIndex,]
 trainData$HeathyGroup = as.factor(trainData$HeathyGroup)
 testData$HeathyGroup = as.factor(testData$HeathyGroup)
 Hg_randomforest <- randomForest(HeathyGroup~MRscore,
-                                    data = trainData)
+                                data = trainData)
 Hg_randomforest$importance 
 pre_ran <- predict(Hg_randomforest,newdata=testData)
 #将真实值和预测值整合到一起
@@ -709,7 +710,7 @@ plot(HG_ran_roc, print.auc=TRUE, colorize = T,
      max.auc.polygon=TRUE,auc.polygon.col="skyblue", 
      print.thres=TRUE,main='RF_ROC')
 #####Bacterial infection group
-trainIndex1<-sample(nrow(newdata),nrow(newdata)*0.8)
+trainIndex1<-sample(nrow(newdata),nrow(newdata)*0.7)
 trainData1<-newdata[trainIndex1,]
 testData1<-newdata[-trainIndex1,]
 trainData1$BacGroup = as.factor(trainData1$BacGroup)
@@ -723,14 +724,14 @@ obs_p_ran = data.frame(prob=pre_ran,obs=testData1$BacGroup)
 #输出混淆矩阵
 table(testData1$BacGroup,pre_ran,dnn=c("True","Predicted"))
 #绘制ROC曲线
-BG_ran_roc <- roc(testData1$BacGroup,as.numeric(pre_ran))
+BG_ran_roc <- multiclass.roc(testData1$BacGroup,as.numeric(pre_ran))
 plot(BG_ran_roc, print.auc=TRUE, colorize = T,
      auc.polygon=TRUE, grid=c(0.1, 0.2),
      grid.col=c("green", "red"), 
      max.auc.polygon=TRUE,auc.polygon.col="skyblue", 
      print.thres=TRUE,main='RF_ROC')
 ##Viral group
-trainIndex2<-sample(nrow(newdata),nrow(newdata)*0.8)
+trainIndex2<-sample(nrow(newdata),nrow(newdata)*0.7)
 trainData2<-newdata[trainIndex2,]
 testData2<-newdata[-trainIndex2,]
 trainData2$VirGroup = as.factor(trainData2$VirGroup)
@@ -744,14 +745,14 @@ obs_p_ran = data.frame(prob=pre_ran,obs=testData2$VirGroup)
 #输出混淆矩阵
 table(testData2$VirGroup,pre_ran,dnn=c("True","Predicted"))
 #绘制ROC曲线
-VG_ran_roc <- roc(testData2$VirGroup,as.numeric(pre_ran))
+VG_ran_roc <- multiclass.roc(testData2$VirGroup,as.numeric(pre_ran))
 plot(VG_ran_roc, print.auc=TRUE, colorize = T,
      auc.polygon=TRUE, grid=c(0.1, 0.2),
      grid.col=c("green", "red"), 
      max.auc.polygon=TRUE,auc.polygon.col="skyblue", 
      print.thres=TRUE,main='RF_ROC')
 ###
-trainIndex3<-sample(nrow(newdata),nrow(newdata)*0.8)
+trainIndex3<-sample(nrow(newdata),nrow(newdata)*0.7)
 trainData3<-newdata[trainIndex3,]
 testData3<-newdata[-trainIndex3,]
 trainData3$TotalGroup = as.factor(trainData3$TotalGroup)
@@ -772,19 +773,95 @@ plot(TG_ran_roc, print.auc=TRUE, colorize = T,
      max.auc.polygon=TRUE,auc.polygon.col="skyblue", 
      print.thres=TRUE,main='RF_ROC')
 ##
-
+HG_ran_roc
+VG_ran_roc
+BG_ran_roc
+TG_ran_roc
+roc.test(HG_ran_roc, VG_ran_roc, reuse.auc=FALSE)
+rs <- BG_ran_roc[['rocs']]
+plot.roc(rs[[1]])
+sapply(2:length(rs),function(i) lines.roc(rs[[i]],col=i))
+plot(HG_ran_roc)
+rocH <- roc(newdata$HeathyGroup,newdata$MRscore,percent=TRUE,
+            # arguments for auc
+            partial.auc=c(100, 90), partial.auc.correct=TRUE,
+            partial.auc.focus="sens",
+            # arguments for ci
+            ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE,
+            # arguments for plot
+            plot=TRUE, auc.polygon=TRUE, max.auc.polygon=TRUE, grid=TRUE,
+            print.auc=TRUE, show.thres=TRUE)
+rocB <- multiclass.roc(newdata$BacGroup,newdata$MRscore,
+                       percent=TRUE,
+                       # arguments for auc
+                       partial.auc=c(100, 90), partial.auc.correct=TRUE,
+                       partial.auc.focus="sens",
+                       # arguments for ci
+                       #ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE,
+                       # arguments for plot
+                       plot=TRUE, auc.polygon=TRUE, max.auc.polygon=TRUE, grid=TRUE,
+                       print.auc=TRUE, show.thres=TRUE)
+rocV <- multiclass.roc(newdata$VirGroup,newdata$MRscore,
+                       percent=TRUE,
+                       # arguments for auc
+                       partial.auc=c(100, 90), partial.auc.correct=TRUE,
+                       partial.auc.focus="sens",
+                       # arguments for ci
+                       #ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE,
+                       # arguments for plot
+                       plot=TRUE, auc.polygon=TRUE, max.auc.polygon=TRUE, grid=TRUE,
+                       print.auc=TRUE, show.thres=TRUE)
+rocT <- multiclass.roc(newdata$TotalGroup,newdata$MRscore,
+                       percent=TRUE,
+                       # arguments for auc
+                       partial.auc=c(100, 90), partial.auc.correct=TRUE,
+                       partial.auc.focus="sens",
+                       # arguments for ci
+                       #ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE,
+                       # arguments for plot
+                       plot=TRUE, auc.polygon=TRUE, max.auc.polygon=TRUE, grid=TRUE,
+                       print.auc=TRUE, show.thres=TRUE)
+auc(rocT)
+rs1 <- rocT[['rocs']]
+rs2 <- rocB[['rocs']]
+rs3 <- rocV[['rocs']]
+plot.roc(rs1[[1]])
+plot.roc(rs2[[1]])
+plot.roc(rs3[[1]])
+plot(rs1[[1]], lwd = 3, col = "black")
+plot(rs2[[1]], lwd = 2, add=TRUE, lty=2, col = "red")
+plot(rs3[[1]], lwd = 2, add=TRUE, lty=2, col = "blue")
+legend(40, 40, legend = c("Multi-class", "A", "B", "C"), 
+       lty = c(1,1,1), col = c("black", "red", "blue"))
+sapply(2:length(rs1),function(i) lines.roc(rs1[[i]],col=i))
+sapply(2:length(rs2),function(i) lines.roc(rs2[[i]],col=i))
+sapply(2:length(rs3),function(i) lines.roc(rs3[[i]],col=i))
+rocT$call
+c("Viral_infection","Bacterial_infection")
+newdata$BacTwi<-newdata$BacGroup
+newdata$BacTwi<-ifelse(newdata$BacGroup=="Bacterial_infection","Bacterial_infection","Other")
+newdata$BacTwi<-as.factor(newdata$BacTwi)
+newdata$ViRTwi<-newdata$VirGroup
+newdata$ViRTwi<-ifelse(newdata$VirGroup=="Viral_infection","Viral_infection","Other")
+head(newdata)
+newdata$ViRTwi<-as.factor(newdata$ViRTwi)
+levels(factor(newdata$ViRTwi))
+levels(factor(newdata$BacTwi))
+roc.list <- roc(MRscore ~ ViRTwi, data = newdata,)
+g.list <- ggroc(roc.list)
+g.list
 library(ROCR)
 set.seed(1000)
-newdata$RF<-newdata$HeathyGroup
-newdata$RF<-ifelse(newdata$HeathyGroup=="Healthy",0,1)
+newdata$VirGroup<-newdata$VirGroup
+newdata$VirGroup<-ifelse(newdata$VirGroup=="Viral_infection",1,0)
 trainIndex<-sample(nrow(newdata),nrow(newdata)*0.7)
 train<-newdata[trainIndex,]
 test<-newdata[-trainIndex,]
-model = glm(RF~MRscore,data=train, 
+model = glm(VirGroup~MRscore,data=train, 
             family = binomial(link = "logit"))
 
 pred = predict(model,test,type="response")
-pred = prediction(pred, test$RF)
+pred = prediction(pred, test$VirGroup)
 perf = performance(pred, "acc")
 plot(perf)
 max_ind = which.max(slot(perf, "y.values")[[1]] )
@@ -810,7 +887,3 @@ x$RT..seconds. <- NULL
 y <- cadets$RT..seconds.
 rf.cv <- rfcv(x, y, cv.fold=10)##randomForest package
 with(rf.cv, plot(n.var, error.cv))
-
-
-
-
