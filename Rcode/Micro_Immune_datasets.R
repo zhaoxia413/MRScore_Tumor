@@ -601,6 +601,7 @@ head(newdata)
 #commparisons
 library(ggsci)
 library(ggpubr)
+library(ggridges)
 my_comparisons<-list(c("Healthy", "Bacterial_infection"),
                      c("Healthy", "Mixed_infection"),
                      c("Healthy", "Sepsis"),
@@ -646,8 +647,170 @@ p1<-fun_to_plot(newdata,group = "HeathyGroup",variable = "MRscore",comparisons =
 p2<-fun_to_plot(newdata,group = "BacGroup",variable = "MRscore",comparisons = my_comparisons2)
 p3<-fun_to_plot(newdata,group = "VirGroup",variable = "MRscore",comparisons = my_comparisons3)
 p4<-fun_to_plot(newdata,group = "TotalGroup",variable = "MRscore",comparisons = my_comparisons4)
-p+scale_fill_manual(values = c("#0E3BF0","#AFFFDF","#ff7f00","#375B7F","#F2FCFC","#D72323","#FAF8DE"))
-p1+scale_fill_manual(values = c("#0E3BF0","#377F5B"))
-p2+scale_fill_manual(values = c("#0E3BF0","#377F5B","#ff7f00"))
-p3+scale_fill_manual(values = c("#0E3BF0","#D72323","#377F5B"))
-p4+scale_fill_manual(values = c("#0E3BF0","#D72323","#377F5B","#ff7f00"))
+p<-p+scale_fill_manual(values = c("#0E3BF0","#AFFFDF","#ff7f00","#375B7F","#F2FCFC","#D72323","#FAF8DE"))
+p1<-p1+scale_fill_manual(values = c("#0E3BF0","#377F5B"))
+p2<-p2+scale_fill_manual(values = c("#0E3BF0","#377F5B","#D72323"))
+p3<-p3+scale_fill_manual(values = c("#0E3BF0","#AFFFDF","#377F5B"))
+p4<-p4+scale_fill_manual(values = c("#0E3BF0","#AFFFDF","#377F5B","#D72323"))
+library(gridExtra)
+library(grid)
+pdf(file="../validation_results/MR_InfectionCompaire_merge.pdf",width = 12,height = 18)
+grid.newpage()
+pushViewport(viewport(layout = grid.layout(3,2))) 
+vplayout <- function(x,y){
+  viewport(layout.pos.row = x, layout.pos.col = y)
+}
+print(p, vp = vplayout(1,1:2))
+print(p1, vp = vplayout(2,1))
+print(p4, vp = vplayout(2,2))
+print(p3, vp = vplayout(3,1))
+print(p2, vp = vplayout(3,2))
+dev.off()
+
+png(file="../validation_results/MR_InfectionCompaire_merge.png",width = 1200,height = 1800)
+grid.newpage()
+pushViewport(viewport(layout = grid.layout(3,2))) 
+vplayout <- function(x,y){
+  viewport(layout.pos.row = x, layout.pos.col = y)
+}
+print(p, vp = vplayout(1,1:2))
+print(p1, vp = vplayout(2,1))
+print(p4, vp = vplayout(2,2))
+print(p3, vp = vplayout(3,1))
+print(p2, vp = vplayout(3,2))
+dev.off()
+write.csv(newdata,"../validate_datasets/MicroImmuneML_data.csv",row.names = F)
+##Random forest
+
+library(randomForest)
+library(pROC)
+library(data.table)
+newdata<-fread("../validate_datasets/MicroImmuneML_data.csv")
+head(newdata)
+set.seed(1000)
+trainIndex<-sample(nrow(newdata),nrow(newdata)*0.8)
+trainData<-newdata[trainIndex,]
+testData<-newdata[-trainIndex,]
+trainData$HeathyGroup = as.factor(trainData$HeathyGroup)
+testData$HeathyGroup = as.factor(testData$HeathyGroup)
+Hg_randomforest <- randomForest(HeathyGroup~MRscore,
+                                    data = trainData)
+Hg_randomforest$importance 
+pre_ran <- predict(Hg_randomforest,newdata=testData)
+#将真实值和预测值整合到一起
+obs_p_ran = data.frame(prob=pre_ran,obs=testData$HeathyGroup)
+#输出混淆矩阵
+table(testData$HeathyGroup,pre_ran,dnn=c("True","Predicted"))
+#绘制ROC曲线
+HG_ran_roc <- roc(testData$HeathyGroup,as.numeric(pre_ran))
+plot(HG_ran_roc, print.auc=TRUE, colorize = T,
+     auc.polygon=TRUE, grid=c(0.1, 0.2),
+     grid.col=c("green", "red"), 
+     max.auc.polygon=TRUE,auc.polygon.col="skyblue", 
+     print.thres=TRUE,main='RF_ROC')
+#####Bacterial infection group
+trainIndex1<-sample(nrow(newdata),nrow(newdata)*0.8)
+trainData1<-newdata[trainIndex1,]
+testData1<-newdata[-trainIndex1,]
+trainData1$BacGroup = as.factor(trainData1$BacGroup)
+testData1$BacGroup = as.factor(testData1$BacGroup)
+Hg_randomforest <- randomForest(BacGroup~MRscore,
+                                data = trainData1)
+Hg_randomforest$importance 
+pre_ran <- predict(Hg_randomforest,newdata=testData1)
+#将真实值和预测值整合到一起
+obs_p_ran = data.frame(prob=pre_ran,obs=testData1$BacGroup)
+#输出混淆矩阵
+table(testData1$BacGroup,pre_ran,dnn=c("True","Predicted"))
+#绘制ROC曲线
+BG_ran_roc <- roc(testData1$BacGroup,as.numeric(pre_ran))
+plot(BG_ran_roc, print.auc=TRUE, colorize = T,
+     auc.polygon=TRUE, grid=c(0.1, 0.2),
+     grid.col=c("green", "red"), 
+     max.auc.polygon=TRUE,auc.polygon.col="skyblue", 
+     print.thres=TRUE,main='RF_ROC')
+##Viral group
+trainIndex2<-sample(nrow(newdata),nrow(newdata)*0.8)
+trainData2<-newdata[trainIndex2,]
+testData2<-newdata[-trainIndex2,]
+trainData2$VirGroup = as.factor(trainData2$VirGroup)
+testData2$VirGroup = as.factor(testData2$VirGroup)
+Hg_randomforest <- randomForest(VirGroup~MRscore,
+                                data = trainData2)
+Hg_randomforest$importance 
+pre_ran <- predict(Hg_randomforest,newdata=testData2)
+#将真实值和预测值整合到一起
+obs_p_ran = data.frame(prob=pre_ran,obs=testData2$VirGroup)
+#输出混淆矩阵
+table(testData2$VirGroup,pre_ran,dnn=c("True","Predicted"))
+#绘制ROC曲线
+VG_ran_roc <- roc(testData2$VirGroup,as.numeric(pre_ran))
+plot(VG_ran_roc, print.auc=TRUE, colorize = T,
+     auc.polygon=TRUE, grid=c(0.1, 0.2),
+     grid.col=c("green", "red"), 
+     max.auc.polygon=TRUE,auc.polygon.col="skyblue", 
+     print.thres=TRUE,main='RF_ROC')
+###
+trainIndex3<-sample(nrow(newdata),nrow(newdata)*0.8)
+trainData3<-newdata[trainIndex3,]
+testData3<-newdata[-trainIndex3,]
+trainData3$TotalGroup = as.factor(trainData3$TotalGroup)
+testData3$TotalGroup = as.factor(testData3$TotalGroup)
+Hg_randomforest <- randomForest(TotalGroup~MRscore,
+                                data = trainData3)
+Hg_randomforest$importance 
+pre_ran <- predict(Hg_randomforest,newdata=testData3)
+#将真实值和预测值整合到一起
+obs_p_ran = data.frame(prob=pre_ran,obs=testData3$TotalGroup)
+#输出混淆矩阵
+table(testData3$TotalGroup,pre_ran,dnn=c("True","Predicted"))
+#绘制ROC曲线
+TG_ran_roc <- multiclass.roc(testData3$TotalGroup,as.numeric(pre_ran))
+plot(TG_ran_roc, print.auc=TRUE, colorize = T,
+     auc.polygon=TRUE, grid=c(0.1, 0.2),
+     grid.col=c("green", "red"), 
+     max.auc.polygon=TRUE,auc.polygon.col="skyblue", 
+     print.thres=TRUE,main='RF_ROC')
+##
+
+library(ROCR)
+set.seed(1000)
+newdata$RF<-newdata$HeathyGroup
+newdata$RF<-ifelse(newdata$HeathyGroup=="Healthy",0,1)
+trainIndex<-sample(nrow(newdata),nrow(newdata)*0.7)
+train<-newdata[trainIndex,]
+test<-newdata[-trainIndex,]
+model = glm(RF~MRscore,data=train, 
+            family = binomial(link = "logit"))
+
+pred = predict(model,test,type="response")
+pred = prediction(pred, test$RF)
+perf = performance(pred, "acc")
+plot(perf)
+max_ind = which.max(slot(perf, "y.values")[[1]] )
+acc = slot(perf, "y.values")[[1]][max_ind]
+cutoff = slot(perf, "x.values")[[1]][max_ind]
+print(c(accuracy= acc, cutoff = cutoff))
+perf_cost = performance(pred, "cost")
+perf_err = performance(pred, "err")
+perf_tpr = performance(pred, "tpr")
+perf_sn_sp = performance(pred, "sens", "spec")
+roc = performance(pred,"tpr","fpr")
+plot(roc, colorize = T, lwd = 2)
+abline(a = 0, b = 1)
+auc = performance(pred, measure = "auc")
+###
+library(multiROC)
+
+###k-fold cv
+set.seed(42)
+data(cadets)
+x <- cadets
+x$RT..seconds. <- NULL
+y <- cadets$RT..seconds.
+rf.cv <- rfcv(x, y, cv.fold=10)##randomForest package
+with(rf.cv, plot(n.var, error.cv))
+
+
+
+
