@@ -451,13 +451,20 @@ print(PCA)
 combat_edata[1:5,1:5]
 write.csv(combat_edata,"../dataset/dataset_alidation/validation_results/coco_sva_expr.csv",row.names = T)
 ##DEGs by limma each-event to Healthy
+options(stringsAsFactors = F)
 library(limma)
+library(tidyverse)
+library(data.table)
+library(EnhancedVolcano)
 combat_edata<-read.csv("../dataset/dataset_alidation/validation_results/coco_sva_expr.csv",row.names = 1,header = T)
+meta<-read.csv("../dataset/dataset_alidation/validation_results/coco_3LargeMeta.csv",row.names = 1,header = T)
 levels(factor(meta$Type))
 #### Viral_infection-Healthy
-event="Viral_infection"
+Type<-levels(factor(meta$Type))
+Type
+Type<-Type[-2]
 expr2DEG<-function(event){
-meta_sub<-meta%>%filter(Type=="Healthy"|Type==event)
+meta_sub<-meta[which(meta$Type%in%c("Healthy",Type[i])),]
 combat_edata_sub<-combat_edata[,which(colnames(combat_edata)%in%meta_sub$sampleID)]%>%as.matrix()
 design=model.matrix(~factor(meta_sub$Type)+0)
 colnames(design)=levels(factor(meta_sub$Type))
@@ -492,18 +499,155 @@ VolcanoPlot<-EnhancedVolcano(DEG,
 pdf(paste0("../dataset/dataset_alidation/validation_results/",event,"_DEGres.pdf"))
 print(VolcanoPlot)
 dev.off()
-pdf(paste0("../dataset/dataset_alidation/validation_results/",event,"_DEGres.png"))
+png(paste0("../dataset/dataset_alidation/validation_results/",event,"_DEGres.png"))
 print(VolcanoPlot)
 dev.off()
 write.csv(DEG,paste0("../dataset/dataset_alidation/validation_results/",event,"_DEGres.csv"),row.names = T)
 return(DEG)
 }
-event<-levels(factor(meta$Type))
-event
-event<-event[-2]
-DEGres<-list()
-for (i in seq(length(event))) {
-  DEGres[[i]]<-expr2DEG(event = event[i])
-  names(DEGres)[i]<-event[i]
-}
 
+DEGres<-list()
+DEGresSig<-list()
+for (i in seq(length(Type))) {
+  DEGres<-expr2DEG(event = Type[i])
+  DEGresSig[[i]]<-subset(DEGres[[i]],adj.P.Val<=0.05)
+  names(DEGres)[i]<-Type[i]
+  names(DEGresSig)[i]<-Type[i]
+}
+DEGres<-list()
+DEGresSig<-list()
+for (i in seq(length(Type))) {
+  DEGres[[i]]<-read.csv(paste0("../dataset/dataset_alidation/validation_results/",Type[i],"_DEGres.csv"),row.names = 1,header = T)
+  DEGresSig[[i]]<-subset(DEGres[[i]],adj.P.Val<=0.05)
+  DEGresSig[[i]]<-data.frame(Gene=rownames(DEGresSig[[i]]),DEGresSig[[i]])
+  names(DEGres)[i]<-Type[i]
+  names(DEGresSig)[i]<-Type[i]
+  }
+names(DEGresSig)
+DEGresSig[[1]][1:5,1:5]
+sapply(DEGresSig, nrow)
+#Bacterial_infection         Mixed_infection 
+#5913                    4867 
+#Sepsis         Sepsis_surgical 
+#5992                    5649 
+#Uninfected_inflammation         Viral_infection 
+#6037                    6380
+
+meta_sub<-list()
+myexpr<-list()
+for (i in seq(length(Type))) {
+  meta_sub[[i]]<-meta[which(meta$Type%in%c("Healthy",Type[i])),]
+  myexpr[[i]]<-combat_edata[,which(colnames(combat_edata)%in%meta_sub[[i]]$sampleID)]%>%as.data.frame()
+  myexpr[[i]]<-data.frame(Gene=rownames(myexpr[[i]]),myexpr[[i]])
+  names(myexpr)[i]<-Type[i]
+}
+myexpr[[1]][1:5,1:5]
+DEGresSig[[3]][1:5,1:5]
+expr<-expr$Bacterial_infection
+DEexpr<-DEGresSig$Bacterial_infection
+
+expr2MRscore<-function(expr,DEexpr){
+  signature<-fread("../dataset/TCGA_data/annotationRow1.csv")
+  MRgene_DEGs<-subset(DEexpr,Gene%in%signature$Gene)
+  MRgene_DEGs$Regulation<-sample(c("Up","Down"),nrow(MRgene_DEGs),replace = T)
+  MRgene_DEGs$Regulation<-ifelse(MRgene_DEGs$logFC>=0,"Up","Down")
+  DE_Mgene<-MRgene_DEGs[,c("Gene","Regulation")]
+  Total_MRscore<-sum(subset(MRgene_DEGs,logFC>=0)$logFC)+sum(subset(MRgene_DEGs,logFC<=0)$logFC)
+  message(paste0("Total Score = ",Total_MRscore))
+  upgene<-subset(DE_Mgene,Regulation=="Up")
+  downgene<-subset(DE_Mgene,Regulation=="Down")
+  Upexpr<-expr[which(expr$Gene%in%upgene$Gene),]
+  Downexpr<-expr[which(expr$Gene%in%downgene$Gene),]
+  Upexpr_average<-data.frame(sampleID = colnames(Upexpr)[-1],Upscore=apply(Upexpr[,-1], 2, mean))
+  Downexpr_average<-data.frame(sampleID = colnames(Downexpr)[-1],Downscore=apply(Downexpr[,-1], 2, mean))
+  DE_average<-bind_cols(Upexpr_average,Downexpr_average)[,-3]
+  MRscore_value<-DE_average%>%mutate(MRscore=Upscore-Downscore)
+  return(list(MRgene_DEGs=MRgene_DEGs,MRscore_value=MRscore_value,Total_MRscore=Total_MRscore))
+}
+names(myexpr)
+names(DEGresSig)
+MRscore<-list()
+for (i in seq(length(DEGresSig))) {
+  MRscore[[i]]<-expr2MRscore(expr = myexpr[[i]],DEexpr = DEGresSig[[i]])
+  names(MRscore)[i]<-names(myexpr)[i]
+}
+head(MRscore$Bacterial_infection$MRscore_value)
+mergeMRscore<-bind_rows(MRscore[[1]]$MRscore_value,
+                        MRscore[[2]]$MRscore_value,
+                        MRscore[[3]]$MRscore_value,
+                        MRscore[[4]]$MRscore_value,
+                        MRscore[[5]]$MRscore_value,
+                        MRscore[[6]]$MRscore_value)
+
+head(mergeMRscore)
+head(meta)
+MRscore_meta<-merge(meta[,c(1,5,6)],mergeMRscore,by="sampleID")
+head(MRscore_meta)
+MRscore_meta$HeathyGroup<-MRscore_meta$Healthy0.Infection
+MRscore_meta$HeathyGroup<-ifelse(MRscore_meta$Healthy0.Infection==0,"Healthy","Other")
+MRscore_meta$BacGroup<-MRscore_meta$Type
+MRscore_meta$BacGroup<-ifelse(MRscore_meta$Type!="Bacterial_infection","Other",MRscore_meta$BacGroup)
+MRscore_meta$BacGroup<-ifelse(MRscore_meta$Type=="Healthy","Healthy",MRscore_meta$BacGroup)
+MRscore_meta$VirGroup<-MRscore_meta$Type
+MRscore_meta$VirGroup<-ifelse(MRscore_meta$Type!="Viral_infection","Other",MRscore_meta$VirGroup)
+MRscore_meta$VirGroup<-ifelse(MRscore_meta$Type=="Healthy","Healthy",MRscore_meta$VirGroup)
+MRscore_meta$TotalGroup<-MRscore_meta$BacGroup
+MRscore_meta$TotalGroup<-ifelse(MRscore_meta$HeathyGroup=="Healthy","Healthy",MRscore_meta$TotalGroup)
+MRscore_meta$TotalGroup<-ifelse(MRscore_meta$BacGroup=="Bacterial_infection","Bacterial_infection",MRscore_meta$TotalGroup)
+MRscore_meta$TotalGroup<-ifelse(MRscore_meta$VirGroup=="Viral_infection","Viral_infection",MRscore_meta$TotalGroup)
+head(MRscore_meta)
+newdata<-MRscore_meta[,c(2,6:10)]
+head(newdata)
+#commparisons
+library(ggsci)
+library(ggpubr)
+my_comparisons<-list(c("Healthy", "Bacterial_infection"),
+                     c("Healthy", "Mixed_infection"),
+                     c("Healthy", "Sepsis"),
+                     c("Healthy", "Sepsis_surgical"),
+                     c("Healthy", "Uninfected_inflammation"),
+                     c("Healthy", "Viral_infection"))
+my_comparisons1<-list(c("Healthy", "Other"))
+my_comparisons2<-list(c("Healthy", "Bacterial_infection"),
+                     c("Healthy", "Other"),
+                     c("Bacterial_infection", "Other"))
+my_comparisons3<-list(c("Healthy", "Viral_infection"),
+                      c("Healthy", "Other"),
+                      c("Viral_infection", "Other"))
+my_comparisons4<-list(c("Healthy", "Viral_infection"),
+                      c("Healthy", "Other"),
+                      c("Viral_infection", "Other"),
+                      c("Healthy", "Bacterial_infection"),
+                      c("Healthy", "Other"),
+                      c("Bacterial_infection", "Other"),
+                      c("Viral_infection","Bacterial_infection"))
+
+fun_to_plot <- function(data, group, variable,comparisons) {
+  p <- ggboxplot(data, x=group, y=variable,fill = group, 
+                #palette = c("#00AFBB", "#E7B800", "#FC4E07"), 
+                add = "jitter")+
+    stat_compare_means(comparisons = comparisons,label.y = c(0.8, 1,1.2,1.4,1.6,1.8,2))+
+    scale_fill_aaas()+
+    theme(axis.text.x = element_text(angle = 45,vjust = 1,hjust = 1),
+          axis.title.x = element_blank())
+  return(p)
+}
+col31<-c("#303841","#D72323","#377F5B","#375B7F","#F2FCFC","#f0027f",
+         "#FAF8DE","#666666","#BDF1F6","#023782","#5e4fa2","#F1C40F",
+         "#ff7f00","#cab2d6","#240041","#ffff99","#0E3BF0","#a65628",
+         "#f781bf","#808FA6","#2EB872","#F0FFE1","#F33535","#011F4E",
+         "#82B269","#D3C13E","#3F9DCD","#014E1F","#AFFFDF","#3D002E",
+         "#3A554A")
+barplot(rep(1,times=length(col31)),col=col31,border=cm.colors(length(col31)),
+        axes=FALSE, main="cm.colors"); box()
+colnames(newdata)
+p<-fun_to_plot(newdata,group = "Type",variable = "MRscore",comparisons = my_comparisons)
+p1<-fun_to_plot(newdata,group = "HeathyGroup",variable = "MRscore",comparisons = my_comparisons1)
+p2<-fun_to_plot(newdata,group = "BacGroup",variable = "MRscore",comparisons = my_comparisons2)
+p3<-fun_to_plot(newdata,group = "VirGroup",variable = "MRscore",comparisons = my_comparisons3)
+p4<-fun_to_plot(newdata,group = "TotalGroup",variable = "MRscore",comparisons = my_comparisons4)
+p+scale_fill_manual(values = c("#0E3BF0","#AFFFDF","#ff7f00","#375B7F","#F2FCFC","#D72323","#FAF8DE"))
+p1+scale_fill_manual(values = c("#0E3BF0","#377F5B"))
+p2+scale_fill_manual(values = c("#0E3BF0","#377F5B","#ff7f00"))
+p3+scale_fill_manual(values = c("#0E3BF0","#D72323","#377F5B"))
+p4+scale_fill_manual(values = c("#0E3BF0","#D72323","#377F5B","#ff7f00"))
