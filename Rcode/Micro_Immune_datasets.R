@@ -681,15 +681,13 @@ print(p2, vp = vplayout(3,2))
 dev.off()
 write.csv(newdata,"../validate_datasets/MicroImmuneML_data.csv",row.names = F)
 ##Random forest
-
 library(randomForest)
 library(pROC)
 library(data.table)
 newdata<-fread("../dataset/dataset_alidation/validate_datasets/MicroImmuneML_data.csv")
 head(newdata)
-
 set.seed(1000)
-trainIndex<-sample(nrow(newdata),nrow(newdata)*0.8)
+trainIndex<-sample(nrow(newdata),nrow(newdata)*0.7)
 trainData<-newdata[trainIndex,]
 testData<-newdata[-trainIndex,]
 trainData$HeathyGroup = as.factor(trainData$HeathyGroup)
@@ -703,7 +701,8 @@ obs_p_ran = data.frame(prob=pre_ran,obs=testData$HeathyGroup)
 #输出混淆矩阵
 table(testData$HeathyGroup,pre_ran,dnn=c("True","Predicted"))
 #绘制ROC曲线
-HG_ran_roc <- roc(testData$HeathyGroup,as.numeric(pre_ran))
+HG_ran_roc <- roc(testData$HeathyGroup,as.numeric(pre_ran),
+                  ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE)
 plot(HG_ran_roc, print.auc=TRUE, colorize = T,
      auc.polygon=TRUE, grid=c(0.1, 0.2),
      grid.col=c("green", "red"), 
@@ -725,7 +724,7 @@ obs_p_ran = data.frame(prob=pre_ran,obs=testData1$BacGroup)
 table(testData1$BacGroup,pre_ran,dnn=c("True","Predicted"))
 #绘制ROC曲线
 BG_ran_roc <- multiclass.roc(testData1$BacGroup,as.numeric(pre_ran))
-plot(BG_ran_roc, print.auc=TRUE, colorize = T,
+plot(BG_ran_roc$rocs[[1]], print.auc=TRUE, colorize = T,
      auc.polygon=TRUE, grid=c(0.1, 0.2),
      grid.col=c("green", "red"), 
      max.auc.polygon=TRUE,auc.polygon.col="skyblue", 
@@ -746,7 +745,7 @@ obs_p_ran = data.frame(prob=pre_ran,obs=testData2$VirGroup)
 table(testData2$VirGroup,pre_ran,dnn=c("True","Predicted"))
 #绘制ROC曲线
 VG_ran_roc <- multiclass.roc(testData2$VirGroup,as.numeric(pre_ran))
-plot(VG_ran_roc, print.auc=TRUE, colorize = T,
+plot(VG_ran_roc$rocs[[1]], print.auc=TRUE, colorize = T,
      auc.polygon=TRUE, grid=c(0.1, 0.2),
      grid.col=c("green", "red"), 
      max.auc.polygon=TRUE,auc.polygon.col="skyblue", 
@@ -766,124 +765,83 @@ obs_p_ran = data.frame(prob=pre_ran,obs=testData3$TotalGroup)
 #输出混淆矩阵
 table(testData3$TotalGroup,pre_ran,dnn=c("True","Predicted"))
 #绘制ROC曲线
-TG_ran_roc <- multiclass.roc(testData3$TotalGroup,as.numeric(pre_ran))
-plot(TG_ran_roc, print.auc=TRUE, colorize = T,
+TG_ran_roc <- multiclass.roc(testData3$TotalGroup,
+                             as.numeric(pre_ran))
+plot(TG_ran_roc$rocs[[1]], print.auc=TRUE, colorize = T,
      auc.polygon=TRUE, grid=c(0.1, 0.2),
      grid.col=c("green", "red"), 
      max.auc.polygon=TRUE,auc.polygon.col="skyblue", 
      print.thres=TRUE,main='RF_ROC')
 ##
-HG_ran_roc
-VG_ran_roc
-BG_ran_roc
-TG_ran_roc
-roc.test(HG_ran_roc, VG_ran_roc, reuse.auc=FALSE)
-rs <- BG_ran_roc[['rocs']]
-plot.roc(rs[[1]])
-sapply(2:length(rs),function(i) lines.roc(rs[[i]],col=i))
-plot(HG_ran_roc)
-rocH <- roc(newdata$HeathyGroup,newdata$MRscore,percent=TRUE,
-            # arguments for auc
-            partial.auc=c(100, 90), partial.auc.correct=TRUE,
-            partial.auc.focus="sens",
-            # arguments for ci
-            ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE,
-            # arguments for plot
-            plot=TRUE, auc.polygon=TRUE, max.auc.polygon=TRUE, grid=TRUE,
-            print.auc=TRUE, show.thres=TRUE)
-rocB <- multiclass.roc(newdata$BacGroup,newdata$MRscore,
-                       percent=TRUE,
-                       # arguments for auc
-                       partial.auc=c(100, 90), partial.auc.correct=TRUE,
-                       partial.auc.focus="sens",
-                       # arguments for ci
-                       #ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE,
-                       # arguments for plot
-                       plot=TRUE, auc.polygon=TRUE, max.auc.polygon=TRUE, grid=TRUE,
-                       print.auc=TRUE, show.thres=TRUE)
-rocV <- multiclass.roc(newdata$VirGroup,newdata$MRscore,
-                       percent=TRUE,
-                       # arguments for auc
-                       partial.auc=c(100, 90), partial.auc.correct=TRUE,
-                       partial.auc.focus="sens",
-                       # arguments for ci
-                       #ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE,
-                       # arguments for plot
-                       plot=TRUE, auc.polygon=TRUE, max.auc.polygon=TRUE, grid=TRUE,
-                       print.auc=TRUE, show.thres=TRUE)
-rocT <- multiclass.roc(newdata$TotalGroup,newdata$MRscore,
-                       percent=TRUE,
-                       # arguments for auc
-                       partial.auc=c(100, 90), partial.auc.correct=TRUE,
-                       partial.auc.focus="sens",
-                       # arguments for ci
-                       #ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE,
-                       # arguments for plot
-                       plot=TRUE, auc.polygon=TRUE, max.auc.polygon=TRUE, grid=TRUE,
-                       print.auc=TRUE, show.thres=TRUE)
-auc(rocT)
-rs1 <- rocT[['rocs']]
-rs2 <- rocB[['rocs']]
-rs3 <- rocV[['rocs']]
-plot.roc(rs1[[1]])
-plot.roc(rs2[[1]])
-plot.roc(rs3[[1]])
-plot(rs1[[1]], lwd = 3, col = "black")
-plot(rs2[[1]], lwd = 2, add=TRUE, lty=2, col = "red")
-plot(rs3[[1]], lwd = 2, add=TRUE, lty=2, col = "blue")
-legend(40, 40, legend = c("Multi-class", "A", "B", "C"), 
-       lty = c(1,1,1), col = c("black", "red", "blue"))
-sapply(2:length(rs1),function(i) lines.roc(rs1[[i]],col=i))
-sapply(2:length(rs2),function(i) lines.roc(rs2[[i]],col=i))
-sapply(2:length(rs3),function(i) lines.roc(rs3[[i]],col=i))
-rocT$call
-c("Viral_infection","Bacterial_infection")
-newdata$BacTwi<-newdata$BacGroup
-newdata$BacTwi<-ifelse(newdata$BacGroup=="Bacterial_infection","Bacterial_infection","Other")
-newdata$BacTwi<-as.factor(newdata$BacTwi)
-newdata$ViRTwi<-newdata$VirGroup
-newdata$ViRTwi<-ifelse(newdata$VirGroup=="Viral_infection","Viral_infection","Other")
-head(newdata)
-newdata$ViRTwi<-as.factor(newdata$ViRTwi)
-levels(factor(newdata$ViRTwi))
-levels(factor(newdata$BacTwi))
-roc.list <- roc(MRscore ~ ViRTwi, data = newdata,)
-g.list <- ggroc(roc.list)
-g.list
-library(ROCR)
-set.seed(1000)
-newdata$VirGroup<-newdata$VirGroup
-newdata$VirGroup<-ifelse(newdata$VirGroup=="Viral_infection",1,0)
-trainIndex<-sample(nrow(newdata),nrow(newdata)*0.7)
-train<-newdata[trainIndex,]
-test<-newdata[-trainIndex,]
-model = glm(VirGroup~MRscore,data=train, 
-            family = binomial(link = "logit"))
+roc1<-HG_ran_roc
+roc2<-VG_ran_roc$rocs[[1]]
+roc3<-BG_ran_roc$rocs[[1]]
+roc4<-TG_ran_roc$rocs[[1]]
+auc1<-round(auc(roc1),2)
+auc2<-round(auc(roc2),2)
+auc3<-round(auc(roc3),2)
+auc4<-round(auc(roc4),2)
+auc_res<-data.frame("HC vs Other"=auc1,
+                    "Vir vs HC vs Other"=auc2,
+                    "Bac vs HC vs Other"=auc3,
+                    "Vir vs Bac vs HC vs Other"=auc4)
+auc_res
+plot(roc1, lwd = 3, col = "red")
+plot(roc2, lwd = 2, add=TRUE, lty=2, col = "black")
+plot(roc3, lwd = 2, add=TRUE, lty=2, col = "blue")
+plot(roc4, lwd = 2, add=TRUE, lty=2, col = "green")
+legend(0.7,0.25, 
+       legend = c(paste0("HC-Other: AUC = ",auc1), 
+                  paste0( "Vir-HC-Other: AUC = ",auc2),
+                  paste0("Bac-HC-Other: AUC = ",auc3),
+                  paste0("Vir-Bac-HC-Other: AUC = ",auc4)), 
+       lty = c(1,2,2,2), col = c("red","black", "blue","green"))
+##another methods: plot all the value
+plot(roc4, lwd = 2, lty=2, col = "green")
+sapply(2:length(TG_ran_roc$rocs),function(i) lines.roc(TG_ran_roc$rocs[[i]],col=i))
+summary(roc4)
+#k-fold cv
+library(plyr)
+##K折交叉验证，随机分组
+##数据打折-数据分组自编译函数：
+##进行交叉检验首先要对数据分组，
+##数据分组要符合随机且平均的原则
+CVgroup <- function(k,datasize,seed){
+  cvlist <- list()
+  set.seed(seed)
+  n <- rep(1:k,ceiling(datasize/k))[1:datasize]    #将数据分成K份，并生成的完成数据集n
+  temp <- sample(n,datasize)   #把n打乱
+  x <- 1:k
+  dataseq <- 1:datasize
+  cvlist <- lapply(x,function(x) dataseq[temp==x])  #dataseq中随机生成k个随机有序数据列
+  return(cvlist)
+}
+k <- 5
+datasize <- nrow(newdata)
+cvlist <- CVgroup(k = k,datasize = datasize,seed = 1206)
+cvlist
 
-pred = predict(model,test,type="response")
-pred = prediction(pred, test$VirGroup)
-perf = performance(pred, "acc")
-plot(perf)
-max_ind = which.max(slot(perf, "y.values")[[1]] )
-acc = slot(perf, "y.values")[[1]][max_ind]
-cutoff = slot(perf, "x.values")[[1]][max_ind]
-print(c(accuracy= acc, cutoff = cutoff))
-perf_cost = performance(pred, "cost")
-perf_err = performance(pred, "err")
-perf_tpr = performance(pred, "tpr")
-perf_sn_sp = performance(pred, "sens", "spec")
-roc = performance(pred,"tpr","fpr")
-plot(roc, colorize = T, lwd = 2)
-abline(a = 0, b = 1)
-auc = performance(pred, measure = "auc")
-###
-library(multiROC)
+## first methods
 
-###k-fold cv
-set.seed(42)
-data(cadets)
-x <- cadets
-x$RT..seconds. <- NULL
-y <- cadets$RT..seconds.
-rf.cv <- rfcv(x, y, cv.fold=10)##randomForest package
-with(rf.cv, plot(n.var, error.cv))
+library(plyr)
+library(randomForest)
+data <- mydata
+mydata$HeathyGroup<-as.factor(mydata$HeathyGroup)
+pred <- data.frame()   #存储预测结果
+m <- seq(60,500,by = 20)  #如果数据量大尽量间隔大点，间隔过小没有实际意义
+for(j in m){   #j指的是随机森林的数量
+  progress.bar <- create_progress_bar("text")  #plyr包中的create_progress_bar函数创建一个进度条，
+  progress.bar$init(k)   #设置上面的任务数，几折就是几个任务
+  for (i in 1:k){
+    train <- data[-cvlist[[i]],]  #刚才通过cvgroup生成的函数
+    test <- data[cvlist[[i]],]
+    model <-randomForest(HeathyGroup~MRscore,data = train,ntree = j)   #建模，ntree=j 指的树数
+    prediction <- predict(model,subset(test,select = "MRscore"))   #预测
+    randomtree <- rep(j,length(prediction))   #随机森林树的数量
+    kcross <- rep(i,length(prediction))   #i是第几次循环交叉，共K次
+    temp <- data.frame(cbind(subset(test,select = "MRscore"),prediction,randomtree,kcross))#真实值、预测值、随机森林树数、预测组编号捆绑在一起组成新的数据框tenp
+    pred <- rbind(pred,temp)   #temp按行和pred合并
+    print(paste("随机森林：",j))  #循环至树数j的随机森林模型
+    progress.bar$step() #输出进度条。告知完成了这个任务的百分之几
+  }
+}
