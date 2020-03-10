@@ -598,10 +598,14 @@ MRscore_meta$TotalGroup<-ifelse(MRscore_meta$VirGroup=="Viral_infection","Viral_
 head(MRscore_meta)
 newdata<-MRscore_meta[,c(2,6:10)]
 head(newdata)
+
 #commparisons
+library(data.table)
 library(ggsci)
 library(ggpubr)
 library(ggridges)
+library(tidyverse)
+newdata<-fread("../dataset/dataset_alidation/validate_datasets/MicroImmuneML_data.csv")
 my_comparisons<-list(c("Healthy", "Bacterial_infection"),
                      c("Healthy", "Mixed_infection"),
                      c("Healthy", "Sepsis"),
@@ -654,7 +658,7 @@ p3<-p3+scale_fill_manual(values = c("#0E3BF0","#AFFFDF","#377F5B"))
 p4<-p4+scale_fill_manual(values = c("#0E3BF0","#AFFFDF","#377F5B","#D72323"))
 library(gridExtra)
 library(grid)
-pdf(file="../validation_results/MR_InfectionCompaire_merge.pdf",width = 12,height = 18)
+pdf(file="../dataset/dataset_alidation/validation_results/MR_InfectionCompaire_merge.pdf",width = 12,height = 18)
 grid.newpage()
 pushViewport(viewport(layout = grid.layout(3,2))) 
 vplayout <- function(x,y){
@@ -667,7 +671,7 @@ print(p3, vp = vplayout(3,1))
 print(p2, vp = vplayout(3,2))
 dev.off()
 
-png(file="../validation_results/MR_InfectionCompaire_merge.png",width = 1200,height = 1800)
+png(file="../dataset/dataset_alidation/validation_results/MR_InfectionCompaire_merge.png",width = 1200,height = 1800)
 grid.newpage()
 pushViewport(viewport(layout = grid.layout(3,2))) 
 vplayout <- function(x,y){
