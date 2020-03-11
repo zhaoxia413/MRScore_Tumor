@@ -70,7 +70,40 @@ IO_dataset_meta<-list(GSE93157=meta2,#ARRAY
            GSE91061=meta3,#FPKM
            GSE100797=meta4,#ARRAY
            GSE78220=meta5)#FPKM 
-
+group2<-data.frame(sampleID=meta2$Accession,
+                   cancerType=meta2$`1:Source`,
+                   Treatment=meta2$`1:DRUG`,
+                   PFS=meta2$`1:PFS`,
+                   Status_PFS=meta2$`1:PFSE`,
+                   Response=meta2$`1:RESPONSE`,
+                   Best_Response=meta2$`1:BEST.RESP`)
+group3<-data.frame(sampleID=meta3$acc,
+                   Response=meta3$response,
+                   cancerType=meta3$tissue)
+group4<-data.frame(sampleID=meta4$geo_accession,
+                   Response=meta4$characteristics_ch1.9,
+                   TumorSize=meta4$`tumor.response:ch1`,
+                   Treatment=meta4$characteristics_ch1,
+                   PFS=meta4$`pfs.time:ch1`,
+                   Status_PFS=meta4$`pfs.event:ch1`,
+                   OS=meta4$`os.time:ch1`,
+                   Status_OS<-meta4$`os.event:ch1`,
+                   cancerType=meta4$source_name_ch1)
+group5<-data.frame(sampleID=meta5$Run,
+                   Treatment=meta5$treatment,
+                   Response=meta5$`anti-pd-1_response`,
+                   Status_OS=meta5$vital_status)
+head(group5)
+levels(factor(group5$Response))
+group5$Response<-ifelse(group5$Response=="Complete Response","CR",
+                        ifelse(group5$Response=="Partial Response","PR","PD"))
+IO_dataset_group<-list(GSE93157=group2,#ARRAY  
+                            GSE91061=group3,#FPKM
+                            GSE100797=group4,#ARRAY
+                            GSE78220=group5) #FPKM )
 IO_dataset<-list(IO_dataset_exprMat,IO_dataset_meta,IO_dataset_group)
-
+save(IO_dataset,file = "../dataset/IO_dataset/data/IO_dataset_expr_meta_group_list.Rdata" )
+load(file = "../dataset/IO_dataset/data/IO_dataset_expr_meta_group_list.Rdata")
+exprlist<-IO_dataset$exprMat
+names(exprlist)
 
