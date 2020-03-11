@@ -1,4 +1,6 @@
-# GC IO data
+##GC_datasets: GSE62254, GSE57303, GSE84437, GSE15459, GSE26253, GSE29272
+
+# my GC IO data
 library(data.table)
 library(tidyverse)
 options(stringsAsFactors = F)
@@ -319,4 +321,89 @@ p1<-ggsurvplot( fit_pfs,
                 risk.table.y.text.col = T,
                 risk.table.y.text = FALSE )
 p1
+
+#DEseq using the counts from RSEM 
+library(DESeq2)
+options(stringsAsFactors = F)
+gc_counts<-fread("../dataset/IO_dataset/GC_arranged/byRSEM/GC_IO_count.txt")
+gc_counts[1:10,1:4]
+gc_counts$gene_id<-gsub("^.*_","",gc_counts$gene_id)
+colnames(gc_counts)[1]<-"Gene"
+colnames(gc_counts)
+
+df<-read_csv("countsfinal-1.csv",col_names = T)
+dfGBM<-subset(df,Types=="GBM")
+head(dfGBM)
+GBM<-dfGBM[,-c(1:2)]
+head(GBM)
+gbmcounts<-t(GBM)
+head(gbmcounts)
+rownames(gbmcounts)
+colnames(gbmcounts)<-gbmcounts[1,]
+head(gbmcounts)
+gbmcounts<-gbmcounts[-1,]
+head(gbmcounts)
+str(gbmcounts)
+gbmcounts<-data.frame(gbmcounts,stringsAsFactors = F)
+GBMcounts=as.data.frame(lapply(gbmcounts,as.numeric))
+rownames(GBMcounts)<-rownames(gbmcounts)
+head(GBMcounts)
+rownames(GBMcounts)<-rownames(t(GBM))
+colnames(GBMcounts)
+dim(GBMcounts)
+GBMcol<-data.frame(dfGBM[,c(2:3)])
+colnames(GBMcol)<-c("Group","ID")
+head(GBMcol)
+Group<-factor(coldata$Group,levels = c("cancer","normal"))
+str(GBMcounts)
+str(GBMcol)
+str(Group)
+write.csv(GBMcounts,"GBMcounts.csv")
+dds <- DESeqDataSetFromMatrix(GBMcounts,GBMcol,design = ~ Group)
+
+
+
+nrow(dds)
+dds_filter <- dds[ rowSums(counts(dds))>1, ]
+nrow(dds_filter)
+dds_out <- DESeq(dds_filter)
+res <- results(dds_out)
+summary(res)
+table(res$padj<0.05)
+res_deseq <- res[order(res$padj),]
+diff_gene_deseq2 <- subset(res_deseq, padj<0.05 & (log2FoldChange > 1 | log2FoldChange < -1))
+diff_gene_deseq2 <- row.names(diff_gene_deseq2)
+res_diff_data <- merge(as.data.frame(res),as.data.frame(counts(dds_out,normalize=TRUE)),by="row.names",sort=FALSE)
+write.csv(res_diff_data,file = "GBM_DEG.csv",row.names = F)
+
+mycounts<-read.csv("gbmcounts.csv")
+head(mycounts)
+#?Ȱѵ?һ?е???????��????
+rownames(mycounts)<-mycounts[,1]
+#??"Gene"ɾ??
+mycounts<-mycounts[,-1]
+colData<-read.csv("gbmcoldata.csv")
+Group<-factor(coldata$Group)
+dds <- DESeqDataSetFromMatrix(mycounts, colData, design= ~ Group)
+
+str(mycounts)
+str(colData)
+str(Group)
+
+nrow(dds)
+#???˵???��?ĵ?count????
+dds_filter<-dds[ rowSums(counts(dds))>1, ]
+nrow(dds_filter)
+##Differential expression analysis 
+#based on the Negative Binomial distribution
+dds_out<-DESeq(dds_filter)
+#?鿴cancer versus normal??????????????????p-value??????????????
+#????summary????ͳ????ʾһ?????ٸ?genes?ϵ????µ???FDR0.1??
+res= results(dds_out)
+res = res[order(res$pvalue),]
+head(res)
+summary(res)
+table(res$padj<0.05)
+write.csv(res,file="gbm_results.csv")
+
 

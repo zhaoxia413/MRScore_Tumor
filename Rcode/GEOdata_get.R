@@ -42,6 +42,7 @@ symbols<-as.character(aafSymbol(as.character(rownames(eset)),affydb))
 genes<-as.character(aafUniGene(as.character(rownames(eset)),affydb))
 
 ##download expression matrix
+
 GEOtoExpr<-function(GSE_id){
   gset <- getGEO(GSE_id, GSEMatrix =TRUE, AnnotGPL=TRUE )
   message("GEOdataset download finished !")
@@ -94,7 +95,7 @@ GEOtoExpr<-function(GSE_id){
   print(annoexpr[1:5,1:5])
   return(list(annoexpr,metdata))
 }
-data<-GEOtoExpr(GSE_id = "GSE7904")
+data<-GEOtoExpr(GSE_id = "GSE100797")
 ##DEG 
 meta<-data[[2]]
 group<-data.frame(sampleID=meta$geo_accession,Group=meta$characteristics_ch1)
