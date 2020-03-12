@@ -105,5 +105,6 @@ IO_dataset<-list(IO_dataset_exprMat,IO_dataset_meta,IO_dataset_group)
 save(IO_dataset,file = "../dataset/IO_dataset/data/IO_dataset_expr_meta_group_list.Rdata" )
 load(file = "../dataset/IO_dataset/data/IO_dataset_expr_meta_group_list.Rdata")
 exprlist<-IO_dataset$exprMat
+grouplist<-IO_dataset$group
 names(exprlist)
 

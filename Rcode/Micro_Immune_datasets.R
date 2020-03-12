@@ -702,6 +702,8 @@ Hg_randomforest$importance
 pre_ran <- predict(Hg_randomforest,newdata=testData)
 #将真实值和预测值整合到一起
 obs_p_ran = data.frame(prob=pre_ran,obs=testData$HeathyGroup)
+obs_p_ran$predict <- names(obs_p_ran)[1:2][apply(obs_p_ran[,1:2], 1, which.max)]
+predictions$observed <- test$condition
 #输出混淆矩阵
 table(testData$HeathyGroup,pre_ran,dnn=c("True","Predicted"))
 #绘制ROC曲线
@@ -713,7 +715,7 @@ plot(HG_ran_roc, print.auc=TRUE, colorize = T,
      max.auc.polygon=TRUE,auc.polygon.col="skyblue", 
      print.thres=TRUE,main='RF_ROC')
 #####Bacterial infection group
-trainIndex1<-sample(nrow(newdata),nrow(newdata)*0.7)
+trainIndex1<-sample(nrow(newdata),nrow(newdata)*0.9)
 trainData1<-newdata[trainIndex1,]
 testData1<-newdata[-trainIndex1,]
 trainData1$BacGroup = as.factor(trainData1$BacGroup)
@@ -734,7 +736,7 @@ plot(BG_ran_roc$rocs[[1]], print.auc=TRUE, colorize = T,
      max.auc.polygon=TRUE,auc.polygon.col="skyblue", 
      print.thres=TRUE,main='RF_ROC')
 ##Viral group
-trainIndex2<-sample(nrow(newdata),nrow(newdata)*0.7)
+trainIndex2<-sample(nrow(newdata),nrow(newdata)*0.9)
 trainData2<-newdata[trainIndex2,]
 testData2<-newdata[-trainIndex2,]
 trainData2$VirGroup = as.factor(trainData2$VirGroup)
@@ -755,7 +757,7 @@ plot(VG_ran_roc$rocs[[1]], print.auc=TRUE, colorize = T,
      max.auc.polygon=TRUE,auc.polygon.col="skyblue", 
      print.thres=TRUE,main='RF_ROC')
 ###
-trainIndex3<-sample(nrow(newdata),nrow(newdata)*0.7)
+trainIndex3<-sample(nrow(newdata),nrow(newdata)*0.8)
 trainData3<-newdata[trainIndex3,]
 testData3<-newdata[-trainIndex3,]
 trainData3$TotalGroup = as.factor(trainData3$TotalGroup)
@@ -769,7 +771,7 @@ obs_p_ran = data.frame(prob=pre_ran,obs=testData3$TotalGroup)
 #输出混淆矩阵
 table(testData3$TotalGroup,pre_ran,dnn=c("True","Predicted"))
 #绘制ROC曲线
-TG_ran_roc <- multiclass.roc(testData3$TotalGroup,
+  TG_ran_roc <- multiclass.roc(testData3$TotalGroup,
                              as.numeric(pre_ran))
 plot(TG_ran_roc$rocs[[1]], print.auc=TRUE, colorize = T,
      auc.polygon=TRUE, grid=c(0.1, 0.2),
@@ -790,16 +792,29 @@ auc_res<-data.frame("HC vs Other"=auc1,
                     "Bac vs HC vs Other"=auc3,
                     "Vir vs Bac vs HC vs Other"=auc4)
 auc_res
-plot(roc1, lwd = 3, col = "red")
-plot(roc2, lwd = 2, add=TRUE, lty=2, col = "black")
-plot(roc3, lwd = 2, add=TRUE, lty=2, col = "blue")
-plot(roc4, lwd = 2, add=TRUE, lty=2, col = "green")
+plot(roc1, lwd = 3, col = "red",print.auc=F, colorize = F,
+     auc.polygon=T,
+     max.auc.polygon=F,auc.polygon.col=alpha("lightcoral",alpha=0.1),
+     print.thres=F,main='RF_ROC')
+plot(roc2, lwd = 3, add=TRUE, lty=2, col = "darkorange1",
+     print.auc=F, 
+     auc.polygon=TRUE, 
+     max.auc.polygon=F,auc.polygon.col=alpha("darkorange1",alpha=0.1), 
+     print.thres=F)
+plot(roc3, lwd = 3, add=TRUE, lty=2, col = "blue",
+     print.auc=F, 
+     auc.polygon=T,
+     max.auc.polygon=F,auc.polygon.col=alpha("lightblue1",alpha=0.4), 
+     print.thres=F)
+#plot(roc4, lwd = 2, add=TRUE, lty=2, col = "green")
 legend(0.7,0.25, 
        legend = c(paste0("HC-Other: AUC = ",auc1), 
                   paste0( "Vir-HC-Other: AUC = ",auc2),
-                  paste0("Bac-HC-Other: AUC = ",auc3),
-                  paste0("Vir-Bac-HC-Other: AUC = ",auc4)), 
-       lty = c(1,2,2,2), col = c("red","black", "blue","green"))
+                  paste0("Bac-HC-Other: AUC = ",auc3)),
+       lty = c(2,2,2), col = c("red","darkorange","blue"))
+##test methods
+model <- randomForest(formula = HeathyGroup ~ trainData$MRscore, data = trainData, ntree = 10, maxnodes= 100, norm.votes = F) 
+  
 ##another methods: plot all the value
 plot(roc4, lwd = 2, lty=2, col = "green")
 sapply(2:length(TG_ran_roc$rocs),function(i) lines.roc(TG_ran_roc$rocs[[i]],col=i))

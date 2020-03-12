@@ -324,47 +324,66 @@ p1
 
 #DEseq using the counts from RSEM 
 library(DESeq2)
+library(data.table)
+library(tidyverse)
 options(stringsAsFactors = F)
 gc_counts<-fread("../dataset/IO_dataset/GC_arranged/byRSEM/GC_IO_count.txt")
 gc_counts[1:10,1:4]
-gc_counts$gene_id<-gsub("^.*_","",gc_counts$gene_id)
+gc_counts$gene_id<-gsub("_.*","",gc_counts$gene_id)
+library(clusterProfiler)
+library(org.Hs.eg.db)
+gene_ID=select(org.Hs.eg.db,keys = gc_counts$gene_id,column = "SYMBOL",keytype = "ENSEMBL" ,multiVals = "first")
+head(gene_ID)
+colnames(gc_counts)[1]<-"ENSEMBL"
+gc_counts<-merge(gene_ID,gc_counts,by="ENSEMBL")
+gc_counts<-gc_counts[,-1]
 colnames(gc_counts)[1]<-"Gene"
-colnames(gc_counts)
-
-df<-read_csv("countsfinal-1.csv",col_names = T)
-dfGBM<-subset(df,Types=="GBM")
-head(dfGBM)
-GBM<-dfGBM[,-c(1:2)]
-head(GBM)
-gbmcounts<-t(GBM)
-head(gbmcounts)
-rownames(gbmcounts)
-colnames(gbmcounts)<-gbmcounts[1,]
-head(gbmcounts)
-gbmcounts<-gbmcounts[-1,]
-head(gbmcounts)
-str(gbmcounts)
-gbmcounts<-data.frame(gbmcounts,stringsAsFactors = F)
-GBMcounts=as.data.frame(lapply(gbmcounts,as.numeric))
-rownames(GBMcounts)<-rownames(gbmcounts)
-head(GBMcounts)
-rownames(GBMcounts)<-rownames(t(GBM))
-colnames(GBMcounts)
-dim(GBMcounts)
-GBMcol<-data.frame(dfGBM[,c(2:3)])
-colnames(GBMcol)<-c("Group","ID")
-head(GBMcol)
-Group<-factor(coldata$Group,levels = c("cancer","normal"))
-str(GBMcounts)
-str(GBMcol)
+gc_counts<-gc_counts%>%group_by(Gene)%>%summarise_all(mean)%>%as.data.frame()
+gc_counts[1:10,1:4]
+gc_counts<-gc_counts[-25787,]
+gc_counts[1:10,1:4]
+colnames(gc_counts)<-gsub("N.*","",colnames(gc_counts))
+write.csv(gc_counts,"../dataset/IO_dataset/GC_arranged/byRSEM/gc_counts_geneSymbol.csv",row.names = F)
+meta<-fread("../dataset/IO_dataset/GC_arranged/GC_clinicaldata.txt",header = T)%>%as.data.frame()
+colnames(meta)[4]<-"sampleID"
+meta$sampleID<-gsub("W.*","",meta$sampleID)
+colnames(gc_counts)<-gsub("N.*","",colnames(gc_counts))
+gc_counts[1:10,1:4]
+meta[1:3,1:4]
+index<-which(meta$sampleID%in%colnames(gc_counts))
+trans_meta<-meta[index,-c(1:3)]
+trans_meta[1:5,1:5]
+trans_meta$Group<-trans_meta$Efficacy
+trans_meta$Group<-ifelse(trans_meta$Group=="PD"|trans_meta$Group=="SD","R","NR")
+gc_counts<-as.data.frame(gc_counts)
+gc_counts[1:10,1:4]
+gc_counts1<-data.frame(row.names =gc_counts$Gene,gc_counts[,-1])
+#gc_counts=as.data.frame(lapply(gc_counts,as.numeric))
+gc_counts1[1:10,1:4]
+#rownames(GBMcounts)<-rownames(t(GBM))
+#colnames(GBMcounts)
+dim(gc_counts1)
+gc_counts1[1:3,1:3]
+GCcol<-data.frame(trans_meta[,c(1,19)])
+colnames(GCcol)<-c("ID","Group")
+head(GCcol)
+Group<-factor(GCcol$Group,levels = c("R","NR"))
+str(gc_counts1)
+str(GCcol)
 str(Group)
-write.csv(GBMcounts,"GBMcounts.csv")
-dds <- DESeqDataSetFromMatrix(GBMcounts,GBMcol,design = ~ Group)
-
-
-
-nrow(dds)
-dds_filter <- dds[ rowSums(counts(dds))>1, ]
+write.csv(trans_meta,"../dataset/IO_dataset/GC_arranged/byRSEM/trans_meta.csv",row.names = F)
+colData <- data.frame(row.names=colnames(gc_counts1),Group=Group)
+head(colData)
+gc_counts<-apply(gc_counts1, 2, function(x){round(x,0)})
+gc_counts[1:5,1:5]
+DEseq_files<-list(countData = gc_counts,
+                  colData = colData,
+                  design = ~ Group)
+save(DEseq_files,file = "../dataset/IO_dataset/GC_arranged/byRSEM/DEseq_files.Rdata")
+dds <- DESeqDataSetFromMatrix(countData = gc_counts,
+                              colData = colData,
+                              design = ~ Group)
+dds_filter <- dds[rowSums(counts(dds))>1, ]
 nrow(dds_filter)
 dds_out <- DESeq(dds_filter)
 res <- results(dds_out)
@@ -374,36 +393,132 @@ res_deseq <- res[order(res$padj),]
 diff_gene_deseq2 <- subset(res_deseq, padj<0.05 & (log2FoldChange > 1 | log2FoldChange < -1))
 diff_gene_deseq2 <- row.names(diff_gene_deseq2)
 res_diff_data <- merge(as.data.frame(res),as.data.frame(counts(dds_out,normalize=TRUE)),by="row.names",sort=FALSE)
-write.csv(res_diff_data,file = "GBM_DEG.csv",row.names = F)
-
-mycounts<-read.csv("gbmcounts.csv")
-head(mycounts)
-#?Ȱѵ?һ?е???????��????
-rownames(mycounts)<-mycounts[,1]
-#??"Gene"ɾ??
-mycounts<-mycounts[,-1]
-colData<-read.csv("gbmcoldata.csv")
-Group<-factor(coldata$Group)
-dds <- DESeqDataSetFromMatrix(mycounts, colData, design= ~ Group)
-
-str(mycounts)
-str(colData)
-str(Group)
-
-nrow(dds)
-#???˵???��?ĵ?count????
-dds_filter<-dds[ rowSums(counts(dds))>1, ]
-nrow(dds_filter)
-##Differential expression analysis 
-#based on the Negative Binomial distribution
-dds_out<-DESeq(dds_filter)
-#?鿴cancer versus normal??????????????????p-value??????????????
-#????summary????ͳ????ʾһ?????ٸ?genes?ϵ????µ???FDR0.1??
-res= results(dds_out)
-res = res[order(res$pvalue),]
-head(res)
-summary(res)
-table(res$padj<0.05)
-write.csv(res,file="gbm_results.csv")
-
-
+colnames(res_diff_data)[1]<-"Gene"
+write.csv(res_diff_data,file = "../dataset/IO_dataset/GC_arranged/byRSEM/DEseq.csv",row.names = F)
+DEGs<-fread("../dataset/IO_dataset/GC_arranged/byRSEM/DEseq.csv")[,1:7]
+DEGs_filter<-subset(DEGs,abs(log2FoldChange)>=1.5|pvalue<=0.05)
+library(EnhancedVolcano)
+library(factoextra)
+DEGs<-data.frame(row.names = DEGs$Gene,logFC=DEGs$log2FoldChange,
+                 AveExpr=DEGs$baseMean,t=DEGs$lfcSE,P.Value=DEGs$pvalue,
+                 adj.P.Val=DEGs$padj)
+head(DEGs)
+VolcanoPlot<-EnhancedVolcano(DEGs,
+                             lab = rownames(DEGs),
+                             x = "logFC",
+                             y = "P.Value",
+                             selectLab = rownames(DEGs)[1:5],
+                             xlab = bquote(~Log[2]~ "fold change"),
+                             ylab = bquote(~-Log[10]~italic(P)),
+                             pCutoff = 0.05,## pvalue阈值
+                             FCcutoff = 1,## FC cutoff
+                             xlim = c(-5,5),
+                             ylim = c(0,5),
+                             transcriptPointSize = 1.8,
+                             transcriptLabSize = 5.0,
+                             colAlpha = 1,
+                             legend=c("NS","LogFC"," p-value",
+                                      " p-value & LogFC"),
+                             legendPosition = "bottom",
+                             legendLabSize = 10,
+                             legendIconSize = 3.0)
+VolcanoPlot
+head(DEGs_filter)
+colnames(DEGs_filter)[3]<-"Log2FC"
+exprdata<-fread("../dataset/IO_dataset/GC_arranged/byRSEM/DEseq.csv")[,-c(2:7)]
+exprdata[1:5,1:5]
+expr2MRscore<-function(expr,DEexpr){
+  signature<-fread("../dataset/TCGA_data/annotationRow1.csv")
+  MRgene_DEGs<-subset(DEexpr,Gene%in%signature$Gene)
+  MRgene_DEGs$Regulation<-sample(c("Up","Down"),nrow(MRgene_DEGs),replace = T)
+  MRgene_DEGs$Regulation<-ifelse(MRgene_DEGs$Log2FC>=0,"Up","Down")
+  DE_Mgene<-MRgene_DEGs[,c("Gene","Regulation")]
+  Total_MRscore<-sum(subset(MRgene_DEGs,Log2FC>=0)$Log2FC)+sum(subset(MRgene_DEGs,Log2FC<=0)$Log2FC)
+  message(paste0("Total Score = ",Total_MRscore))
+  upgene<-subset(DE_Mgene,Regulation=="Up")
+  downgene<-subset(DE_Mgene,Regulation=="Down")
+  Upexpr<-expr[which(expr$Gene%in%upgene$Gene),]
+  Downexpr<-expr[which(expr$Gene%in%downgene$Gene),]
+  Upexpr_average<-data.frame(sampleID = colnames(Upexpr)[-1],Upscore=apply(Upexpr[,-1], 2, mean))
+  Downexpr_average<-data.frame(sampleID = colnames(Downexpr)[-1],Downscore=apply(Downexpr[,-1], 2, mean))
+  DE_average<-bind_cols(Upexpr_average,Downexpr_average)[,-3]
+  MRscore_value<-DE_average%>%mutate(MRscore=Upscore-Downscore)
+  return(list(MRgene_DEGs,MRscore_value))
+}
+GC_MRscore<-expr2MRscore(expr = exprdata,DEexpr = DEGs_filter)
+#Total Score = -7.70030276111791
+#survival plot function
+MRscore<-GC_MRscore[[2]]
+head(MRscore)
+meta=trans_meta
+MRscore2Sva<-function(MRscore,meta,survivalTypes){
+  survdata<-merge(MRscore,meta,by="sampleID")
+  if(survivalTypes=="OS"){
+    surv_cut <- surv_cutpoint(
+      survdata,
+      time = "OS",
+      event = "Status",
+      variables = c("MRscore")
+    )
+    summary(surv_cut)
+    survdata$Group<-sample(c("High","Low"),nrow(MRscore),replace = T)
+    survdata$Group<-ifelse(survdata$MRscore>=as.numeric(summary(surv_cut)[1]),"High","Low")
+    fit<-survfit(Surv(OS,Status) ~ Group,
+                 data = survdata)
+    p<-ggsurvplot( fit,
+                   data=survdata,
+                   risk.table = TRUE,
+                   pval = TRUE,
+                   title = "OS",
+                   palette = c("blue","red"),
+                   #facet.by = "Efficacy",
+                   legend.title="MIRscore",
+                   risk.table.col = "strata",
+                   surv.median.line = "hv",
+                   risk.table.y.text.col = T,
+                   risk.table.y.text = FALSE )
+    p}
+  else{
+    surv_cut <- surv_cutpoint(
+      survdata,
+      time = "PFS",
+      event = "Status.1",
+      variables = c("MRscore")
+    )
+    summary(surv_cut)
+    survdata$Group<-sample(c("High","Low"),nrow(MRscore),replace = T)
+    survdata$Group<-ifelse(survdata$MRscore>=as.numeric(summary(surv_cut)[1]),"High","Low")
+    fit<-survfit(Surv(PFS,Status.1) ~ Group,
+                 data = survdata)
+    p<-ggsurvplot( fit,
+                   data=survdata,
+                   risk.table = TRUE,
+                   pval = TRUE,
+                   title = "PFS",
+                   palette = c("blue","red"),
+                   #facet.by = "Efficacy",
+                   legend.title="MIRscore",
+                   risk.table.col = "strata",
+                   surv.median.line = "hv",
+                   risk.table.y.text.col = T,
+                   risk.table.y.text = FALSE )
+    
+  }
+  return(p)
+}
+MRscore2Sva(MRscore = MRscore,meta = meta,survivalTypes = "PFS")
+MRscore2Sva(MRscore = MRscore,meta = meta,survivalTypes = "OS")
+MRscore2Heatmap<-function(expr,DE_Mgene,groupdata){
+  require(pheatmap)
+  dfcol<-data.frame(row.names = groupdata$sampleID,Group=as.factor(groupdata$Group))
+  mat<-subset(expr,expr$Gene%in%DE_Mgene$Gene)
+  mat<-data.frame(row.names = mat$Gene,mat[,-1])
+  pheatmap(scale(mat,center = T),annotation_col = dfcol,
+           cluster_cols = F,
+           border_color = NA,
+           show_colnames = F)
+}
+groupdata<-data.frame(sampleID=trans_meta$sampleID,Group=trans_meta$Group)
+DE_Mgene<-GC_MRscore[[1]]
+head(DE_Mgene)
+MRscore2Heatmap(expr = exprdata,DE_Mgene = DE_Mgene,groupdata = groupdata)
