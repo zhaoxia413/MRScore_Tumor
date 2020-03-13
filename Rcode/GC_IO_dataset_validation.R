@@ -514,11 +514,11 @@ MRscore2Heatmap<-function(expr,DE_Mgene,groupdata){
   mat<-subset(expr,expr$Gene%in%DE_Mgene$Gene)
   mat<-data.frame(row.names = mat$Gene,mat[,-1])
   pheatmap(scale(mat,center = T),annotation_col = dfcol,
-           cluster_cols = F,
+           cluster_cols = T,
            border_color = NA,
            show_colnames = F)
 }
-groupdata<-data.frame(sampleID=trans_meta$sampleID,Group=trans_meta$Group)
+groupdata<-data.frame(sampleID=trans_meta$sampleID,Group=trans_meta$Efficacy)
 DE_Mgene<-GC_MRscore[[1]]
 head(DE_Mgene)
 MRscore2Heatmap(expr = exprdata,DE_Mgene = DE_Mgene,groupdata = groupdata)

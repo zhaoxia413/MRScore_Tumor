@@ -107,4 +107,15 @@ load(file = "../dataset/IO_dataset/data/IO_dataset_expr_meta_group_list.Rdata")
 exprlist<-IO_dataset$exprMat
 grouplist<-IO_dataset$group
 names(exprlist)
+#[1] "GSE93157"  "GSE91061"  "GSE100797" "GSE78220" 
+#####samples
+# ARRAY     FPKM     ARRAY      FPKM
+# GSE93157 GSE91061 GSE100797 GSE78220
+#[1,] 765    22086     18418    25268
+head(grouplist[[1]])##pfs  ARRAY Melanoma
+head(grouplist[[2]])##NO PFS or OS,response FPKM Melanoma
+head(grouplist[[3]])#PFS and OS,response ARRAY Melanoma
+head(grouplist[[4]])##only Status_OS,response FPKM Melanoma
+
+
 
