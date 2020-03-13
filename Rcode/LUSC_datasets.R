@@ -129,6 +129,9 @@ MRscorelist<-expr2MRscore(expr = expr,DEexpr = DEGs_filter)
 MRscore<-MRscorelist[[2]]
 head(MRscore)
 levels(factor(group$datasets))
+library(tidyverse)
+library(data.table)
+options(stringsAsFactors = F)
 file<-list.files("./raw_meta/")
 filepath<-paste0("./raw_meta/",file)
 filepath[1]
@@ -139,45 +142,117 @@ for (i in seq(length(filepath))) {
   metalist[[i]]<-fread(filepath[i])%>%as.data.frame()
   names(metalist)[i]<-filename[i]
 }
-view(metalist[[1]])
+levels(factor(meta7$Stage))
 meta1<-data.frame(sampleID=metalist[[1]]$geo_accession,
                   Stage=metalist[[1]]$characteristics_ch1.3)
-view(metalist[[2]])
-view(metalist[[3]])
-view(metalist[[4]])
-view(metalist[[5]])
+meta1$Stage<-meta1$Stage%>%gsub("Stage:IA","T1",.)%>%gsub("Stage:IB","T1",.)%>%
+  gsub("Stage:IIA","T2",.)%>%gsub("Stage:IIB","T2",.)%>%
+  gsub("Stage:IIIA","T3",.)%>%gsub("Stage:IIIB","T3",.)%>%  
+  gsub("Stage:IV","T4",.)
 meta5<-data.frame(sampleID=metalist[[5]]$geo_accession,
                   Stage=metalist[[5]]$characteristics_ch1.3)
-view(metalist[[6]])
+meta5$Stage<-meta5$Stage%>%gsub("stage: 1A","T1",.)%>%gsub("stage: 1B","T1",.)%>%gsub("stage: 1","T1",.)%>%
+  gsub("stage: 2A","T2",.)%>%gsub("stage: 2B","T2",.)%>%
+  gsub("stage: 3A","T3",.)%>%gsub("stage: 3B","T3",.)%>%  
+  gsub("stage: 4","T4",.)%>%gsub("stage: n/a","NA",.)
+
 meta6<-data.frame(sampleID=metalist[[6]]$geo_accession,
                   Stage=metalist[[6]]$characteristics_ch1.1)
-view(metalist[[7]])##OS
+meta6$Stage<-meta6$Stage%>%gsub("Stage: Ia","T1",.)%>%gsub("Stage: Ib","T1",.)
 meta7<-data.frame(sampleID=metalist[[7]]$geo_accession,
                   Stage=metalist[[7]]$characteristics_ch1.5,
                   OS1=metalist[[7]]$characteristics_ch1.13,
                   OS2=metalist[[7]]$characteristics_ch1.14,
                   OS3=metalist[[7]]$characteristics_ch1.15,
                   OS4=metalist[[7]]$characteristics_ch1.16)
-view(metalist[[8]])
-view(metalist[[9]])
-view(metalist[[10]])
+meta7$Stage<-meta7$Stage%>%gsub("pathological stage: IA","T1",.)%>%gsub("pathological stage: IB","T1",.)%>%gsub("stage: 1","T1",.)%>%
+  gsub("pathological stage: II","T2",.)
+meta7<-meta7[-c(227:246),]%>%as.data.frame()
+meta7$OS<-sample("os",nrow(meta7),replace = T)
+meta7$OS[grep("death:",meta7$OS1)]<-meta7$OS1[grep("death:",meta7$OS1)]
+meta7$OS[grep("death:",meta7$OS2)]<-meta7$OS2[grep("death:",meta7$OS2)]
+meta7$OS[grep("death:",meta7$OS3)]<-meta7$OS3[grep("death:",meta7$OS3)]
+meta7$OS<-gsub("death: ","",meta7$OS)
+meta7$OS<-ifelse(meta7$OS=="dead",1,0)
+meta7$OStime<-sample("time",nrow(meta7),replace = T)
+meta7$OStime[grep("months before relapse/censor:",meta7$OS1)]<-meta7$OS1[grep("months before relapse/censor:",meta7$OS1)]
+meta7$OStime[grep("months before relapse/censor:",meta7$OS2)]<-meta7$OS2[grep("months before relapse/censor:",meta7$OS2)]
+meta7$OStime[grep("months before relapse/censor:",meta7$OS3)]<-meta7$OS3[grep("months before relapse/censor:",meta7$OS3)]
+meta7<-meta7[,-c(3:6)]
+meta7$OStime<-meta7$OStime%>%gsub("months before relapse/censor: ","",.)
+meta7$OStime<-round(as.numeric(meta7$OStime),0)
+levels(factor(meta10$Stage))
 meta10<-data.frame(sampleID=metalist[[10]]$geo_accession,
                    Stage=metalist[[10]]$characteristics_ch1.3)
-view(metalist[[11]])##OS
+meta10$Stage<-meta10$Stage%>%gsub("stage: 1A","T1",.)%>%gsub("stage: 1B","T1",.)%>%gsub("stage: 1","T1",.)%>%
+  gsub("stage: 2A","T2",.)%>%gsub("stage: 2B","T2",.)%>%gsub("stage: 2","T2",.)%>%
+  gsub("stage: 3A","T3",.)%>%gsub("stage: 3B","T3",.)%>%  
+  gsub("stage: 4","T4",.)%>%gsub("stage: n/a","NA",.)
+
 meta11<-data.frame(sampleID=metalist[[11]]$Accession,
                    Stage=metalist[[11]]$`1:7TH TNM STAGE`,
                    OS=metalist[[11]]$`1:DEATH DUE TO CANCER`,
                    OStime=metalist[[11]]$`1:SURVIVAL AFTER SURGERY (DAYS)`)
-view(metalist[[12]])##OS
+levels(factor(meta11$Stage))
+meta11$Stage<-meta11$Stage%>%gsub("Ia","T1",.)%>%gsub("Ib","T1",.)%>%
+  gsub("IIa","T2",.)%>%gsub("IIb","T2",.)%>%gsub("unknown (I or II)","T2",.)
+meta11$Stage[51]<-"T2"
+meta11$OStime<-round(as.numeric(meta11$OStime)/365,0)
+meta11$OS<-ifelse(meta11$OS=="yes",0,1)
 meta12<-data.frame(sampleID=metalist[[12]]$geo_accession,
                    OS=metalist[[12]]$characteristics_ch1.4,
                    OStime=metalist[[12]]$characteristics_ch1.11,
                    Stage=metalist[[12]]$characteristics_ch1.7)
-view(metalist[[13]])##OS
+levels(factor(meta12$Stage))
+meta12$Stage<-gsub("^.*p","",meta12$Stage)
+meta12<-meta12[-c(444:462),]
+meta12$OS<-gsub("vital_status: ","",meta12$OS)
+meta12$OS<-ifelse(meta12$OS=="Alive",0,1)
+meta12$OStime<-gsub("months_to_last_contact_or_death: ","",meta12$OStime)
+meta12$OStime<-round(as.numeric(meta12$OStime),0)
 meta13<-data.frame(sampleID=metalist[[13]]$geo_accession,
                    OS=metalist[[13]]$characteristics_ch1.12,
                    OStime=metalist[[13]]$characteristics_ch1.10,
                    Stage=metalist[[13]]$characteristics_ch1.4)
-view(metalist[[14]])
+levels(factor(meta13$Stage))
+meta13$Stage<-meta13$Stage%>%gsub("disease_stage: 1","T1",.)%>%
+  gsub("disease_stage: 3","T3",.)%>%
+  gsub("disease_stage: --","NA",.)
+meta13$OStime<-gsub("^.*: ","",meta13$OStime)
+meta13$OStime<-round(as.numeric(meta13$OStime),0)
+meta13$OS<-gsub("^.*: ","",meta13$OS)%>%as.numeric()
+meta13<-meta13[-c(87:96),]
 meta14<-data.frame(sampleID=metalist[[14]]$geo_accession,
                    Stage=metalist[[14]]$V49)
+levels(factor(meta14$Stage))
+meta14$Stage<-meta14$Stage%>%gsub("IA","T1",.)%>%gsub("IB","T1",.)%>%
+  gsub("IIA","T2",.)%>%gsub("IIB","T2",.)%>%
+  gsub("IIIA","T3",.)%>%gsub("IIIB","T3",.)%>%  
+  gsub("IV","T4",.)%>%gsub("I","",.)%>%gsub("II","",.)
+ls()[grep("meta[0-9]",ls())]
+names(metalist)
+finalmetalist<-list(meta1,meta10,meta11,meta12,meta13,meta14,meta5,meta6,meta7)
+names(finalmetalist)<-names(metalist)[c(1,10,11,12,13,14,5,6,7)]
+lapply(finalmetalist, colnames)
+grep("OS",lapply(finalmetalist, colnames))
+needOS<-finalmetalist[-c(3,4,5,9)]
+NoneedOS<-finalmetalist[c(3,4,5,9)]
+needOS1<-lapply(needOS, function(x){
+  x<-x%>%mutate(OS=rep("NA",nrow(x)),OStime=rep("NA",nrow(x)))
+})
+metamerge1<-bind_rows(needOS1)
+metamerge2<-bind_rows(NoneedOS)
+metamerge<-rbind(metamerge1,metamerge2)
+meta<-fread("./pdata.csv")
+meta[1:3,1:3]
+colnames(meta)[1]<-"sampleID"
+meta[1:3,1:3]
+metamerge[1:3,1:3]
+LUSC_meta<-merge(meta,metamerge,by="sampleID")
+expr<-fread("./mergerall.txt")
+expr[1:3,1:3]
+colnames(expr)[1]<-"Gene"
+expr<-as.data.frame(expr)
+LUSC_expr<-data.frame(Gene=expr$Gene,expr[,which(colnames(expr)%in%LUSC_meta$sampleID)])
+LUSC_9datasets_expr_meta<-list(LUSC_expr=LUSC_expr,LUSC_meta=LUSC_meta)
+save(LUSC_9datasets_expr_meta,file = "./LUSC_9datasets_expr_meta.Rdata")
