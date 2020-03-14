@@ -1,136 +1,6 @@
 library(data.table)
 library(sva)
-ex_b_limma[1:3,1:3]
-dim(ex_b_limma)
-rm(ex_b_limma)
-expr<-fread("./mergerall.txt")
-meta<-fread("./pdata.csv")
-expr[1:3,1:3]
-expr<-data.frame(row.names = expr$Symbol,expr[,-1])
-group<-data.frame(row.names = meta$GEO,datasets=meta$GSE,Group=meta$Tissues)
-set.seed(123)
-index<-sample(c(1:2038),100)
-cbdata<-as.matrix(expr)
-cbdata1<-as.matrix(expr[,index])
-res.pca <- prcomp(t(cbdata1), scale = TRUE)
-library(factoextra)
-PCA<-fviz_pca_ind(res.pca,
-                  label = "none",
-                  habillage = group1$datasets,
-                  addEllipses = TRUE,
-                  ggtheme = theme_minimal(),
-                  ellipse.type = "confidence")
-print(PCA)
-group1<-group[which(rownames(group)%in%colnames(cbdata1)),]
-cbdata[1:3,1:3]
-dist_mat1<-dist(t(cbdata1))
-clustering1 <- hclust(dist_mat1, method = "complete")
-plot(clustering1, labels = group1$datasets)
-plot(clustering1, labels =group1$Group)
-##sva cross datasets
-library(dplyr)
-group%>%group_by(datasets)%>%summarise(n())
-
-
-#group$bachType<-group$datasets
-#for (i in c(1:14)) {
- # print(i)
-  #group$bachType<-gsub(batchs[i],i,group$bachType)
-#}
-head(group)
-mod = model.matrix(~as.factor(datasets), data=group)
-#calculating the number of surrogate variables to estimate in a model
-n.sv = num.sv(cbdata,mod,method="leek")
-#3
-n.sv = num.sv(cbdata,mod,method="be")
-#57
-#sv is far more than the number of datasets
-#use the random batchTypes to move batch
-group$bachType<-sample(c(1:14),nrow(group),replace = T)
-combat_edata = ComBat(dat=cbdata, batch=group$bachType)
-#barplot
-combat_edata1<-combat_edata[,index]
-par(cex = 0.7)
-n.sample=ncol(combat_edata1)
-if(n.sample>40) par(cex = 0.5)
-cols <- rainbow(n.sample*1.2)
-boxplot(combat_edata1,col=cols,main="expression value",las=2)
-boxplot(cbdata1,col=cols,main="expression value",las=2)
-library(factoextra)
-res.pca <- prcomp(t(combat_edata1), scale = TRUE)
-PCA<-fviz_pca_ind(res.pca,
-                  label = "none",
-                  habillage = group1$datasets,
-                  addEllipses = TRUE,
-                  ggtheme = theme_minimal(),
-                  ellipse.type = "confidence")
-print(PCA)
-##DEGs by limma T vs N
-library(limma)
-options(stringsAsFactors = F)
 library(tidyverse)
-library(EnhancedVolcano)
-meta<-group
-head(meta)
-  design=model.matrix(~factor(meta$Group)+0)
-  colnames(design)=levels(factor(meta$Group))
-  mycompare<-str_c(colnames(design),collapse = "-")
-  contrast.matrix<-makeContrasts(mycompare,
-                                 levels = design)
-  fit=lmFit(combat_edata,design)
-  fit2 <- contrasts.fit(fit, contrast.matrix) 
-  fit2 <- eBayes(fit2) 
-  DEG<-topTable(fit2, adjust="fdr",coef=1, n=Inf) %>% na.omit()  ## coef比较分组 n基因数
-  # Volcano plot
-  VolcanoPlot<-EnhancedVolcano(DEG,
-                               lab = rownames(DEG),
-                               x = "logFC",
-                               y = "adj.P.Val",
-                               selectLab = rownames(DEG)[1:5],
-                               xlab = bquote(~Log[2]~ "fold change"),
-                               ylab = bquote(~-Log[10]~italic(P)),
-                               pCutoff = 0.05,## pvalue阈值
-                               FCcutoff = 1,## FC cutoff
-                               xlim = c(-5,5),
-                               transcriptPointSize = 1.8,
-                               transcriptLabSize = 5.0,
-                               colAlpha = 1,
-                               legend=c("NS","Log2 FC"," p-value",
-                                        " p-value & Log2 FC"),
-                               legendPosition = "bottom",
-                               legendLabSize = 10,
-                               legendIconSize = 3.0)
-  write.csv(DEG,"DEGs.csv",row.names = T)
-  head(DEG)
-  DEG$Gene=rownames(DEG)
-  DEGs_filter<-subset(DEG,abs(logFC)>=1&P.Value<=0.05)
-  DEGs_filter$Gene=rownames(DEGs_filter)
-  expr[1:3,1:3]
-  expr$Gene<-rownames(expr)
-  expr2MRscore<-function(expr,DEexpr){
-    signature<-fread("../../../dataset/TCGA_data/annotationRow1.csv")
-    MRgene_DEGs<-subset(DEexpr,Gene%in%signature$Gene)
-    MRgene_DEGs$Regulation<-sample(c("Up","Down"),nrow(MRgene_DEGs),replace = T)
-    MRgene_DEGs$Regulation<-ifelse(MRgene_DEGs$logFC>=0,"Up","Down")
-    DE_Mgene<-MRgene_DEGs[,c("Gene","Regulation")]
-    Total_MRscore<-sum(subset(MRgene_DEGs,logFC>=0)$logFC)+sum(subset(MRgene_DEGs,logFC<=0)$logFC)
-    message(paste0("Total Score = ",Total_MRscore))
-    upgene<-subset(DE_Mgene,Regulation=="Up")
-    downgene<-subset(DE_Mgene,Regulation=="Down")
-    Upexpr<-expr[which(expr$Gene%in%upgene$Gene),]
-    Downexpr<-expr[which(expr$Gene%in%downgene$Gene),]
-    Upexpr_average<-data.frame(sampleID = colnames(Upexpr)[-1],Upscore=apply(Upexpr[,-1], 2, mean))
-    Downexpr_average<-data.frame(sampleID = colnames(Downexpr)[-1],Downscore=apply(Downexpr[,-1], 2, mean))
-    DE_average<-bind_cols(Upexpr_average,Downexpr_average)[,-3]
-    MRscore_value<-DE_average%>%mutate(MRscore=Upscore-Downscore)
-    return(list(MRgene_DEGs=MRgene_DEGs,MRscore_value=MRscore_value,Total_MRscore=Total_MRscore))
-  }  
-MRscorelist<-expr2MRscore(expr = expr,DEexpr = DEGs_filter)  
-MRscore<-MRscorelist[[2]]
-head(MRscore)
-levels(factor(group$datasets))
-library(tidyverse)
-library(data.table)
 options(stringsAsFactors = F)
 file<-list.files("./raw_meta/")
 filepath<-paste0("./raw_meta/",file)
@@ -256,3 +126,199 @@ expr<-as.data.frame(expr)
 LUSC_expr<-data.frame(Gene=expr$Gene,expr[,which(colnames(expr)%in%LUSC_meta$sampleID)])
 LUSC_9datasets_expr_meta<-list(LUSC_expr=LUSC_expr,LUSC_meta=LUSC_meta)
 save(LUSC_9datasets_expr_meta,file = "./LUSC_9datasets_expr_meta.Rdata")
+
+load(file = "../dataset/dataset_alidation/LUSC/LUSC_9datasets_expr_meta.Rdata")
+expr<-LUSC_9datasets_expr_meta$LUSC_expr
+meta<-LUSC_9datasets_expr_meta$LUSC_meta
+expr[1:3,1:3]
+meta[1:3,1:10]
+meta<-meta[-which(duplicated(meta$sampleID)),]
+expr<-data.frame(row.names = expr$Gene,expr[,-1])
+group<-data.frame(row.names = meta$sampleID,datasets=meta$GSE,Group=meta$Tissues)
+set.seed(123)
+index<-sample(c(1:1011),100)
+cbdata<-as.matrix(expr)
+cbdata1<-as.matrix(expr[,index])
+group1<-group[which(rownames(group)%in%colnames(cbdata1)),]
+res.pca <- prcomp(t(cbdata1), scale = TRUE)
+library(factoextra)
+PCA<-fviz_pca_ind(res.pca,
+                  label = "none",
+                  habillage = group1$datasets,
+                  addEllipses = TRUE,
+                  ggtheme = theme_minimal(),
+                  ellipse.type = "confidence")
+print(PCA)
+cbdata[1:3,1:3]
+dist_mat1<-dist(t(cbdata1))
+clustering1 <- hclust(dist_mat1, method = "complete")
+plot(clustering1, labels = group1$datasets)
+plot(clustering1, labels =group1$Group)
+##sva cross datasets
+group%>%group_by(Group,datasets)%>%summarise(n())
+#group$bachType<-group$datasets
+#for (i in c(1:14)) {
+# print(i)
+#group$bachType<-gsub(batchs[i],i,group$bachType)
+#}
+head(group)
+mod = model.matrix(~as.factor(datasets), data=group)
+#calculating the number of surrogate variables to estimate in a model
+n.sv = num.sv(cbdata,mod,method="leek")
+n.sv
+#2
+#sv is far more than the number of datasets
+#use the random batchTypes to move batch
+group$bachType<-sample(c(1:6),nrow(group),replace = T)
+combat_edata = ComBat(dat=cbdata, batch=group$bachType)
+#barplot
+combat_edata1<-combat_edata[,index]
+par(cex = 0.7)
+n.sample=ncol(combat_edata1)
+if(n.sample>40) par(cex = 0.5)
+cols <- rainbow(n.sample*1.2)
+boxplot(combat_edata1,col=cols,main="expression value",las=2)
+boxplot(cbdata1,col=cols,main="expression value",las=2)
+library(factoextra)
+res.pca <- prcomp(t(combat_edata1), scale = TRUE)
+PCA<-fviz_pca_ind(res.pca,
+                  label = "none",
+                  habillage = group1$datasets,
+                  addEllipses = TRUE,
+                  ggtheme = theme_minimal(),
+                  ellipse.type = "confidence")
+print(PCA)
+##DEGs by limma T vs N
+library(limma)
+options(stringsAsFactors = F)
+library(tidyverse)
+library(EnhancedVolcano)
+meta<-group
+head(meta)
+design=model.matrix(~factor(meta$Group)+0)
+colnames(design)=levels(factor(meta$Group))
+mycompare<-str_c(colnames(design),collapse = "-")
+contrast.matrix<-makeContrasts(mycompare,
+                               levels = design)
+fit=lmFit(combat_edata,design)
+fit2 <- contrasts.fit(fit, contrast.matrix) 
+fit2 <- eBayes(fit2) 
+DEG<-topTable(fit2, adjust="fdr",coef=1, n=Inf) %>% na.omit()  ## coef比较分组 n基因数
+# Volcano plot
+VolcanoPlot<-EnhancedVolcano(DEG,
+                             lab = rownames(DEG),
+                             x = "logFC",
+                             y = "adj.P.Val",
+                             selectLab = rownames(DEG)[1:5],
+                             xlab = bquote(~Log[2]~ "fold change"),
+                             ylab = bquote(~-Log[10]~italic(P)),
+                             pCutoff = 0.05,## pvalue阈值
+                             FCcutoff = 1,## FC cutoff
+                             xlim = c(-5,5),
+                             transcriptPointSize = 1.8,
+                             transcriptLabSize = 5.0,
+                             colAlpha = 1,
+                             legend=c("NS","Log2 FC"," p-value",
+                                      " p-value & Log2 FC"),
+                             legendPosition = "bottom",
+                             legendLabSize = 10,
+                             legendIconSize = 3.0)
+VolcanoPlot
+write.csv(DEG,"../dataset/LUSC_further/DEGs.csv",row.names = T)
+head(DEG)
+DEG$Gene=rownames(DEG)
+DEGs_filter<-subset(DEG,abs(logFC)>=1&P.Value<=0.05)
+DEGs_filter$Gene=rownames(DEGs_filter)
+expr[1:3,1:3]
+expr$Gene<-rownames(expr)
+expr2MRscore<-function(expr,DEexpr){
+  signature<-fread("../dataset/TCGA_data/annotationRow1.csv")
+  MRgene_DEGs<-subset(DEexpr,Gene%in%signature$Gene)
+  MRgene_DEGs$Regulation<-sample(c("Up","Down"),nrow(MRgene_DEGs),replace = T)
+  MRgene_DEGs$Regulation<-ifelse(MRgene_DEGs$logFC>=0,"Up","Down")
+  DE_Mgene<-MRgene_DEGs[,c("Gene","Regulation")]
+  Total_MRscore<-sum(subset(MRgene_DEGs,logFC>=0)$logFC)+sum(subset(MRgene_DEGs,logFC<=0)$logFC)
+  message(paste0("Total Score = ",Total_MRscore))
+  upgene<-subset(DE_Mgene,Regulation=="Up")
+  downgene<-subset(DE_Mgene,Regulation=="Down")
+  Upexpr<-expr[which(expr$Gene%in%upgene$Gene),]
+  Downexpr<-expr[which(expr$Gene%in%downgene$Gene),]
+  test<-Upexpr[,-grep("Gene",colnames(Upexpr))]
+  test
+  apply(test,2,mean)
+  Upexpr_average<-data.frame(sampleID = colnames(Upexpr)[-grep("Gene",colnames(Upexpr))],Upscore=apply(Upexpr[,-grep("Gene",colnames(Upexpr))], 2, mean))
+  Downexpr_average<-data.frame(sampleID = colnames(Downexpr)[grep("Gene",colnames(Downexpr))],Downscore=apply(Downexpr[,-grep("Gene",colnames(Downexpr))], 2, mean))
+  DE_average<-bind_cols(Upexpr_average,Downexpr_average)[,-3]
+  MRscore_value<-DE_average%>%mutate(MRscore=Upscore-Downscore)
+  return(list(MRgene_DEGs=MRgene_DEGs,MRscore_value=MRscore_value,Total_MRscore=Total_MRscore))
+}  
+MRscorelist<-expr2MRscore(expr = expr,DEexpr = DEGs_filter)  
+MRscore<-MRscorelist[[2]]
+head(MRscore)
+load(file = "../dataset/LUSC_further/LUSC_9datasets_expr_meta.Rdata")
+meta<-LUSC_9datasets_expr_meta$LUSC_meta
+head(meta)
+meta$OStime<-as.numeric(meta$OStime)
+meta$OS<-as.numeric(meta$OS)
+#survival plot function
+MRscore2Sva<-function(MRscore,meta,survivalTypes){
+  library(survival)
+  library(survminer)
+  library(survivalROC)
+  survdata<-merge(MRscore,meta,by="sampleID")
+  if(survivalTypes=="OS"){
+    surv_cut <- surv_cutpoint(
+      survdata,
+      time = "OStime",
+      event = "OS",
+      variables = c("MRscore")
+    )
+    summary(surv_cut)
+    survdata$Group<-sample(c("High","Low"),nrow(MRscore),replace = T)
+    survdata$Group<-ifelse(survdata$MRscore>=as.numeric(summary(surv_cut)[1]),"High","Low")
+    fit<-survfit(Surv(OStime,OS) ~ Group,
+                 data = survdata)
+    p<-ggsurvplot( fit,
+                   data=survdata,
+                   risk.table = TRUE,
+                   pval = TRUE,
+                   title = "OS",
+                   palette = c("blue","red"),
+                   #facet.by = "Efficacy",
+                   legend.title="MIRscore",
+                   risk.table.col = "strata",
+                   surv.median.line = "hv",
+                   risk.table.y.text.col = T,
+                   risk.table.y.text = FALSE )
+    p}
+  else{
+    surv_cut <- surv_cutpoint(
+      survdata,
+      time = "PFS",
+      event = "Status.1",
+      variables = c("MRscore")
+    )
+    summary(surv_cut)
+    survdata$Group<-sample(c("High","Low"),nrow(MRscore),replace = T)
+    survdata$Group<-ifelse(survdata$MRscore>=as.numeric(summary(surv_cut)[1]),"High","Low")
+    fit<-survfit(Surv(PFS,Status.1) ~ Group,
+                 data = survdata)
+    p<-ggsurvplot( fit,
+                   data=survdata,
+                   risk.table = TRUE,
+                   pval = TRUE,
+                   title = "PFS",
+                   palette = c("blue","red"),
+                   #facet.by = "Efficacy",
+                   legend.title="MIRscore",
+                   risk.table.col = "strata",
+                   surv.median.line = "hv",
+                   risk.table.y.text.col = T,
+                   risk.table.y.text = FALSE )
+    
+  }
+  return(p)
+}
+MRscore2Sva(MRscore = MRscore,meta = meta,survivalTypes = "OS")
+LUSC_9datasets_expr_meta$LUSC_meta<-meta
+  
