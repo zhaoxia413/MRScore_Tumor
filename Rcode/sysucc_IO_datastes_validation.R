@@ -177,7 +177,8 @@ for (i in seq_along(res_diff_data)) {
   png(paste0(path,names(metadata)[i],"DEGs_vol.png"))
   print(VolcanoPlot[[i]])
   dev.off()
-  }
+}
+
 ##MRscore
 DEGs[[1]][1:3,1:3]
 DEGs_filter<-list()
@@ -199,7 +200,7 @@ for (i in seq_along(exprfiles)) {
   colnames(expr[[i]])[1]<-"Gene"
 }
 expr[[1]][1:3,1:3]
-DEGs_filter[[1]][1:3,1:3]
+DEGs_filter[[3]][1:3,1:3]
 expr2MRscore<-function(expr,DEexpr){
 signature<-fread("../dataset/TCGA_data/annotationRow1.csv")
 MRgene_DEGs<-subset(DEexpr,Gene%in%signature$Gene)
@@ -267,6 +268,7 @@ for (i in seq_along(MRscorelist)) {
   print(OSplot[[i]])
   dev.off()
 }
+IOdatasets_DEGs_MRscore$MRscore_PRE_EDT<-MRscorelist
 IOdatasets_DEGs_MRscore=list(metadata=metadata,countsdata=countslist,DEGs=res_diff_data,
                      DEGs_filter=DEGs_filter,MRscorelist=MRscorelist)
 save(IOdatasets_DEGs_MRscore,file = paste0(path,"IOdatasets_DEGs_MRscore.Rdata"))
@@ -303,3 +305,104 @@ levels(factor(data$Treatment))
 my_comparisons<-list(c("EDT","PRE"))
 p<-fun_to_plot(data,group = "Treatment",variable = "MRscore",comparisons = my_comparisons)
 p+facet_wrap(~treatment,scales = "free")
+library(data.table)
+library(tidyverse)
+load(file = "../dataset/IO_dataset/GC_arranged/Allclean_Immunotherapy_data/IOdatasets_DEGs_MRscore.Rdata")
+exprdata<-IOdatasets_DEGs_MRscore$FPKM
+expr_mela<-exprdata$Melanoma
+expr_mela[1:3,1:3]
+DEG_comb<-fread("../dataset/IO_dataset/GC_arranged/Allclean_Immunotherapy_data/Distinct Immune Cell Populations Define Response to Anti-PD-1 Monotherapy and Anti-PD-1/combined_DEGs.csv")%>%as.data.frame()
+DEG_pd1<-fread("../dataset/IO_dataset/GC_arranged/Allclean_Immunotherapy_data/Distinct Immune Cell Populations Define Response to Anti-PD-1 Monotherapy and Anti-PD-1/PD1_DEGs.csv")%>%as.data.frame()
+head(DEG_comb)
+head(DEG_pd1)
+DEG_comb_PRE<-data.frame(Gene=DEG_comb$Gene,logFC=DEG_comb$`log2 fold-change
+(PRE-R vs PRE-NR)`)
+DEG_comb_EDT<-data.frame(Gene=DEG_comb$Gene,logFC=DEG_comb$`log2 fold-change
+(EDT-R vs EDT-NR)`)
+DEG_PD1_PRE<-data.frame(Gene=DEG_pd1$Gene,logFC=DEG_pd1$`log2 fold-change
+(PRE-R vs PRE-NR)`)
+DEG_PD1_EDT<-data.frame(Gene=DEG_pd1$Gene,logFC=DEG_pd1$`log2 fold-change
+(EDT-R vs EDT-NR)`)
+DEGlist<-list(DEG_comb_PRE=DEG_comb_PRE,DEG_comb_EDT=DEG_comb_EDT,
+              DEG_PD1_PRE=DEG_PD1_PRE,DEG_PD1_EDT=DEG_PD1_EDT)
+expr2MRscore<-function(expr,DEexpr){
+  signature<-fread("../dataset/TCGA_data/annotationRow1.csv")
+  MRgene_DEGs<-subset(DEexpr,Gene%in%signature$Gene)
+  MRgene_DEGs$Regulation<-sample(c("Up","Down"),nrow(MRgene_DEGs),replace = T)
+  MRgene_DEGs$Regulation<-ifelse(MRgene_DEGs$logFC>=0,"Up","Down")
+  DE_Mgene<-MRgene_DEGs[,c("Gene","Regulation")]
+  Total_MRscore<-sum(subset(MRgene_DEGs,logFC>=0)$logFC)+sum(subset(MRgene_DEGs,logFC<=0)$logFC)
+  message(paste0("Total Score = ",Total_MRscore))
+  upgene<-subset(DE_Mgene,Regulation=="Up")
+  downgene<-subset(DE_Mgene,Regulation=="Down")
+  Upexpr<-expr[which(expr$Gene%in%upgene$Gene),]
+  Downexpr<-expr[which(expr$Gene%in%downgene$Gene),]
+  Upexpr_average<-data.frame(sampleID = colnames(Upexpr)[-1],Upscore=apply(Upexpr[,-1], 2, mean))
+  Downexpr_average<-data.frame(sampleID = colnames(Downexpr)[-1],Downscore=apply(Downexpr[,-1], 2, mean))
+  DE_average<-bind_cols(Upexpr_average,Downexpr_average)[,-3]
+  MRscore_value<-DE_average%>%mutate(MRscore=Upscore-Downscore)
+  return(list(MRgene_DEGs,MRscore_value))
+}
+
+MRscorelist<-list()
+for (i in seq_along(DEGlist)) {
+  MRscorelist[[i]]<-expr2MRscore(expr = expr_mela,DEexpr = DEGlist[[i]])
+  names(MRscorelist)[[i]]<-names(DEGlist)[i]
+}
+MRscorelist[[1]][[2]][1:3,1:3]
+metadata<-IOdatasets_DEGs_MRscore$metadata$Melanoma
+metadata[1:3,1:3]
+colnames(metadata)[2]<-"sampleID"
+MRscore<-MRscorelist[[3]][[2]]
+meta<-metadata
+library(survival)
+library(survminer)
+library(survivalROC)
+library(forestplot)
+MRscore2Sva<-function(MRscore,meta){
+  survdata<-merge(MRscore,meta,by="sampleID")
+  surv_cut <- surv_cutpoint(
+    survdata,
+    time = "OStime",
+    event = "OS",
+    variables = c("MRscore")
+  )
+  summary(surv_cut)
+  survdata$Group<-sample(c("High","Low"),nrow(MRscore),replace = T)
+  survdata$Group<-ifelse(survdata$MRscore>=as.numeric(summary(surv_cut)[1]),"High","Low")
+  fit<-survfit(Surv(OStime,OS) ~ Group,
+               data = survdata)
+  p<-ggsurvplot( fit,
+                 data=survdata,
+                 risk.table = TRUE,
+                 pval = TRUE,
+                 title = "OS",
+                 palette = c("blue","red"),
+                 #facet.by = "Efficacy",
+                 legend.title="MIRscore",
+                 risk.table.col = "strata",
+                 surv.median.line = "hv",
+                 risk.table.y.text.col = T,
+                 risk.table.y.text = FALSE )
+  return(p)
+}
+OSplot<-list()
+for (i in seq_along(MRscorelist)) {
+  print(i)
+  OSplot[[i]]<-MRscore2Sva(MRscore =MRscorelist[[i]][[2]],meta = metadata)
+  names(OSplot)[i]<-names(MRscorelist)[i]
+  pdf(paste0(path,names(OSplot)[i],"MIR_OS.pdf"),onefile = FALSE)
+  print(OSplot[[i]])
+  dev.off()
+  png(paste0(path,names(OSplot)[i],"MIR_OS.png"))
+  print(OSplot[[i]])
+  dev.off()
+}
+MRscorelist
+dim(MRscorelist[[1]][[1]])#57 genes
+dim(MRscorelist[[2]][[1]])
+dim(MRscorelist[[3]][[1]])
+dim(MRscorelist[[4]][[1]])#70 genes
+write.csv(MRscorelist[[1]][[1]],"DEG_comb_MRgenes.csv",row.names = F)
+write.csv(MRscorelist[[3]][[1]],"DEG_pd1_MRgenes.csv",row.names = F)
+    

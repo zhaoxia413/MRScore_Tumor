@@ -449,6 +449,7 @@ GC_MRscore<-expr2MRscore(expr = exprdata,DEexpr = DEGs_filter)
 #Total Score = -7.70030276111791
 #survival plot function
 MRscore<-GC_MRscore[[2]]
+write.csv(GC_MRscore[[1]],"GC_MR_DEGs.csv",row.names = F)
 head(MRscore)
 meta=trans_meta
 MRscore2Sva<-function(MRscore,meta,survivalTypes){
