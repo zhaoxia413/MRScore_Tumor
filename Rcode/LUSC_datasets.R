@@ -225,6 +225,7 @@ VolcanoPlot<-EnhancedVolcano(DEG,
                              legendIconSize = 3.0)
 VolcanoPlot
 write.csv(DEG,"../dataset/LUSC_further/DEGs.csv",row.names = T)
+
 head(DEG)
 DEG$Gene=rownames(DEG)
 DEGs_filter<-subset(DEG,abs(logFC)>=1&P.Value<=0.05)
@@ -255,7 +256,7 @@ expr2MRscore<-function(expr,DEexpr){
 MRscorelist<-expr2MRscore(expr = expr,DEexpr = DEGs_filter)  
 MRscore<-MRscorelist[[2]]
 head(MRscore)
-load(file = "../dataset/LUSC_further/LUSC_9datasets_expr_meta.Rdata")
+load(file = "../dataset/LUAD_further/LUSC_9datasets_expr_meta.Rdata")
 meta<-LUSC_9datasets_expr_meta$LUSC_meta
 head(meta)
 meta$OStime<-as.numeric(meta$OStime)
