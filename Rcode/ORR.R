@@ -9,8 +9,8 @@ data<-merge(OR,MIR,by="Types")
 head(data)
 data1<-data[-which(is.na(data$OS)),]
 ggplot(data,aes(MRscore,ORR))+
-  geom_point(aes(size=N,color=OS))+
-  scale_color_manual(values = c("blue","black","red"))+
+  geom_point(aes(size=N,color=geneNumber))+
+  scale_color_continuous()+
   theme_clean(base_size = 12)+
   geom_text(aes(MRscore,ORR+0.01, label=Types))+ 
   geom_abline(slope=0.18, intercept=0.27,color="gray",size=1)

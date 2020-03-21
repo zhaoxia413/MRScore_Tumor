@@ -191,3 +191,4 @@ MRscorelist<-expr2MRscore(expr = expr,DEexpr = DEGs_filter)
 MRscore<-MRscorelist[[2]]
 write.csv(MRscorelist[[1]],"MIRenes_LUAD.csv",row.names = F)
 head(MRscore)
+  
