@@ -344,6 +344,7 @@ gc_counts<-gc_counts[-25787,]
 gc_counts[1:10,1:4]
 colnames(gc_counts)<-gsub("N.*","",colnames(gc_counts))
 write.csv(gc_counts,"../dataset/IO_dataset/GC_arranged/byRSEM/gc_counts_geneSymbol.csv",row.names = F)
+gc_counts<-fread("../dataset/IO_dataset/GC_arranged/byRSEM/gc_counts_geneSymbol.csv")%>%as.data.frame()
 meta<-fread("../dataset/IO_dataset/GC_arranged/GC_clinicaldata.txt",header = T)%>%as.data.frame()
 colnames(meta)[4]<-"sampleID"
 meta$sampleID<-gsub("W.*","",meta$sampleID)
@@ -372,6 +373,7 @@ str(gc_counts1)
 str(GCcol)
 str(Group)
 write.csv(trans_meta,"../dataset/IO_dataset/GC_arranged/byRSEM/trans_meta.csv",row.names = F)
+trans_meta<-fread("../dataset/IO_dataset/GC_arranged/byRSEM/trans_meta.csv")%>%as.data.frame()
 colData <- data.frame(row.names=colnames(gc_counts1),Group=Group)
 head(colData)
 gc_counts<-apply(gc_counts1, 2, function(x){round(x,0)})
@@ -396,6 +398,7 @@ res_diff_data <- merge(as.data.frame(res),as.data.frame(counts(dds_out,normalize
 colnames(res_diff_data)[1]<-"Gene"
 write.csv(res_diff_data,file = "../dataset/IO_dataset/GC_arranged/byRSEM/DEseq.csv",row.names = F)
 DEGs<-fread("../dataset/IO_dataset/GC_arranged/byRSEM/DEseq.csv")[,1:7]
+trans_meta<-fread("../dataset/IO_dataset/GC_arranged/byRSEM/trans_meta.csv")%>%as.data.frame()
 DEGs_filter<-subset(DEGs,abs(log2FoldChange)>=1.5|pvalue<=0.05)
 library(EnhancedVolcano)
 library(factoextra)
@@ -450,7 +453,9 @@ GC_MRscore<-expr2MRscore(expr = exprdata,DEexpr = DEGs_filter)
 #survival plot function
 MRscore<-GC_MRscore[[2]]
 write.csv(GC_MRscore[[1]],"GC_MR_DEGs.csv",row.names = F)
+GC_MR_DEGs<-fread("../dataset/IO_dataset/GC_arranged/byRSEM/GC_MR_DEGs.csv")%>%as.data.frame()
 head(MRscore)
+
 meta=trans_meta
 MRscore2Sva<-function(MRscore,meta,survivalTypes){
   survdata<-merge(MRscore,meta,by="sampleID")
@@ -505,10 +510,41 @@ MRscore2Sva<-function(MRscore,meta,survivalTypes){
                    risk.table.y.text = FALSE )
     
   }
-  return(p)
+  return(p,survdata)
 }
 MRscore2Sva(MRscore = MRscore,meta = meta,survivalTypes = "PFS")
 MRscore2Sva(MRscore = MRscore,meta = meta,survivalTypes = "OS")
+my_comparisons<-list(c("PD", "SD"), c("PD", "PR"), c("PR", "SD"))
+survdata<-merge(MRscore,trans_meta,by="sampleID")
+surv_cut <- surv_cutpoint(
+  survdata,
+  time = "PFS",
+  event = "Status.1",
+  variables = c("MRscore")
+)
+summary(surv_cut)
+surv_cut <- surv_cutpoint(
+  survdata,
+    time = "OS",
+  event = "Status",
+  variables = c("MRscore")
+)
+summary(surv_cut)
+survdata$MRscore_level<-sample(c("High","Low"),nrow(MRscore),replace = T)
+survdata$MRscore_level<-ifelse(survdata$MRscore>=as.numeric(summary(surv_cut)[1]),"High","Low")
+
+fun_to_plot <- function(data, group, variable) {
+  p <- ggviolin(data, x=group, y=variable,fill = group, 
+                palette = c("#00AFBB", "#E7B800", "#FC4E07"), 
+                add = "jitter", shape=group)+
+    stat_compare_means(comparisons = my_comparisons)+
+    stat_compare_means(label.y = 125)
+  return(p)
+}
+
+meta$TMB.Muts.Mb
+my_comparisons<-list(c("High","Low"))
+fun_to_plot(survdata,"MRscore_level","TMB.Muts.Mb")
 MRscore2Heatmap<-function(expr,DE_Mgene,groupdata){
   require(pheatmap)
   dfcol<-data.frame(row.names = groupdata$sampleID,Group=as.factor(groupdata$Group))
