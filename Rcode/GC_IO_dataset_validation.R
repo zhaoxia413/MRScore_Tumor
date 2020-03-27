@@ -515,7 +515,7 @@ MRscore2Sva<-function(MRscore,meta,survivalTypes){
 MRscore2Sva(MRscore = MRscore,meta = meta,survivalTypes = "PFS")
 MRscore2Sva(MRscore = MRscore,meta = meta,survivalTypes = "OS")
 my_comparisons<-list(c("PD", "SD"), c("PD", "PR"), c("PR", "SD"))
-survdata<-merge(MRscore,trans_meta,by="sampleID")
+
 surv_cut <- surv_cutpoint(
   survdata,
   time = "PFS",
@@ -523,6 +523,7 @@ surv_cut <- surv_cutpoint(
   variables = c("MRscore")
 )
 summary(surv_cut)
+plot(surv_cut)
 surv_cut <- surv_cutpoint(
   survdata,
     time = "OS",
@@ -530,32 +531,41 @@ surv_cut <- surv_cutpoint(
   variables = c("MRscore")
 )
 summary(surv_cut)
+plot(surv_cut)
+survdata<-merge(MRscore,trans_meta,by="sampleID")
 survdata$MRscore_level<-sample(c("High","Low"),nrow(MRscore),replace = T)
 survdata$MRscore_level<-ifelse(survdata$MRscore>=as.numeric(summary(surv_cut)[1]),"High","Low")
 
 fun_to_plot <- function(data, group, variable) {
-  p <- ggviolin(data, x=group, y=variable,fill = group, 
+  p <- ggboxplot(data, x=group, y=variable,fill = group, 
                 palette = c("#00AFBB", "#E7B800", "#FC4E07"), 
                 add = "jitter", shape=group)+
     stat_compare_means(comparisons = my_comparisons)+
-    stat_compare_means(label.y = 125)
+    stat_compare_means(label.y = 30)
   return(p)
 }
-
+r<-cor(survdata$MRscore,survdata$EBV,method="pearson")
+r
 meta$TMB.Muts.Mb
 my_comparisons<-list(c("High","Low"))
-fun_to_plot(survdata,"MRscore_level","TMB.Muts.Mb")
+survdata1<-survdata[-which(survdata$TMB.Muts.Mb==48.4),]#move the max TMB values
+fun_to_plot(survdata1,"MRscore_level","TMB.Muts.Mb")
 MRscore2Heatmap<-function(expr,DE_Mgene,groupdata){
   require(pheatmap)
   dfcol<-data.frame(row.names = groupdata$sampleID,Group=as.factor(groupdata$Group))
   mat<-subset(expr,expr$Gene%in%DE_Mgene$Gene)
   mat<-data.frame(row.names = mat$Gene,mat[,-1])
-  pheatmap(scale(mat,center = T),annotation_col = dfcol,
-           cluster_cols = T,
+  pheatmap(log(mat+1),annotation_col = dfcol,
+           cluster_cols = F,
+           scale = "column",
            border_color = NA,
            show_colnames = F)
 }
 groupdata<-data.frame(sampleID=trans_meta$sampleID,Group=trans_meta$Efficacy)
+groupdata = data.frame(sampleID=survdata$sampleID,Group=survdata$MRscore_level)
+groupdata$Group<-groupdata$Group[order(groupdata$Group)]
 DE_Mgene<-GC_MRscore[[1]]
 head(DE_Mgene)
-MRscore2Heatmap(expr = exprdata,DE_Mgene = DE_Mgene,groupdata = groupdata)
+range(DE_Mgene$Log2FC)
+DE_Mgene1<-subset(DE_Mgene,abs(Log2FC)>=2.5)
+MRscore2Heatmap(expr = exprdata,DE_Mgene = DE_Mgene1,groupdata = groupdata)
