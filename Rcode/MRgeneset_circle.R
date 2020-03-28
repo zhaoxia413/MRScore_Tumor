@@ -259,15 +259,21 @@ suppressPackageStartupMessages( require(tidyverse))
 library(ggthemes)
 termnamme<-paste0("Term",seq(1,19,1))
 termnamme[1:9]<-c("Term01","Term02","Term03","Term04",
-                  "Term04","Term06","Term07","Term08","Term09")
+                  "Term05","Term06","Term07","Term08","Term09")
 termAnno<-data.frame(Annotated.Term=levels(factor(data1$Annotated.Term)),Annotated.Term_T=termnamme)
+write.csv(termAnno,"termAnno.csv",row.names = F)
 data1<-merge(data1,termAnno,by="Annotated.Term")
 head(data1)
 data1$Regulation<-data1$Log2FC
-data1$Regulation<-ifelse(data1$Regulation>0,"Up",ifelse(data1$Regulation<0,"Down","NA"))
-
-alluvial_wide(select(data1, Goterm, Annotated.Term_T,Types,Regulation)
-               , fill_by = 'first_variable',
+data1$Regulation<-ifelse(data1$Regulation>0,"Up",ifelse(data1$Regulation<0,"Down","A1"))
+data1[is.na(data1)]="A1"
+data1$Log2FC<-gsub("A1",0,data1$Log2FC)
+alluvial_wide( data = data1[,-c(1,5)]
+               ,id = Gene
+               , max_variables = 5
+               , fill_by = 'first_variable' )
+alluvial_wide(data1[,c(3,4,10,6)],
+              fill_by = 'first_variable',
                stratum_labels = T,
                #col_vector_value =col31,
                col_vector_flow = col31[c(21,23,24)],
@@ -276,7 +282,7 @@ alluvial_wide(select(data1, Goterm, Annotated.Term_T,Types,Regulation)
                stratum_width = 1/4
                , order_levels = c('8','6','4')
                )+
-  theme_bw(base_size = 12)
+  theme_few(base_size = 12)
 
 library(pheatmap)
 mat<-data.frame(row.names = data1$Gene,log2FC=data1$Log2FC)

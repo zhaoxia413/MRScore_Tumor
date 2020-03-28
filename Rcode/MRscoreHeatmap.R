@@ -22,10 +22,10 @@ ggboxplot(MRscore,x="Types",y="MRscore",fill="Types")+
   guides(fill=F)+
   coord_flip()
 MRscore$Types<-MRscore$Types[order(MRscore$MRscore)]
-MRscore$Types<-MRscore$Types[order(MRscore$Types)]
+MRscore$Types<-MRscore$Types[order(MRscore$Types,decreasing = T)]
 ggboxplot(MRscore,x="Types",y="MRscore",fill="Types")+
   theme_few(base_size = 12)+
-  geom_jitter(alpha=0.1,size=1)+
+  geom_jitter(alpha=0.05,size=1)+
   theme(axis.title.y = element_blank())+
   scale_fill_manual(values = col31)+
   guides(fill=F)+
