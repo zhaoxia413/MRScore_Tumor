@@ -7,7 +7,7 @@ colnames(micro)[1]<-"sampleID"
 colnames(meta)[1]<-"sampleID"
 micro[1:3,1:3]
 meta[1:3,1:3]
-meta1<-meta[grep("TCGA",meta$filename),]
+meta1<-meta[grep("TCGA",meta$filename),]#6827
 colnames(meta)
 meta$filename<-gsub("^.*TCGA","TCGA",meta$filename)
 meta$filename<-str_sub(meta$filename,1,28)
@@ -18,9 +18,12 @@ colnames(meta1)[3]<-"tcgaID"
 levels(factor(meta$experimental_strategy))
 dnameta<-subset(meta1,experimental_strategy=="RNA-Seq")
 rnameta<-subset(meta1,experimental_strategy=="WGS")
-dnameta<-dnameta[-which(duplicated(dnameta$tcgaID)),]
-rnameta<-rnameta[-which(duplicated(rnameta$tcgaID)),]
-bothmeta<-meta[which(meta$filename%in%intersect(dnameta$tcgaID,rnameta$tcgaID)),]
+dnameta<-dnameta[-which(duplicated(dnameta$tcgaID)),]#1933
+rnameta<-rnameta[-which(duplicated(rnameta$tcgaID)),]#4118
+dnameta$tcgaID<-str_sub(dnameta$tcgaID,1,12)
+rnameta$tcgaID<-str_sub(rnameta$tcgaID,1,12)
+meta$tcgaID<-str_sub(meta$filename,1,12)
+bothmeta<-meta[which(meta$tcgaID%in%intersect(dnameta$tcgaID,rnameta$tcgaID)),]#1795
 meta3<-meta[,c(1,3,12)]
 head(meta3)
 colnames(meta3)[c(2,3)]<-c("tcgaID","Types")
