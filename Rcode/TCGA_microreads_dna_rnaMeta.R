@@ -219,9 +219,17 @@ dfd_ovlp<-dfd[which(dfd$tcgaID%in%index),]
 dfr_ovlp<-dfr_ovlp[-which(duplicated(dfr_ovlp$tcgaID)),]
 dfr_ovlp<-dfr_ovlp%>%mutate(Method=rep("RNA",nrow(.)))
 dfd_ovlp<-dfd_ovlp%>%mutate(Method=rep("DNA",nrow(.)))
+write.csv(dfd_ovlp,"dfd_ovlp.csv",row.names = F)
+write.csv(dfr_ovlp,"dfd_ovlp.csv",row.names = F)
 df_both<-bind_rows(dfr_ovlp,dfd_ovlp)
 data<-melt(df_both,id.vars = c("tcgaID","Method"),variable.name = "OTUs")
 head(data)
+
+ggplot(data,aes(x = Method,y = value,fill=Method))+
+  geom_point()+
+  theme_bw(base_size = 12)
+
+test<-data[1:100,1:4]
 d1<-subset(data,Method=="RNA")
 colnames(d1)[4]<-"RNA_value"
 d2<-subset(data,Method=="DNA")

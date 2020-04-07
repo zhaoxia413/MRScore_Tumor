@@ -188,6 +188,38 @@ length(levels(factor(df$Symbol)))#2519
 signature<-fread("../dataset/TCGA_data/annotationRow1.csv")%>%as.data.frame()
 head(signature)
 df1<-filter(df,df$Symbol%in%signature$Gene)
+ConsensusGenes<-c("CXCL10","CXCL9","CXCL1","CXCL3","CYBA","PYCARD",
+                  "GBP5","OAS2","IL1B","STAT1","OAS3","DEFA1","DEFA3","CXCL2",
+                  "IL6","TLR4","GBP2","IL18","CD14","LY96","IFNAR2","CD86","CASP1"
+                  ,"TLR2","GBP3","IRF5")
+ConsensusGenesAnno<-df1[which(df1$Symbol%in%ConsensusGenes),]
+write.csv(ConsensusGenesAnno,"ConsensusGenesAnno.csv",row.names = F)
+ConsensusGenesAnno<-ConsensusGenesAnno[,c(2,5)]%>%group_by(Symbol,Annotated.Term)%>%summarise(n())
+ConsensusGenesAnno<-ConsensusGenesAnno[,c(1,2)]
+ConsensusGenesAnno<-ConsensusGenesAnno%>%group_by(Symbol,Annotated.Term)%>%summarise(n())
+set1<-c("CXCL10","CXCL9","CXCL1","CXCL3","CYBA","PYCARD",
+        "GBP5","OAS2","IL1B","STAT1","OAS3")
+set2<-c("DEFA1","DEFA3","CXCL2",
+        "IL6","TLR4")
+set3<-c("GBP2","IL18","CD14","LY96","IFNAR2","CD86","CASP1"
+        ,"TLR2","GBP3","IRF5")
+Con1<-ConsensusGenesAnno[which(ConsensusGenesAnno$Symbol%in%set1),]
+Con2<-ConsensusGenesAnno[which(ConsensusGenesAnno$Symbol%in%set2),]
+Con3<-ConsensusGenesAnno[which(ConsensusGenesAnno$Symbol%in%set3),]
+plot1<-Con1%>%group_by(Annotated.Term)%>%summarise(Count=n())
+plot2<-Con2%>%group_by(Annotated.Term)%>%summarise(Count=n())
+plot3<-Con3%>%group_by(Annotated.Term)%>%summarise(Count=n())
+topgene1<-top_n(plot1,5,wt = plot1$Count)%>%mutate(Class=rep("Clster1",nrow(.)))
+topgene2<-top_n(plot2,5,wt = plot2$Count)%>%mutate(Class=rep("Clster2",nrow(.)))
+topgene3<-top_n(plot3,5,wt = plot3$Count)%>%mutate(Class=rep("Clster3",nrow(.)))
+data<-bind_rows(topgene1,topgene2,topgene3)
+library(ggsci)
+library(ggthemes)
+ggplot(data,aes(Class,Count,fill=Annotated.Term))+
+  geom_col()+
+  theme_few()+
+  scale_fill_d3()
+
 length(levels(factor(df1$Symbol)))#1202
 length(levels(factor(df1$Annotated.Term)))
 length(levels(factor(df1$Evidence)))#13
@@ -214,7 +246,7 @@ length(levels(factor(df2$Symbol)))
 df3<-df2%>%group_by(Goterm,Annotated.Term)%>%summarise(Dupli=n())
 datalist<-split.data.frame(df3,f=df3$Goterm,drop = F)
 mytop<-function(x){
-  top_n(x,10,wt = x$Dupli)
+  top_n(x,5,wt = x$Dupli)
 }
 datalist1<-lapply(datalist, mytop)
 dftop10<-bind_rows(datalist1)
@@ -255,7 +287,6 @@ ggplot(data = data1,
   guides(fill=NULL)
 
 suppressPackageStartupMessages( require(easyalluvial))
-suppressPackageStartupMessages( require(tidyverse))
 library(ggthemes)
 termnamme<-paste0("Term",seq(1,19,1))
 termnamme[1:9]<-c("Term01","Term02","Term03","Term04",
@@ -263,26 +294,26 @@ termnamme[1:9]<-c("Term01","Term02","Term03","Term04",
 termAnno<-data.frame(Annotated.Term=levels(factor(data1$Annotated.Term)),Annotated.Term_T=termnamme)
 write.csv(termAnno,"termAnno.csv",row.names = F)
 data2<-merge(data1,termAnno,by="Annotated.Term")
+data2=data1
+data2<-filter(data1,Annotated.Term!="immune response")
 head(data2)
 data2$Regulation<-data2$Log2FC
 data2$Regulation<-ifelse(data2$Regulation>0,"Up",ifelse(data2$Regulation<0,"Down","A1"))
-data2[is.na(data2)]="A1"
-data2$Log2FC<-gsub("A1",0,data2$Log2FC)
-alluvial_wide( data = data2[,-c(1,5)]
-               ,id = Gene
-               , max_variables = 5
-               , fill_by = 'first_variable' )
-alluvial_wide(data2[,c(3,7,6)],
+alluvial_wide(data2[,c(3,2,5,7,6)],
+              fill_by = 'first_variable',
                stratum_labels = T,
                #col_vector_value =col31,
-               col_vector_flow = col31[c(21,23,24)],
+               col_vector_flow = col31[c(16,17,19)],
                colorful_fill_variable_stratum = T,
-               stratum_label_size = 2,
+               stratum_label_size = 4,
                stratum_width = 1/4
                , order_levels = c('8','6','4')
                )+
   theme_few(base_size = 12)
-
+par(mfrow=c(10,1));
+par(mar=c(0.1,0.1,2,0.1), xaxs="i", yaxs="i")
+barplot(rep(1,times=10),col=col31[c(1:3,5,6,13:17)],border=cm.colors(10),
+        axes=FALSE, main="cm.colors"); box()
 library(pheatmap)
 mat<-data.frame(row.names = data2$Gene,log2FC=data2$Log2FC)
 

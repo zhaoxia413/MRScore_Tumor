@@ -514,6 +514,7 @@ for (i in seq(length(Type))) {
   names(DEGres)[i]<-Type[i]
   names(DEGresSig)[i]<-Type[i]
 }
+###begain
 DEGres<-list()
 DEGresSig<-list()
 for (i in seq(length(Type))) {
@@ -596,9 +597,9 @@ MRscore_meta$TotalGroup<-ifelse(MRscore_meta$HeathyGroup=="Healthy","Healthy",MR
 MRscore_meta$TotalGroup<-ifelse(MRscore_meta$BacGroup=="Bacterial_infection","Bacterial_infection",MRscore_meta$TotalGroup)
 MRscore_meta$TotalGroup<-ifelse(MRscore_meta$VirGroup=="Viral_infection","Viral_infection",MRscore_meta$TotalGroup)
 head(MRscore_meta)
-newdata<-MRscore_meta[,c(2,6:10)]
+newdata<-MRscore_meta[,c(1,2,6:10)]
 head(newdata)
-
+write.csv(newdata,"../dataset/dataset_alidation/validate_datasets/MicroImmuneML_data.csv",row.names = F)
 #commparisons
 library(data.table)
 library(ggsci)
@@ -688,6 +689,7 @@ write.csv(newdata,"../validate_datasets/MicroImmuneML_data.csv",row.names = F)
 library(randomForest)
 library(pROC)
 library(data.table)
+library(caret)
 newdata<-fread("../dataset/dataset_alidation/validate_datasets/MicroImmuneML_data.csv")
 head(newdata)
 set.seed(1000)
@@ -697,9 +699,12 @@ testData<-newdata[-trainIndex,]
 trainData$HeathyGroup = as.factor(trainData$HeathyGroup)
 testData$HeathyGroup = as.factor(testData$HeathyGroup)
 Hg_randomforest <- randomForest(HeathyGroup~MRscore,
-                                data = trainData)
+                                data = trainData,ntree=300)
+
 Hg_randomforest$importance 
 pre_ran <- predict(Hg_randomforest,newdata=testData)
+probValue<-data.frame(sampleID=testData$sampleID,predict(Hg_randomforest, type = "prob",
+                                        newdata = testData ))
 #将真实值和预测值整合到一起
 obs_p_ran = data.frame(prob=pre_ran,obs=testData$HeathyGroup)
 obs_p_ran$predict <- names(obs_p_ran)[1:2][apply(obs_p_ran[,1:2], 1, which.max)]
