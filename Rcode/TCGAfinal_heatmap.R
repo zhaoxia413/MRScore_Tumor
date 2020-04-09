@@ -26,15 +26,20 @@ library(data.table)
 library(ComplexHeatmap)
 library(dplyr)
 load(file = "../dataset/MRscoreAPPexample.RData")
+save(DEGs,exprall,sampleInfo,MRscoreall,file = "../dataset/TCGA_results/TCGAMRegnesHeatmap.Rdata")
 load(file = "../dataset/TCGA_results/TCGAMRegnesHeatmap.Rdata")
 #exprMat=exprMat.exmaple
 MRgenes=MRgenes.example
 MRgeneAnno=MRgeneAnno.example
+nsample=50
 fun_to_heatmap("BRCA",FC = 4)
-fun_to_heatmap<-function(cancerTypes,FC){
-  DEGs<-filter(DEGs,abs(Log2FC)>=FC)
+FC=2
+cancerTypes="BRCA"
+fun_to_heatmap<-function(cancerTypes,nsample,FC){
+  DEGs<-filter(DEGs,nsample,abs(Log2FC)>=FC)
   MRDEs<-subset(DEGs,Types==cancerTypes)
   meta<-subset(sampleInfo,Types==cancerTypes)
+  meta<-meta[sample(c(1:nrow(meta)),nsample),]
   expr<-exprall[which(exprall$Gene%in%MRDEs$Gene),]%>%as.data.frame()
   expr<-data.frame(row.names  = expr$Gene,expr[,which(colnames(expr)%in%meta$sampleID)])
   MRscore<-subset(MRscoreall,Types==cancerTypes)[,-2]
@@ -44,7 +49,7 @@ fun_to_heatmap<-function(cancerTypes,FC){
   antiVir<-MRgeneAnno[grep("vir",MRgeneAnno$GOterm),]
   antiBac<-MRgeneAnno[c(grep("bacter",MRgeneAnno$GOterm)
                         ,grep("lipopolysaccharide",MRgeneAnno$GOterm)),]
-  MRgeneExpr<-expr
+  MRgeneExpr<-exprMat
   antiVirResponse<-MRgeneExpr[which(rownames(MRgeneExpr)%in%antiVir$Gene),]
   antiBacResponse<-MRgeneExpr[which(rownames(MRgeneExpr)%in%antiBac$Gene),]
   MRscore<-data.frame(row.names = MRscore$sampleID,MRscore=MRscore$MRscore)
@@ -80,4 +85,17 @@ fun_to_heatmap<-function(cancerTypes,FC){
   p
   return(p)
 }
+cancers<-levels(factor(DEGs$Types))
+p<-list()
+for (i in c(2:18,21:23,27:28)) {
+  print(i)
+  p[[i]]<-fun_to_heatmap(cancerTypes = cancers[i],nsample = 10,FC = 1)
+names(p)[i]<-cancers[i]
+  }
 
+fun_to_heatmap(cancerTypes = "ACC",nsample = 10,FC = 1)
+p[[3]]
+p[[2]]
+p[[4]]
+p[[5]]
+  

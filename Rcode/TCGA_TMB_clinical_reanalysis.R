@@ -31,9 +31,12 @@ microScore$Patient_ID[1:3]
 data<-merge(tmb_micro,clinic,by="Patient_ID")
 ###tmb os mrscore
 data$TMB<-data$`Non-silent per Mb`
-data$TMB<-ifelse(data$TMB>=10,"TMB_High","TMB_Low")
+data$TMB<-ifelse(data$TMB>=20,"TMB_High","TMB_Low")
 data%>%group_by(Types,TMB)%>%summarise(n())
 fun_to_plot <- function(data, group, variable,facet,comparisons) {
+  col16<-c("#b3e2cd","#fdcdac","#cbd5e8","#1b9e77","#d95f02","#7570b3",
+           "#e7298a","#66a61e","#e6ab02","#a6761d","#666666",
+           "#f4cae4","#e6f5c9","#fff2ae","#f1e2cc","#cccccc")
   p <- ggboxplot(data, x=group, y=variable,fill = group, facet.by = facet,font.label = list(size=6),
                  palette = col16[6:12])+
     stat_compare_means(comparisons = comparisons)+
@@ -42,7 +45,55 @@ fun_to_plot <- function(data, group, variable,facet,comparisons) {
 }
 my_comparisons<-list(c("TMB_High","TMB_Low"))
 fun_to_plot(data,"TMB","MRscore","Types",my_comparisons)
+fun_to_plot(data,"TMB","MRscore",NULL,my_comparisons)
+datalist<-split.data.frame(data,f=data$Types,drop = F)
+p<-list()
+for (i in seq_len(length(datalist))) {
+  p[[i]]<-fun_to_plot(datalist[[i]],"TMB","MRscore","Types",my_comparisons)
+  names(p)[i]<-names(datalist)[i]
+  print(p[[i]])
+}
+p$COAD
+p$READ
+p$PRAD
+p$LUSC
+##coad lusc prad read 
+
+colnames(data)[5]="TMBvalue"
+sigTypes=c("COAD","READ","LUSC","PRAD")
+cordata<-subset(data,Types%in%sigTypes)
+cordata1<-subset(data,!Types%in%sigTypes)
+fun_to_plot(cordata,"TMB","MRscore",NULL,my_comparisons) +
+  facet_wrap(~Types,ncol = 4)+
+  theme_clean()+
+  theme(axis.text.x = element_blank(),
+        legend.title=element_blank(),
+        legend.position = "top")
  
+ggplot(cordata,aes(log10(MRscore+1),log10(TMBvalue+1)))+
+  geom_point(aes(color=Types))+
+  geom_rug(aes(color=Types))+
+  theme_clean()+
+  #coord_fixed()
+  scale_color_nejm()+
+  xlab("Log10(MRscore+1)")+
+  ylab("Log10(TMB+1)")+
+  theme(legend.title=element_blank())
+col31<-c("#303841","#D72323","#377F5B","#375B7F","#F2FCFC","#f0027f",
+         "#FAF8DE","#666666","#BDF1F6","#023782","#5e4fa2","#F1C40F",
+         "#ff7f00","#cab2d6","#240041","#ffff99","#0E3BF0","#a65628",
+         "#f781bf","#808FA6","#2EB872","#F0FFE1","#F33535","#011F4E",
+         "#82B269","#D3C13E","#3F9DCD","#014E1F","#AFFFDF","#3D002E",
+         "#3A554A")
+
+ggplot(cordata1,aes(log10(MRscore+1),log10(TMBvalue)))+
+  geom_point(aes(color=Types))+
+  geom_rug(aes(color=Types))+
+  theme_clean()+
+  scale_color_manual(values = col31)+
+  xlab("Log10(MRscore+1)")+
+  ylab("Log10(TMB+1)")+
+  theme(legend.title=element_blank())
 fun_to_plot(subset(data,Types=="COAD"),"TMB","MRscore","Types",my_comparisons)
 
 require(pROC)
