@@ -546,9 +546,10 @@ myexpr[[1]][1:5,1:5]
 DEGresSig[[3]][1:5,1:5]
 expr<-expr$Bacterial_infection
 DEexpr<-DEGresSig$Bacterial_infection
-
+expr<-data.frame(Gene=rownames(combat_edata),combat_edata)
 expr2MRscore<-function(expr,DEexpr){
   signature<-fread("../dataset/TCGA_data/annotationRow1.csv")
+  DEexpr<-subset(DEexpr,abs(logFC)>=1&P.Value<=0.05)
   MRgene_DEGs<-subset(DEexpr,Gene%in%signature$Gene)
   MRgene_DEGs$Regulation<-sample(c("Up","Down"),nrow(MRgene_DEGs),replace = T)
   MRgene_DEGs$Regulation<-ifelse(MRgene_DEGs$logFC>=0,"Up","Down")
@@ -559,8 +560,17 @@ expr2MRscore<-function(expr,DEexpr){
   downgene<-subset(DE_Mgene,Regulation=="Down")
   Upexpr<-expr[which(expr$Gene%in%upgene$Gene),]
   Downexpr<-expr[which(expr$Gene%in%downgene$Gene),]
-  Upexpr_average<-data.frame(sampleID = colnames(Upexpr)[-1],Upscore=apply(Upexpr[,-1], 2, mean))
-  Downexpr_average<-data.frame(sampleID = colnames(Downexpr)[-1],Downscore=apply(Downexpr[,-1], 2, mean))
+  if(dim(Upexpr)[1]==0){
+    Upexpr_average<-data.frame(sampleID = colnames(Upexpr)[-1],Upscore=rep(0,dim(expr)[2]-1))
+  } else {Upexpr_average<- data.frame(sampleID = colnames(Upexpr)[-1],
+                                      Upscore=apply(Upexpr[,-1], 2, mean))
+  }
+  if(dim(Downexpr)[1]==0){
+    Downexpr_average<-data.frame(sampleID = colnames(Downexpr)[-1],
+                                 Downscore=rep(0,dim(expr)[2]-1))
+  }else {
+    Downexpr_average<-data.frame(sampleID = colnames(Downexpr)[-1],Downscore=apply(Downexpr[,-1], 2, mean))
+  }
   DE_average<-bind_cols(Upexpr_average,Downexpr_average)[,-3]
   MRscore_value<-DE_average%>%mutate(MRscore=Upscore-Downscore)
   return(list(MRgene_DEGs=MRgene_DEGs,MRscore_value=MRscore_value,Total_MRscore=Total_MRscore))
@@ -568,9 +578,12 @@ expr2MRscore<-function(expr,DEexpr){
 names(myexpr)
 names(DEGresSig)
 MRscore<-list()
+MRgeneDE<-list()
 for (i in seq(length(DEGresSig))) {
   MRscore[[i]]<-expr2MRscore(expr = myexpr[[i]],DEexpr = DEGresSig[[i]])
   names(MRscore)[i]<-names(myexpr)[i]
+  MRgeneDE[[i]]<-MRscore[[i]][[1]]
+  names(MRgeneDE)[i]<-names(myexpr)[i]
 }
 head(MRscore$Bacterial_infection$MRscore_value)
 mergeMRscore<-bind_rows(MRscore[[1]]$MRscore_value,
@@ -579,8 +592,21 @@ mergeMRscore<-bind_rows(MRscore[[1]]$MRscore_value,
                         MRscore[[4]]$MRscore_value,
                         MRscore[[5]]$MRscore_value,
                         MRscore[[6]]$MRscore_value)
+sapply(MRgeneDE, nrow)
 
+mergeMRgeneDE<-bind_rows(data1=MRscore[[1]]$MRgene_DEGs%>%mutate(Event=rep(names(MRscore)[1]),nrow(MRscore[[1]])),
+                         data2=MRscore[[2]]$MRgene_DEGs%>%mutate(Event=rep(names(MRscore)[2]),nrow(MRscore[[2]])),
+                         data3=MRscore[[3]]$MRgene_DEGs%>%mutate(Event=rep(names(MRscore)[3]),nrow(MRscore[[3]])),
+                         data4=MRscore[[4]]$MRgene_DEGs%>%mutate(Event=rep(names(MRscore)[4]),nrow(MRscore[[4]])),
+                         data5=MRscore[[5]]$MRgene_DEGs%>%mutate(Event=rep(names(MRscore)[5]),nrow(MRscore[[5]])),
+                         data6=MRscore[[6]]$MRgene_DEGs%>%mutate(Event=rep(names(MRscore)[6]),nrow(MRscore[[6]])))
+write.csv(mergeMRgeneDE,"../dataset/dataset_alidation/validate_datasets/MRgeneDE_crossEvent.csv",row.names = F)
+mergeMRgeneDE$Event<-ifelse(mergeMRgeneDE$Event%in%c("Sepsis","Mixed_infection","Sepsis_surgical","Uninfected_inflammation"),"Other",mergeMRgeneDE$Event)
+mergeMRgeneDE<-mergeMRgeneDE[,-c(3:7)]
+write.csv(mergeMRgeneDE,"../dataset/dataset_alidation/validate_datasets/MRgenesInfection.example.csv",row.names = F)
+levels(factor(mergeMRgeneDE$event))
 head(mergeMRscore)
+
 head(meta)
 MRscore_meta<-merge(meta[,c(1,5,6)],mergeMRscore,by="sampleID")
 head(MRscore_meta)
@@ -638,6 +664,7 @@ fun_to_plot <- function(data, group, variable,comparisons) {
           axis.title.x = element_blank())
   return(p)
 }
+p[[1]]
 col31<-c("#303841","#D72323","#377F5B","#375B7F","#F2FCFC","#f0027f",
          "#FAF8DE","#666666","#BDF1F6","#023782","#5e4fa2","#F1C40F",
          "#ff7f00","#cab2d6","#240041","#ffff99","#0E3BF0","#a65628",

@@ -8,6 +8,9 @@ library(ggthemes)
 library(pheatmap)
 library(ggpubr)
 library(ggplot2)
+library(ComplexHeatmap)
+library(stringr)
+library(data.table)
 tmb_micro<-fread("../dataset/TCGA_data/MRscore_TMB_patients7832.csv")%>%as.data.frame()
 microScore<-fread("../dataset/TCGA_data/MRscore_TCGA_Patients9359.csv")%>%as.data.frame()
 clinic1<-fread("../dataset/TCGA_data/TCGA_Clinical_Variables.txt")%>%as.data.frame()
@@ -26,6 +29,64 @@ microScore$Patient_ID<-str_sub(microScore$Patient_ID,1,12)
 clinic2$Patient_ID<-str_sub(clinic2$Patient_ID,1,12)
 microScore$Patient_ID[1:3]
 data<-merge(tmb_micro,clinic,by="Patient_ID")
+###tmb os mrscore
+data$TMB<-data$`Non-silent per Mb`
+data$TMB<-ifelse(data$TMB>=10,"TMB_High","TMB_Low")
+data%>%group_by(Types,TMB)%>%summarise(n())
+fun_to_plot <- function(data, group, variable,facet,comparisons) {
+  p <- ggboxplot(data, x=group, y=variable,fill = group, facet.by = facet,font.label = list(size=6),
+                 palette = col16[6:12])+
+    stat_compare_means(comparisons = comparisons)+
+    geom_jitter(col=rgb(0, 0, 00, 0.2),size=1)
+  return(p)
+}
+my_comparisons<-list(c("TMB_High","TMB_Low"))
+fun_to_plot(data,"TMB","MRscore","Types",my_comparisons)
+ 
+fun_to_plot(subset(data,Types=="COAD"),"TMB","MRscore","Types",my_comparisons)
+
+require(pROC)
+require(randomForest)
+require(data.table)
+require(caret)
+require(ggplot2)
+require(ggthemes)
+set.seed(1000)
+colnames(data)[5]="TMBvalue"
+data$OSgroup<-data$OS
+data$OSgroup<-ifelse(data$OSgroup==1,"dead","alive")
+data$OSgroup<-as.factor(data$OSgroup)
+
+data_high=subset(data,TMB=="TMB_High")
+data_low=subset(data,TMB=="TMB_Low")
+rfdata=data_high
+rfdata=data_low
+trainIndex<-sample(nrow(rfdata),nrow(rfdata)*0.8)
+trainData<-rfdata[trainIndex,]
+testData<-rfdata[-trainIndex,]
+fitControl <- trainControl(method = "repeatedcv",
+                           number = 10,
+                           repeats = 10,
+                           ## Estimate class probabilities
+                           classProbs = TRUE,
+                           ## Evaluate performance using 
+                           ## the following function
+                           summaryFunction = twoClassSummary)
+RFfit<-randomForest(OSgroup~MRscore, trControl = fitControl,
+                    data = trainData,ntree=300,na.action=na.roughfix)
+pre_ran <- predict(RFfit,newdata=testData)
+obs_p_ran = data.frame(prob=pre_ran,obs=testData$OSgroup)
+#输出混淆矩阵
+table(testData$OSgroup,pre_ran,dnn=c("True","Predicted"))
+#绘制ROC曲线
+roc_res <- roc(testData$OSgroup,as.numeric(pre_ran),
+                  ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE)
+plot(roc_res, print.auc=TRUE, colorize = T,
+     auc.polygon=TRUE, grid=c(0.1, 0.2),
+     grid.col=c("green", "red"), 
+     max.auc.polygon=TRUE,auc.polygon.col="skyblue", 
+     print.thres=TRUE,main='RF_ROC')
+
 data2<-merge(clinic2,data,by="Patient_ID")
 head(microScore)
 clinic[1:3,1:3]
