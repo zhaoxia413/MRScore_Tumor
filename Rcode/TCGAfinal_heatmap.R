@@ -4,7 +4,10 @@ library(data.table)
 library(ComplexHeatmap)
 library(dplyr)
 options(stringsAsFactors = F)
-DEGs<-fread("../dataset/TCGA_data/microSignature_DEGtag.csv")%>%as.data.frame()
+DEGs<-fread("../dataset/TCGA_data/microSignature_DEGtag.csv")%>%
+  as.data.frame()
+DEGs%>%group_by(Types)%>%summarise(n())
+
 exprall<-fread("../dataset/TCGA_data/expr_MicroSignature_TMP.csv")%>%as.data.frame()
 sampleInfo<-fread("../dataset/TCGA_data/sampleInfo.csv")%>%as.data.frame()
 MRscoreall<-fread("../dataset/TCGA_data/MRscore_TCGA_Patients9359.csv")%>%as.data.frame()
@@ -18,19 +21,19 @@ exprall[1:3,1:3]
 sampleInfo[1:3,1:3]
 MRscoreall[1:3,1:3]
 head(DEGs)
-cancerTypes="STAD"
+cancerTypes="BRCA"
 load(file = "../dataset/MRscoreAPPexample.RData")
+load(file = file = "../dataset/TCGA_results/TCGAMRegnesHeatmap.Rdata")
 #exprMat=exprMat.exmaple
 MRgenes=MRgenes.example
 MRgeneAnno=MRgeneAnno.example
-
+fun_to_heatmap("BRCA")
 fun_to_heatmap<-function(cancerTypes){
   MRDEs<-subset(DEGs,Types==cancerTypes)
   meta<-subset(sampleInfo,Types==cancerTypes)
   expr<-exprall[which(exprall$Gene%in%MRDEs$Gene),]%>%as.data.frame()
   expr<-data.frame(row.names  = expr$Gene,expr[,which(colnames(expr)%in%meta$sampleID)])
   MRscore<-subset(MRscoreall,Types==cancerTypes)[,-2]
-  expr[1:3,1:3]
   exprMat=expr
   MRgenes=MRgenes.example
   MRgeneAnno=MRgeneAnno.example
@@ -41,18 +44,26 @@ fun_to_heatmap<-function(cancerTypes){
   antiVirResponse<-MRgeneExpr[which(rownames(MRgeneExpr)%in%antiVir$Gene),]
   antiBacResponse<-MRgeneExpr[which(rownames(MRgeneExpr)%in%antiBac$Gene),]
   MRscore<-data.frame(row.names = MRscore$sampleID,MRscore=MRscore$MRscore)
-  dfcol<-data.frame(row.names =meta$sampleID,Condition=meta$Condition)
-  annInfo=bind_cols(MRscore,antiVirResponse)
+  meta$sampleID=meta$sampleID[order(meta$Condition)]
+  dfcol<-data.frame(meta$sampleID[order(meta$Condition)],
+                    meta$Condition[order(meta$Condition)])
+  dfcol1<-data.frame(dfcol[,2])
+  rownames(dfcol1) <- dfcol$meta.sampleID.order.meta.Condition..
+  colnames(dfcol1)="Condition"
+  ha1= HeatmapAnnotation(df=dfcol1, which = "column",
+                         col = list(Condition = c("Cancer" =  "orange", 
+                                        "Normal" = "black")))
   ha = HeatmapAnnotation(
-    Condition=anno_histogram(dfcol,Condition =c("Cancer" =  "red", 
-                                                  "Normal" = "black")),
     antiVirResponse=anno_density(as.matrix(antiVirResponse), type =  "heatmap",
                                  gp = gpar(col = "white")),
     height = unit(2.5, "cm"),
     antiBacResponse=anno_density(as.matrix(antiBacResponse),type =  "heatmap")
   )
   
-  p <-Heatmap(scale(log(MRgeneExpr+1),center = F),show_column_names = F,
+  p <-Heatmap(scale(log(MRgeneExpr+1),center = F),
+              top_annotation = ha1,
+              cluster_columns = F,
+              show_column_names = F,
               heatmap_legend_param = list(title = "Z-score",
                                           legend_direction = "vertical",
                                           labels_gp = gpar(fontsize = 9)),
@@ -65,3 +76,4 @@ fun_to_heatmap<-function(cancerTypes){
   p
   return(p)
 }
+
