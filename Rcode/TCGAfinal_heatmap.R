@@ -16,19 +16,23 @@ colnames(MRscoreall)[1]="sampleID"
 sampleInfo$sampleID<-gsub("-",".",sampleInfo$sampleID)
 MRscoreall$sampleID<-gsub("-",".",MRscoreall$sampleID)
 colnames(exprall)<-gsub("-",".",colnames(exprall))
-DEGs=DEGs[,c(1,6,7)]
+DEGs=DEGs[,c(1,4,6,7)]
 exprall[1:3,1:3]
 sampleInfo[1:3,1:3]
 MRscoreall[1:3,1:3]
 head(DEGs)
 cancerTypes="BRCA"
+library(data.table)
+library(ComplexHeatmap)
+library(dplyr)
 load(file = "../dataset/MRscoreAPPexample.RData")
-load(file = file = "../dataset/TCGA_results/TCGAMRegnesHeatmap.Rdata")
+load(file = "../dataset/TCGA_results/TCGAMRegnesHeatmap.Rdata")
 #exprMat=exprMat.exmaple
 MRgenes=MRgenes.example
 MRgeneAnno=MRgeneAnno.example
-fun_to_heatmap("BRCA")
-fun_to_heatmap<-function(cancerTypes){
+fun_to_heatmap("BRCA",FC = 4)
+fun_to_heatmap<-function(cancerTypes,FC){
+  DEGs<-filter(DEGs,abs(Log2FC)>=FC)
   MRDEs<-subset(DEGs,Types==cancerTypes)
   meta<-subset(sampleInfo,Types==cancerTypes)
   expr<-exprall[which(exprall$Gene%in%MRDEs$Gene),]%>%as.data.frame()
