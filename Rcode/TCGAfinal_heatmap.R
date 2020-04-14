@@ -26,8 +26,53 @@ library(data.table)
 library(ComplexHeatmap)
 library(dplyr)
 load(file = "../dataset/MRscoreAPPexample.RData")
-save(DEGs,exprall,sampleInfo,MRscoreall,file = "../dataset/TCGA_results/TCGAMRegnesHeatmap.Rdata")
+#clinic<-fread("../dataset/TCGA_data/TCGA_clinical.csv")%>%as.data.frame()
+#colnames(clinic)[1]<-"sampleID"
+#clinic$sampleID<-gsub("-",".",clinic$sampleID)
+#clinic1<-fread("../dataset/TCGA_data/TCGA_Clinical_Variables.txt")%>%as.data.frame()
+#clinic2<-clinic1[c(162,7,48,50,56,22,24),]
+#rownames(clinic2)<-clinic2$V1
+#clinic2<-data.frame(t(clinic2))[-1,]
+#clinic2$sampleID<-rownames(clinic2)
+#clinic2$sampleID<-gsub("-",".",clinic2$sampleID)
+#clinic2$sampleID[1:3]
+#clinic7706=clinic2
+#clinic11160=clinic
+#colnames(clinic7706)=c("Age","Gender","Tumor_pt","Nodes_pn","Metastasis_pm","OS_status","OStime","sampleID")
+#save(DEGs,clinic7706,clinic11160,exprall,sampleInfo,MRscoreall,file = "../dataset/TCGA_results/TCGAMRegnesHeatmap.Rdata")
 load(file = "../dataset/TCGA_results/TCGAMRegnesHeatmap.Rdata")
+MRgenes<-MRgenes.example
+head(sampleInfo,3)
+MRscoreall[1:3,1:3]
+MRgenes[1:3,1:4]
+exprall[1:3,1:3]
+clinic11160$sampleID[1:3]
+clinic11160$sampleID1=clinic11160$sampleID
+sampleInfo$sampleID1=str_sub(sampleInfo$sampleID,1,12)
+meta11160<-merge(sampleInfo,clinic11160,by="sampleID1")
+exprall1<-exprall
+colnames(exprall1)=str_sub(colnames(exprall1),1,12)
+clinic7706$sampleID[1:3]
+meta7706<-merge(sampleInfo,clinic7706,by="sampleID")
+cancer="STAD"
+MRgenes_1<-subset(MRgenes,Types==cancer)
+meta_1<-subset(meta7706,Types==cancer)
+expr_1<-data.frame(row.names = exprall$Gene,exprall[,colnames(exprall)%in%meta_1$sampleID])
+epr_1<-data.frame(t(expr_1))
+epr_1<-data.frame(sampleID=rownames(epr_1),epr_1)
+tcgaMLdt_1<-merge(meta_1,epr_1,by="sampleID")
+
+
+meta1_1<-subset(meta11160,Types==cancer)
+expr1_1<-data.frame(row.names = exprall1$Gene,exprall1[,colnames(exprall1)%in%meta1_1$sampleID1])
+epr1_1<-data.frame(t(expr1_1))
+epr1_1<-data.frame(sampleID1=rownames(epr1_1),epr1_1)
+tcgaMLdt1_1<-merge(meta1_1,epr1_1,by="sampleID1")
+levels(factor(tcgaMLdt1_1$Condition))
+write.csv(tcgaMLdt1_1,"../dataset/MRgene_selection/tcgaMLdt_STAD.csv",row.names = F)
+
+
+
 #exprMat=exprMat.exmaple
 MRgenes=MRgenes.example
 MRgeneAnno=MRgeneAnno.example

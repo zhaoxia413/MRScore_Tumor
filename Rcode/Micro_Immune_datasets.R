@@ -505,20 +505,39 @@ expr2DEG<-function(event){
   write.csv(DEG,paste0("../dataset/dataset_alidation/validation_results/",event,"_DEGres.csv"),row.names = T)
   return(DEG)
 }
-
+Type<-levels(factor(meta$Type))
+Type
+Type<-Type[-2]
+meta_sub<-list()
+combat_edata_sub<-list()
+design<-list()
+mycompare<-list()
+contrast.matrix<-list()
+fit<-list()
+fit2<-list()
 DEGres<-list()
-DEGresSig<-list()
 for (i in seq(length(Type))) {
-  DEGres<-expr2DEG(event = Type[i])
-  DEGresSig[[i]]<-subset(DEGres[[i]],adj.P.Val<=0.05)
+  i=1
+  print(Type[i])
+    meta_sub[[i]]<-meta[which(meta$Type%in%c("Healthy",Type[i])),]
+    combat_edata_sub[[i]]<-combat_edata[,which(colnames(combat_edata[[i]])%in%meta_sub[[i]]$sampleID)]%>%as.matrix()
+    design[[i]]=model.matrix(~factor(meta_sub[[i]]$Type)+0)
+    colnames(design[[i]])=levels(factor(meta_sub[[i]]$Type))
+    mycompare[[i]]<-str_c(colnames(design[[i]]),collapse = "-")
+    design[[i]]<-as.factor(design[[i]])
+    contrast.matrix[[i]]<-makeContrasts(mycompare[[i]],
+                                   levels = design[[i]])
+    fit[[i]]=lmFit(combat_edata_sub[[i]],design[[i]])
+    fit2[[i]] <- contrasts.fit(fit[[i]], contrast.matrix[[i]]) 
+    fit2[[i]] <- eBayes(fit2[[i]]) 
+    DEGres[[i]]<-topTable(fit2[[i]], adjust="fdr",coef=1, n=Inf) %>% na.omit()  ## coef比较分组 n基因数
+    message(paste0("finish DEG for",Type[i]," vs Healthy analysis !"))
   names(DEGres)[i]<-Type[i]
-  names(DEGresSig)[i]<-Type[i]
 }
 ###begain
-DEGres<-list()
 DEGresSig<-list()
 for (i in seq(length(Type))) {
-  DEGres[[i]]<-read.csv(paste0("../dataset/dataset_alidation/validation_results/",Type[i],"_DEGres.csv"),row.names = 1,header = T)
+  print(Type[i])
   DEGresSig[[i]]<-subset(DEGres[[i]],adj.P.Val<=0.05)
   DEGresSig[[i]]<-data.frame(Gene=rownames(DEGresSig[[i]]),DEGresSig[[i]])
   names(DEGres)[i]<-Type[i]
@@ -544,7 +563,7 @@ for (i in seq(length(Type))) {
 }
 myexpr[[1]][1:5,1:5]
 DEGresSig[[3]][1:5,1:5]
-expr<-expr$Bacterial_infection
+#expr<-expr$Bacterial_infection
 DEexpr<-DEGresSig$Bacterial_infection
 expr<-data.frame(Gene=rownames(combat_edata),combat_edata)
 expr2MRscore<-function(expr,DEexpr){
@@ -601,13 +620,22 @@ mergeMRgeneDE<-bind_rows(data1=MRscore[[1]]$MRgene_DEGs%>%mutate(Event=rep(names
                          data5=MRscore[[5]]$MRgene_DEGs%>%mutate(Event=rep(names(MRscore)[5]),nrow(MRscore[[5]])),
                          data6=MRscore[[6]]$MRgene_DEGs%>%mutate(Event=rep(names(MRscore)[6]),nrow(MRscore[[6]])))
 write.csv(mergeMRgeneDE,"../dataset/dataset_alidation/validate_datasets/MRgeneDE_crossEvent.csv",row.names = F)
-mergeMRgeneDE$Event<-ifelse(mergeMRgeneDE$Event%in%c("Sepsis","Mixed_infection","Sepsis_surgical","Uninfected_inflammation"),"Other",mergeMRgeneDE$Event)
+#mergeMRgeneDE$Event<-ifelse(mergeMRgeneDE$Event%in%c("Sepsis","Mixed_infection","Sepsis_surgical","Uninfected_inflammation"),"Other",mergeMRgeneDE$Event)
 mergeMRgeneDE<-mergeMRgeneDE[,-c(3:7)]
+head(mergeMRgeneDE)
 write.csv(mergeMRgeneDE,"../dataset/dataset_alidation/validate_datasets/MRgenesInfection.example.csv",row.names = F)
-levels(factor(mergeMRgeneDE$event))
+levels(factor(mergeMRgeneDE$Event))
 head(mergeMRscore)
-
+#MRgenesInfection<-fread("../dataset/dataset_alidation/validate_datasets/MRgenesInfection.example.csv")
+#head(MRgenesInfection,3)
+combat_edata[1:3,1:3]
+combat_edata$Gene=rownames(combat_edata)
 head(meta)
+levels(factor(mergeMRgeneDE$Event))
+head(mergeMRgeneDE)
+gene_antiBac=subset(mergeMRgeneDE,Event=="Bacterial_infection")
+gene_antiVir=subset(mergeMRgeneDE,Event=="Viral_infection")
+
 MRscore_meta<-merge(meta[,c(1,5,6)],mergeMRscore,by="sampleID")
 head(MRscore_meta)
 MRscore_meta$HeathyGroup<-MRscore_meta$Healthy0.Infection
