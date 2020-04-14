@@ -2,8 +2,8 @@ library(data.table)
 library(sva)
 library(tidyverse)
 options(stringsAsFactors = F)
-file<-list.files("./raw_meta/")
-filepath<-paste0("./raw_meta/",file)
+file<-list.files("../dataset/dataset_alidation/LUSC/raw_meta/")
+filepath<-paste0("../dataset/dataset_alidation/LUSC/raw_meta/",file)
 filepath[1]
 metalist<-list()
 file

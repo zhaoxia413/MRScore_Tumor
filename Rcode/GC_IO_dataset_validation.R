@@ -456,6 +456,48 @@ write.csv(GC_MRscore[[1]],"GC_MR_DEGs.csv",row.names = F)
 GC_MR_DEGs<-fread("../dataset/IO_dataset/GC_arranged/byRSEM/GC_MR_DEGs.csv")%>%as.data.frame()
 head(MRscore)
 
+meta<-trans_meta
+
+survdata<-merge(MRscore,meta,by="sampleID")
+set.seed(1000)
+survdata$Group=as.factor(survdata$Group)
+rfdata=survdata
+group="OS"
+variables="MRscore"
+ratio=0.7
+rf_to_predict<-fucntion(rfdata,group,variables,ratio){
+trainIndex<-sample(nrow(rfdata),nrow(rfdata)*ratio)
+trainData<-rfdata[trainIndex,]
+testData<-rfdata[-trainIndex,]
+fitControl <- trainControl(method = "repeatedcv",
+                           number = 10,
+                           repeats = 10,
+                           ## Estimate class probabilities
+                           classProbs = TRUE,
+                           ## Evaluate performance using 
+                           ## the following function
+                           summaryFunction = twoClassSummary)
+ 
+RFfit<-randomForest(Group~MRscore, trControl = fitControl,
+                    data = trainData,ntree=300
+                    #,na.action=na.roughfix
+                    )
+pre_ran <- predict(RFfit,newdata=testData)
+obs_p_ran = data.frame(prob=pre_ran,obs=testData$OSgroup)
+#输出混淆矩阵
+table(testData$OSgroup,pre_ran,dnn=c("True","Predicted"))
+#绘制ROC曲线
+roc_res <- roc(testData$OSgroup,as.numeric(pre_ran),
+               ci=TRUE, boot.n=100, ci.alpha=0.9, stratified=FALSE)
+p<-plot(roc_res, print.auc=TRUE, colorize = T,
+     auc.polygon=TRUE, grid=c(0.1, 0.2),
+     grid.col=c("green", "red"), 
+     max.auc.polygon=TRUE,auc.polygon.col="skyblue", 
+     print.thres=TRUE,main='RF_ROC')
+print(p)
+return(p)
+}
+
 meta=trans_meta
 MRscore2Sva<-function(MRscore,meta,survivalTypes){
   survdata<-merge(MRscore,meta,by="sampleID")
@@ -512,10 +554,11 @@ MRscore2Sva<-function(MRscore,meta,survivalTypes){
   }
   return(p,survdata)
 }
+
 MRscore2Sva(MRscore = MRscore,meta = meta,survivalTypes = "PFS")
 MRscore2Sva(MRscore = MRscore,meta = meta,survivalTypes = "OS")
 my_comparisons<-list(c("PD", "SD"), c("PD", "PR"), c("PR", "SD"))
-survdata<-merge(MRscore,trans_meta,by="sampleID")
+
 surv_cut <- surv_cutpoint(
   survdata,
   time = "PFS",
@@ -523,6 +566,7 @@ surv_cut <- surv_cutpoint(
   variables = c("MRscore")
 )
 summary(surv_cut)
+plot(surv_cut)
 surv_cut <- surv_cutpoint(
   survdata,
     time = "OS",
@@ -530,32 +574,41 @@ surv_cut <- surv_cutpoint(
   variables = c("MRscore")
 )
 summary(surv_cut)
+plot(surv_cut)
+survdata<-merge(MRscore,trans_meta,by="sampleID")
 survdata$MRscore_level<-sample(c("High","Low"),nrow(MRscore),replace = T)
 survdata$MRscore_level<-ifelse(survdata$MRscore>=as.numeric(summary(surv_cut)[1]),"High","Low")
 
 fun_to_plot <- function(data, group, variable) {
-  p <- ggviolin(data, x=group, y=variable,fill = group, 
+  p <- ggboxplot(data, x=group, y=variable,fill = group, 
                 palette = c("#00AFBB", "#E7B800", "#FC4E07"), 
                 add = "jitter", shape=group)+
     stat_compare_means(comparisons = my_comparisons)+
-    stat_compare_means(label.y = 125)
+    stat_compare_means(label.y = 30)
   return(p)
 }
-
+r<-cor(survdata$MRscore,survdata$EBV,method="pearson")
+r
 meta$TMB.Muts.Mb
 my_comparisons<-list(c("High","Low"))
-fun_to_plot(survdata,"MRscore_level","TMB.Muts.Mb")
+survdata1<-survdata[-which(survdata$TMB.Muts.Mb==48.4),]#move the max TMB values
+fun_to_plot(survdata1,"MRscore_level","TMB.Muts.Mb")
 MRscore2Heatmap<-function(expr,DE_Mgene,groupdata){
   require(pheatmap)
   dfcol<-data.frame(row.names = groupdata$sampleID,Group=as.factor(groupdata$Group))
   mat<-subset(expr,expr$Gene%in%DE_Mgene$Gene)
   mat<-data.frame(row.names = mat$Gene,mat[,-1])
-  pheatmap(scale(mat,center = T),annotation_col = dfcol,
-           cluster_cols = T,
+  pheatmap(log(mat+1),annotation_col = dfcol,
+           cluster_cols = F,
+           scale = "column",
            border_color = NA,
            show_colnames = F)
 }
 groupdata<-data.frame(sampleID=trans_meta$sampleID,Group=trans_meta$Efficacy)
+groupdata = data.frame(sampleID=survdata$sampleID,Group=survdata$MRscore_level)
+groupdata$Group<-groupdata$Group[order(groupdata$Group)]
 DE_Mgene<-GC_MRscore[[1]]
 head(DE_Mgene)
-MRscore2Heatmap(expr = exprdata,DE_Mgene = DE_Mgene,groupdata = groupdata)
+range(DE_Mgene$Log2FC)
+DE_Mgene1<-subset(DE_Mgene,abs(Log2FC)>=2.5)
+MRscore2Heatmap(expr = exprdata,DE_Mgene = DE_Mgene1,groupdata = groupdata)
