@@ -1,0 +1,68 @@
+[0m[0KMicrosoft Windows [版本 10.0.17763.864][0K[?25l
+(c) 2018 Microsoft Corporation。保留所有权利。[0K
+[0K
+G:\signature\Git\MRScore_Tumor>[0K[?25h给i他[0K[?25lG:\signature\Git\MRScore_Tumor>给i[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>给[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>[0K[?25hg[0Ki[0Kt[0K[36G[?25lG:\signature\Git\MRScore_Tumor>git p[0K[?25hu[0Kl[0Kl[0K]0;  - git  pull[?25l
+[0K[?25h]0; error: Pulling is not possible because you have unmerged files.[0K[?25l
+[0;33mhint: Fix them up in the work tree, and then use 'git add/rm <file>'[0m[0K
+[0;33mhint: as appropriate to mark resolution and make a commit.[0m[0K
+fatal: Exiting because of an unresolved conflict.[0K
+[0K
+G:\signature\Git\MRScore_Tumor>[0K[?25hg[0Ki[0Kt[0K[36G[?25lG:\signature\Git\MRScore_Tumor>git a[0K[?25hd[0Kd[0K[40G[?25lG:\signature\Git\MRScore_Tumor>git add .[0K[?25h]0;  - git  add .[?25l
+[0K[?25hwarning: LF will be replaced by CRLF in Rcode/BiocManager Install dependencies.R.[0K[?25l
+The file will have its original line endings in your working directory[0K
+[0K[?25hwarning: LF will be replaced by CRLF in Rcode/MRgeneset_circle.R.[0K[?25l
+The file will have its original line endings in your working directory[0K
+[0K[?25hwarning: LF will be replaced by CRLF in Rcode/TCGA_microreads_dna_rnaMeta.R.[0K[?25l
+The file will have its original line endings in your working directory[0K
+[0K[?25hwarning: LF will be replaced by CRLF in Rcode/colors.R.[0K[?25l
+The file will have its original line endings in your working directory[0K
+[0K[?25hwarning: LF will be replaced by CRLF in Rcode/microreadsTCGA.R.[0K[?25l
+The file will have its original line endings in your working directory[0K
+[0K[?25hwarning: LF will be replaced by CRLF in Rcode/requirements.R.[0K[?25l
+The file will have its original line endings in your working directory[0K
+[0K[?25h]0; [?25l
+G:\signature\Git\MRScore_Tumor>[0K[?25hgit add .[0K[?25lG:\signature\Git\MRScore_Tumor>git pull[0K[?25h]0;  - git  pull[?25l
+[0K[?25h]0; error: You have not concluded your merge (MERGE_HEAD exists).[0K[?25l
+[0;33mhint: Please, commit your changes before merging.[0m[0K
+fatal: Exiting because of unfinished merge.[0K
+[0K
+G:\signature\Git\MRScore_Tumor>[0K[?25hgit pull[0K[?25lG:\signature\Git\MRScore_Tumor>git pul[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git pu[0K[?25hs[0Kh[0K[41G[?25lG:\signature\Git\MRScore_Tumor>git push o[0K[?25hr[0Ki[0Kg[0Ki[0Kn[0K[48G[?25lG:\signature\Git\MRScore_Tumor>git push origin m[0K[?25ha[0Ks[0Kt[0Ke[0Kr[0K]0;  - git  push origin master[?25l
+[0K[?25h]0; To github.com:zhaoxia413/MRScore_Tumor.git[0K[?25l
+ [0;31m! [rejected]       [0m master -> master (fetch first)[0K
+[0;31merror: failed to push some refs to 'git@github.com:zhaoxia413/MRScore_Tumor.git'[0m[0K
+[0;33mhint: Updates were rejected because the remote contains work that you do[0m[0K
+[0;33mhint: not have locally. This is usually caused by another repository pushing[0m[0K
+[0;33mhint: to the same ref. You may want to first integrate the remote changes[0m[0K
+[0;33mhint: (e.g., 'git pull ...') before pushing again.[0m[0K
+[0;33mhint: See the 'Note about fast-forwards' in 'git push --help' for details.[0m[0K
+[0K
+G:\signature\Git\MRScore_Tumor>[0K[?25hg[0Ki[0Kt[0K[36G[?25lG:\signature\Git\MRScore_Tumor>git s[0K[?25ht[0Ka[0Kt[0Ku[0Ks[0K]0;  - git  status[?25l
+[0K[?25h]0; On branch master[0K[?25l
+Your branch and 'origin/master' have diverged,[0K
+and have 2 and 12 different commits each, respectively.[0K
+  (use "git pull" to merge the remote branch into yours)[0K
+[0K
+All conflicts fixed but you are still merging.[0K
+  (use "git commit" to conclude merge)[0K
+[0K
+Changes to be committed:[0K
+        [0;32mnew file:   .DS_Store[0m[0K
+        [0;32mnew file:   ._.DS_Store[0m[0K
+        [0;32mnew file:   ._MRScore_Tumor.Rproj[0m[0K
+        [0;32mmodified:   .gitignore[0m[0K
+        [0;32mdeleted:    DEseq_files_pre.Rdata[0m[0K
+        [0;32mnew file:   Rcode/._MRscore_predict_response.R[0m[0K
+        [0;32mmodified:   Rcode/BiocManager Install dependencies.R[0m[0K
+        [0;32mrenamed:    MITAfromCOX.R -> Rcode/MITAfromCOX.R[0m[0K
+        [0;32mmodified:   Rcode/MRgeneset_circle.R[0m[0K
+        [0;32mmodified:   Rcode/TCGA_TMB_clinical_reanalysis.R[0m[0K
+        [0;32mmodified:   Rcode/TCGA_microreads_dna_rnaMeta.R[0m[0K
+        [0;32mmodified:   Rcode/TCGAfinal_heatmap.R[0m[0K
+        [0;32mmodified:   Rcode/colors.R[0m[0K
+        [0;32mmodified:   Rcode/microreadsTCGA.R[0m[0K
+        [0;32mmodified:   Rcode/requirements.R[0m[0K
+        [0;32mdeleted:    python/Machine_learning/results/LUSC_kfoldcv.pdf[0m[0K
+        [0;32mdeleted:    python/Machine_learning/results/kfoldcv.pdf[0m[0K
+[0K
+[0K
+G:\signature\Git\MRScore_Tumor>[0K[?25hg[0Ki[0Kr[0K[?25lG:\signature\Git\MRScore_Tumor>gi[0K[?25ht[0K[36G[37G[?25lG:\signature\Git\MRScore_Tumor>git  a[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git[0K[37G[?25h[36G[35G[36G[?25lG:\signature\Git\MRScore_Tumor>git a[0K[?25hd[0Kd[0K[40G[?25lG:\signature\Git\MRScore_Tumor>git add .[0K[?25h

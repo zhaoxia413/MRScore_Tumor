@@ -1,0 +1,38 @@
+library(data.table)
+library(ggsci)
+library(tidyverse)
+files<-list.files("../dataset/TCGA_data/MicroReads_TCGA/")
+dir.create("../dataset/TCGA_results/MicroReads_TCGA")
+path<-paste0("../dataset/TCGA_data/MicroReads_TCGA/",files)
+name<-str_sub(files,1,4)
+name[c(2,7)]<-c("GBM","OV")
+data<-list()
+for (i in seq(length(path))) {
+  data[[i]]<-fread(path[i])%>%as.data.frame()%>%mutate(Types=rep(name[i],nrow(.)))
+}
+data1<-bind_rows(data)
+head(data1)
+colnames(data1)[1:2]<-c("Gene","Micro")
+keypath<-fread("../dataset/TCGA_data/Nod_TLR_genes.csv")[,c(2,4)]
+DE<-fread("../dataset/TCGA_data/MRgenes_CancerTYpes_DEGtag.csv")
+keypathwaygeneExpr<-merge(keypath,DE,by="Gene")
+df<-subset(keypathwaygeneExpr,abs(Log2FC)>=5)
+head(df)
+keygene<-df$Gene
+head(keypath)
+micro_NTgene_cor<-merge(keypath,data1,by="Gene")
+micro_NT5FCgene_cor<-micro_NTgene_cor[which(micro_NTgene_cor$Gene%in%keygene),]
+head(micro_NTgene_cor)
+head(micro_NT5FCgene_cor)
+NTgeneDegree<-micro_NTgene_cor%>%group_by(Gene)%>%summarise(NTgeneDegree=n())
+NTmicroDegree<-micro_NTgene_cor%>%group_by(Micro)%>%summarise(NTmicroDegree=n())
+NT5FCgeneDegree<-micro_NT5FCgene_cor%>%group_by(Gene)%>%summarise(NT5FCgeneDegree=n())
+NT5FCmicroDegree<-micro_NT5FCgene_cor%>%group_by(Micro)%>%summarise(NT5FCmicroDegree=n())
+head(NT5FCmicroDegree)
+NT_cor1<-merge(micro_NTgene_cor[,-c(6:7)],NTgeneDegree,by="Gene")
+NT_cor<-merge(NT_cor1,NTmicroDegree,by="Micro")
+NT5FC_cor1<-merge(micro_NT5FCgene_cor[,-c(6:7)],NTgeneDegree,by="Gene")
+NT5FC_cor<-merge(NT5FC_cor1,NT5FCmicroDegree,by="Micro")
+write.csv(NT5FC_cor,"../dataset/TCGA_results/MicroReads_TCGA/micro_NT5FCgene_cor.csv",row.names = F,quote = F)
+write.csv(NT_cor,"../dataset/TCGA_results/MicroReads_TCGA/micro_NTgene_cor.csv",row.names = F,quote = F)
+

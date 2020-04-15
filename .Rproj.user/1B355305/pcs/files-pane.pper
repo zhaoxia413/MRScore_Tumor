@@ -1,0 +1,13 @@
+{
+    "path" : "/run/media/zhaoxia/Elements/signature/Git/MRScore_Tumor",
+    "sortOrder" : [
+        {
+            "ascending" : false,
+            "columnIndex" : 4
+        },
+        {
+            "ascending" : true,
+            "columnIndex" : 2
+        }
+    ]
+}

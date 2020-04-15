@@ -1,0 +1,26 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1584753136484.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2171368833",
+    "id" : "6241D37A",
+    "lastKnownWriteTime" : 1585173341,
+    "last_content_update" : 1585173341476,
+    "path" : "/run/media/zhaoxia/Elements/signature/Git/MRScore_Tumor/Rcode/microreadsTCGA.R",
+    "project_path" : "Rcode/microreadsTCGA.R",
+    "properties" : {
+        "cursorPosition" : "4,0",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 5,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
