@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1586909356234.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "CA78FBED",
+    "lastKnownWriteTime" : 1586911347,
+    "last_content_update" : 1586911347903,
+    "path" : "G:/signature/Git/MRScore_Tumor/Rcode/MITAfromCOX.R",
+    "project_path" : "Rcode/MITAfromCOX.R",
+    "properties" : {
+        "cursorPosition" : "86,0",
+        "scrollLine" : "69",
+        "tempName" : "Untitled2"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

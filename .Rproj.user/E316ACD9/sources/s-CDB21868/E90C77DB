@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1586911322743.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "E90C77DB",
+    "lastKnownWriteTime" : 1586861384,
+    "last_content_update" : 1586861384,
+    "path" : "G:/signature/Git/MRScore_Tumor/Rcode/colors.R",
+    "project_path" : "Rcode/colors.R",
+    "properties" : {
+        "cursorPosition" : "6,0",
+        "scrollLine" : "0"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

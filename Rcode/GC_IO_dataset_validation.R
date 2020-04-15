@@ -459,6 +459,7 @@ head(MRscore)
 meta<-trans_meta
 
 survdata<-merge(MRscore,meta,by="sampleID")
+write.csv(survdata,"../dataset/IO_dataset/GC_IO_ML.csv",row.names = F)
 set.seed(1000)
 survdata$Group=as.factor(survdata$Group)
 rfdata=survdata
