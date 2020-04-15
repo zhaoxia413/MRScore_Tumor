@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1584857607675.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "960212969",
+    "id" : "5F923949",
+    "lastKnownWriteTime" : 1574899371,
+    "last_content_update" : 1574899371,
+    "path" : "/run/media/zhaoxia/Elements/signature/signaturesAnalysis/LinuxFiles/MRgene_Micro interaction/MRgene_microbiome.R",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "36,7",
+        "scrollLine" : "0"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

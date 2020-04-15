@@ -188,7 +188,12 @@ p
 ##re plot the survival curve of tcga
 data1=subset(data4,data4$Stage_group=="Early")
 data1=subset(data4,data4$Stage_group=="Late")
+<<<<<<< HEAD
+
+datalist<-split.data.frame(data4,f=data4$Types,drop = F)
+=======
 datalist<-split.data.frame(data1,f=data1$Types,drop = F)
+>>>>>>> 8bb5eb81eae04d21b86a863239c44287b94d2c46
 df<-datalist[[9]]
 colnames(data4)[c(7,8)]<-c("Age","Gender")
 df<-subset(data4,Types=="LUAD")
@@ -198,7 +203,11 @@ t1<-surv_cutpoint(
   df,
   time = "OS.time",
   event = "OS",
+<<<<<<< HEAD
+  variables = c("MRscore")
+=======
   variables = c("age_at_initial_pathologic_diagnosis.y")
+>>>>>>> 8bb5eb81eae04d21b86a863239c44287b94d2c46
 )
 summary(t1)
 t1<-surv_cutpoint(
@@ -211,8 +220,13 @@ summary(t1)
 df$MRscore_group<-sample(c("High","Low"),nrow(df),replace = T)
 df$MRscore_group<-ifelse(df$MRscore>=summary(t1)[,1],"High","Low")
 df$Age_group<-sample(c("Mthan50","Lthan50"),nrow(df),replace = T)
+<<<<<<< HEAD
+df$Age_group<-ifelse(df$Age>=50,"Mthan50","Lthan50")
+coxfit1<-coxph(Surv(OS.time,OS) ~ MRscore_group+Stage_group+Age_group,data = df)
+=======
 df$Age_group<-ifelse(df$age_at_initial_pathologic_diagnosis.y>=50,"Mthan50","Lthan50")
 coxfit1<-coxph(Surv(OS.time,OS) ~ MRscore_group+Stage+years,data = df)
+>>>>>>> 8bb5eb81eae04d21b86a863239c44287b94d2c46
 coxfit2<-coxph(Surv(OS.time,OS) ~ MRscore_group+strata(Stage_group)+Gender,data = df)
 coxfit3<-coxph(Surv(OS.time,OS) ~ MRscore_group+strata(Stage_group)+strata(Gender),data = df)
 coxfit<-coxph(Surv(OS.time,OS) ~ MRscore_group,data = df)
@@ -222,7 +236,11 @@ summary(coxfit3)
 summary(coxfit)
 temp<-cox.zph(coxfit,transform = "km")
 plot(temp)
+<<<<<<< HEAD
+ggforest(coxfit1,main = "Hazard ratio",
+=======
 ggforest(coxfit,main = "Hazard ratio",
+>>>>>>> 8bb5eb81eae04d21b86a863239c44287b94d2c46
          cpositions = c(0.02, 0.22, 0.4), 
          fontsize = 1,
          refLabel = "reference", noDigits = 2)
@@ -233,6 +251,36 @@ print(forest_model(coxfit1,factor_separate_line=F,
                                          text_size = 4, 
                                          banded = T), 
                    theme = theme_forest()))
+<<<<<<< HEAD
+
+mutil_res<-summary(coxfit1)
+mutil_res_table<-as.data.frame(cbind(mutil_res$coefficients,mutil_res$conf.int[,-c(1,2)]))
+rownames(mutil_res_table)<-gsub("low","",rownames(mutil_res$coefficients))
+mutil_res_table<-subset(mutil_res_table,`Pr(>|z|)`<=0.05)
+write.csv(mutil_res_table,paste0("../dataset/COX_results/mutil_res_table_age_stage_MRscore.csv"))
+multi_pick<-rownames(mutil_res_table)
+names(multi_pick)<-names(multi_pick)
+fmla <- as.formula(paste0("Surv(OS.time,OS) ~",paste0(multi_pick,collapse = '+')))
+cox <- coxph(Surv(OS.time,OS) ~ MRscore_group+Stage_group+Age_group, data = df)#构建多因素生存模型
+final_res<-summary(cox)
+cox=step(cox,direction = "both")
+riskScore=predict(cox,type="risk",newdata=df)
+risk=as.vector(ifelse(riskScore>1,"high","low"))
+names(risk)<-names(multi_pick)
+multiCOX_risk_result<-cbind(id=rownames(cbind(df[,c(1,4,5)],riskScore,risk)),
+                                 cbind(df[c(1,4,5)],riskScore,risk))
+write.csv(multiCOX_risk_result,paste0("../dataset/COX_results/mutation_model-multiCOX_risk_age_stage_MRscore.csv"),quote = T)
+rt=read.csv("../dataset/COX_results/mutation_model-multiCOX_risk_age_stage_MRscore.csv",check.names=F,row.names=1)
+roc=survivalROC(Stime=rt$OS.time, status=rt$OS, marker = rt$riskScore, 
+                     predict.time =3, method="KM")
+plot(roc$FP, roc$TP, type="l", xlim=c(0,1), ylim=c(0,1),col='red', 
+     xlab="False positive rate", ylab="True positive rate",
+     main=paste("ROC curve (", "AUC = ",round(ro$AUC,3),")"),
+     lwd = 2, cex.main=1.3, cex.lab=1.2, cex.axis=1.2, font=1.2)
+abline(0,1)
+dev.off()
+=======
+>>>>>>> 8bb5eb81eae04d21b86a863239c44287b94d2c46
 #predict newdata woth coxfit1
 newdata<-data.frame(ID=c("A1","A2","A3"),
                     MRscore_group=c("High","Low","Low"),

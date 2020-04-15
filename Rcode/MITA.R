@@ -191,4 +191,17 @@ MRscorelist<-expr2MRscore(expr = expr,DEexpr = DEGs_filter)
 MRscore<-MRscorelist[[2]]
 write.csv(MRscorelist[[1]],"MIRenes_LUAD.csv",row.names = F)
 head(MRscore)
-  
+
+##Variable Selection using Random Forests
+#backwards variable elimination 
+#importance spectrum 
+library(varSelRF)
+#generate stratified bootstrap resamples in R
+library(dplyr)
+df %>% 
+  group_by(V1) %>% 
+  sample_n(10, replace=T)
+
+
+
+

@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1586915748782.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "1CE78AB1",
+    "lastKnownWriteTime" : 1586915760,
+    "last_content_update" : 1586915760287,
+    "path" : "G:/signature/Git/MRScore_Tumor/Rcode/enrich_MRgene_eachTypes.R",
+    "project_path" : "Rcode/enrich_MRgene_eachTypes.R",
+    "properties" : {
+        "cursorPosition" : "116,51",
+        "scrollLine" : "99"
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
