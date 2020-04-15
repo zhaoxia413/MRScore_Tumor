@@ -84,4 +84,31 @@ p=ggdotchart(keygenes, x="Gene", y="coef", color = "Types",fill="Types",
            label = round(keygenes$HR,2), font.label = list(color="black",
                                                      size=9, vjust=0.5), ggtheme = theme_pubr())
 p+geom_hline(yintercept = 0, linetype = 2, color = "lightgray")
-
+library(clusterProfiler)
+library(org.Hs.eg.db)
+upgenes<-subset(keygenes,Regulation>=0)$Gene%>%as.factor()
+downgenes<-subset(keygenes,Regulation<=0)$Gene%>%as.factor()
+genes_ID=select(org.Hs.eg.db,keys =levels(factor(keygenes$Gene)),column = "ENTREZID", keytype = "SYMBOL",multiVals = "first")
+genes_ID=genes_ID[,2]
+ekk <- enrichKEGG(gene = genes_ID,organism = 'hsa',pvalueCutoff = 0.05)
+write.table(as.matrix(ekk@result), 
+            file=paste0("../dataset/COX_results/KEGGenrich.txt"),
+            row.names = F,sep = "\t",quote = F)
+df<-ekk@result%>%filter(qvalue<=0.01)%>%mutate(Bg=gsub("/.*","",BgRatio))%>%
+  mutate(enrichScore = (Count/as.numeric(Bg)))%>%  mutate(NegLog_qvalue = -log10(qvalue))
+colnames(df)
+df$Description<-df$Description[order(df$enrichScore)]
+p<-ggplot(df,aes(enrichScore,Description))+
+  geom_point(aes(size=Count,color=NegLog_qvalue))+ 
+  scale_color_gradient(low = "blue",high = "red")+
+  theme(axis.text = element_text(colour = "black",size = 12),
+        legend.text = element_text(colour = "black",size = 12),
+        panel.grid.major = element_line(colour = "gray88",linetype = "dashed"),
+        panel.background=element_blank(),
+        axis.ticks = element_line(size = 1, colour = "black"),
+        axis.line = element_line(size = 1, colour = "black"),
+        legend.position = "right",
+        panel.border = element_rect(linetype = "solid", fill = NA,size = 2),
+        axis.title = element_text(size = 12)
+        ,title = element_text(size = 12))
+p

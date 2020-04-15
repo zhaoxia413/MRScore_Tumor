@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1586921393603.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "D81C2FB1",
+    "lastKnownWriteTime" : 1586909336,
+    "last_content_update" : 1586909336,
+    "path" : "G:/signature/Git/MRScore_Tumor/Rcode/TCGA_cox.R",
+    "project_path" : "Rcode/TCGA_cox.R",
+    "properties" : {
+        "cursorPosition" : "219,10",
+        "scrollLine" : "219"
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
