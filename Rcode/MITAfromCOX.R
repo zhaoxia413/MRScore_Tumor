@@ -80,9 +80,7 @@ p+geom_text_repel(data=MRgeneKM,aes(Log2FC,HR,label=label),
 keygenes=subset(MRgeneKM,label!="")
 colnames(keygenes)
 p=ggdotchart(keygenes, x="Gene", y="HR", color = "Types",
-           
            #palette = c("#00AFBB", "#E7B800", "#FC4E07"),
-           
            sorting = "descending", add = "segments", rotate = TRUE,
            
            group = "Types", dot.size = 4,
