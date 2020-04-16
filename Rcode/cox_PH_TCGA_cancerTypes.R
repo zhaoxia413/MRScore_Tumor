@@ -125,6 +125,14 @@ for (i in seq_len(length(univ_results))) {
   names(single_pick)[i]<-levels(factor(cli$type))[i]
   write.csv(res_single[[i]],paste0("../dataset/COX_results/KM_res_single_TCGA_",levels(factor(cli$type))[i],".csv"))
 }
+#3.lasso
+sapply(single_pick, length)
+#ACC BLCA BRCA CESC CHOL COAD DLBC ESCA  GBM HNSC KICH KIRC KIRP 
+#119   92  128   12   67  161  283  117  149  298  203  128  138 
+#LAML  LGG LIHC LUAD LUSC MESO   OV 
+#50    6   10  214   55   27  177 
+library(glmnet)
+
 # 3. Cox regressison
 ## multi
 which(sapply(single_pick, is.null))

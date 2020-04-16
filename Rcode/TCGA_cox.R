@@ -29,16 +29,7 @@ meta$Treatment_outcome<-ifelse(meta$Treatment_outcome=="Complete Remission/Respo
                       ifelse(meta$Treatment_outcome=="NA","NA","R"))
  levels(factor(meta$Treatment_outcome))
  levels(factor(meta$Response))
- ##glmnet continus variables cox
- library(glmnet)
- library(survival)
- d <- meta
- x <- model.matrix( ~ MRscore + Age + Stage, d)
- y <- Surv(d$OStime, d$OS)
- fit <- glmnet(x, y, family="cox", alpha=1)
- plot(fit, label=T)
- cv.fit <- cv.glmnet(x, y, family="cox", alpha=1)
- plot(cv.fit)
+
  #癌症零期（Stage 0）：检测到异常细胞，但异常细胞没有扩散到别处，这个时期也称为原位癌（carcinoma in situ）
  meta$Stage<-meta$AJCC_stage
  meta$Stage<-gsub("Stage III[A-C]","High_stage",meta$Stage)
@@ -50,8 +41,47 @@ meta$Treatment_outcome<-ifelse(meta$Treatment_outcome=="Complete Remission/Respo
  meta$Stage<-gsub("Stage II","Low_stage",meta$Stage)
  meta$Stage<-gsub("Stage I","Low_stage",meta$Stage)
  meta$Stage<-ifelse(meta$Stage=="High_stage"|meta$Stage=="Low_stage",meta$Stage,"NA")
+ colnames(meta)[c(9,11,13)]<-c("OStime","DSStime","PFItime")
+ meta$Stage_ct<-meta$AJCC_stage
+ meta$Stage_ct<-gsub("Stage III[A-C]",3,meta$Stage_ct)
+ meta$Stage_ct<-gsub("Stage IV[A-C]",4,meta$Stage_ct)
+ meta$Stage_ct<-gsub("Stage II[A-C]",2,meta$Stage_ct)
+ meta$Stage_ct<-gsub("Stage I[A-C]",1,meta$Stage_ct)
+ meta$Stage_ct<-gsub("Stage III",3,meta$Stage_ct)
+ meta$Stage_ct<-gsub("Stage IV",4,meta$Stage_ct)
+ meta$Stage_ct<-gsub("Stage II",2,meta$Stage_ct)
+ meta$Stage_ct<-gsub("Stage I",1,meta$Stage_ct)
+ meta$Stage_ct<-ifelse(meta$Stage_ct%in%c(1,2,3,4),meta$Stage_ct,"NA")
  levels(factor(meta$Stage)) 
  levels(factor(meta$Gender))
+ levels(factor(meta$Stage_ct))
+
+ ##glmnet continus variables cox
+ library(glmnet)
+ library(survival)
+ d <- subset(meta,select = c(OStime,OS,MRscore,Age,Stage_ct))
+ d<-d%>%subset(.,Age!="NA")%>%subset(.,Stage_ct!="NA")%>%subset(.,OStime!=0)
+ x <- model.matrix( ~ MRscore + Age + Stage_ct, d)
+ y <- Surv(d$OStime, d$OS)
+ fit <- glmnet(x, y, family="cox", alpha=1)
+ plot(fit, label=T)#顶端的横坐标应该是当前Lambda下非零变量的个数：
+ #glmnet()返回的是一系列不同Lambda对应的值（一组模型），
+ coef(fit)
+ #需要user来选择一个Lambda，交叉验证是最常用挑选Lambda的方法
+ #LASSO回归复杂度调整的程度由参数λ来控制，λ越大对变量较多的线性模型的惩罚力度就越大，从而最终获得一个变量较少的模型
+ cv.fit <- cv.glmnet(x, y, family="cox", alpha=1,nfolds = 10)
+ plot(cv.fit)
+ #lambda.min（cross-validation误差最小）、
+ #lambda.1se（cross-validation误差最小一个标准差内，模型最简单），对应图中两根竖线的地方
+ #It includes the cross-validation curve (red dotted line), and upper and lower standard deviation（标准差） curves along
+ #the lambda sequence (error bars). Two selected lambda’s are indicated by the vertical dotted lines (see below).
+
+ #lambda.min is the value of Lambda that gives minimum mean cross-validated error. 
+ coefficient <- coef(cv.fit, s = cv.fit$lambda.min)
+ Active.index<-which(as.numeric(coefficient)!=0)
+ Active.coefficients<-as.numeric(coefficient)[Active.index]
+ multi_cox_res<-rownames(coefficient)[Active.coefficients]
+ 
  colnames(meta)
  data<-subset(meta,Stage!="NA")
  g2<-surv_cutpoint(
@@ -65,6 +95,7 @@ plot(g2)#Age==65
 data$MRscore<-ifelse(data$MRscore>=median(data$MRscore),"High_MRscore","Low_MRscore")
 data$Age<-ifelse(data$Age>=65,"High_age","Low_age")
 coxfit<-coxph(Surv(OStime,OS) ~ MRscore+Stage+Age+Gender,data = data) 
+library(forestmodel)
 p<-forest_model(coxfit,factor_separate_line=F, 
                  format_options = list(colour= "black", 
                                        shape = 12, 
@@ -72,8 +103,52 @@ p<-forest_model(coxfit,factor_separate_line=F,
                                        banded = T), 
                  theme = theme_forest())
  p
+ 
+ #cox indifferent stage
+ cox_early_OS<- coxph(Surv(OStime, OS)~MRscore, 
+             data = subset(data,Stage=="Low_stage"))
+ cox_late_OS<- coxph(Surv(OStime, OS)~MRscore, 
+                   data = subset(data,Stage=="Low_stage"))
+ cox_early_PFI<- coxph(Surv(PFItime, PFI)~MRscore, 
+                      data = subset(data,Stage=="Low_stage"))
+ cox_late_PFI<- coxph(Surv(PFItime, PFI)~MRscore, 
+                     data = subset(data,Stage=="Low_stage"))
+ cox_early_DSS<- coxph(Surv(DSStime, DSS)~MRscore, 
+                       data = subset(data,Stage=="Low_stage"))
+ cox_late_DSS<- coxph(Surv(DSStime, DSS)~MRscore, 
+                      data = subset(data,Stage=="Low_stage"))
+ cox_res<-list()
+ coef_early_OS<-summary(cox_early_OS)$coefficients%>%
+   as.data.frame()%>%mutate(Group="early_OS")%>%
+   mutate(Variables=rownames(summary(cox_early_OS)))
+ coef_late_OS<-summary(cox_late_OS)$coefficients%>%
+   as.data.frame()%>%mutate(Group=early_OS)
+ coef_early_PFI<-summary(cox_early_PFI)$coefficients%>%
+   as.data.frame()%>%mutate(Group=early_PFI)
+ coef_late_PFI<-summary(cox_late_PFI)$coefficients%>%
+   as.data.frame()%>%mutate(Group=late_PFI)
+ coef_early_DSS<-summary(cox_early_DSS)$coefficients%>%
+   as.data.frame()%>%mutate(Group=early_DSS)
+ coef_late_DSS<-summary(cox_late_DSS)$coefficients%>%
+   as.data.frame()%>%mutate(Group=late_DSS)
+ 
+ 
+ 
+ res_table<-as.data.frame(cox_res$early_OS$coefficients)%>%
+   append(cox_res$early_OS$concordance)%>%
+   append(cox_res$early_OS$conf.int)
+ 
+for(i in c(1:6)){
+    res_table[[i]]<-as.data.frame(cbind(cox_res[[i]]$coefficients,
+                                   cox_res[[i]]$conf.int[,-c(1,2)]))
+    }
+ res_table<-as.data.frame(cbind(cox_res$coefficients,cox_res$conf.int[,-c(1,2)]))
+ rownames(res_table)<-gsub("low","",rownames(mutil_res$coefficients))
+ res_table<-subset(res_table,`Pr(>|z|)`<=0.05)
+ 
+ 
+ 
  covariates<-list("MRscore","Stage","Age","Gender")
-
  univ_formulas<-list()
  for (i in seq_len(length(covariates))) {
    univ_formulas[[i]] <- sapply(covariates[[i]],
