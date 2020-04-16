@@ -97,8 +97,8 @@ write.table(as.matrix(ekk@result),
 df<-ekk@result%>%filter(qvalue<=0.01)%>%mutate(Bg=gsub("/.*","",BgRatio))%>%
   mutate(enrichScore = (Count/as.numeric(Bg)))%>%  mutate(NegLog_qvalue = -log10(qvalue))
 colnames(df)
-df$Description<-df$Description[order(df$enrichScore)]
-p<-ggplot(df,aes(enrichScore,Description))+
+df<-df[order(df$enrichScore),]
+p<-ggplot(df,aes(enrichScore,reorder(Description,enrichScore)))+
   geom_point(aes(size=Count,color=NegLog_qvalue))+ 
   scale_color_gradient(low = "blue",high = "red")+
   theme(axis.text = element_text(colour = "black",size = 12),
