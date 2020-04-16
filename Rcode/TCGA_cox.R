@@ -106,37 +106,70 @@ p<-forest_model(coxfit,factor_separate_line=F,
  
  #cox indifferent stage
  cox_early_OS<- coxph(Surv(OStime, OS)~MRscore, 
-             data = subset(data,Stage=="Low_stage"))
+             data = subset(meta,Stage=="Low_stage"))
  cox_late_OS<- coxph(Surv(OStime, OS)~MRscore, 
-                   data = subset(data,Stage=="Low_stage"))
+                   data = subset(data,Stage=="High_stage"))
  cox_early_PFI<- coxph(Surv(PFItime, PFI)~MRscore, 
-                      data = subset(data,Stage=="Low_stage"))
+                      data = subset(meta,Stage=="Low_stage"))
  cox_late_PFI<- coxph(Surv(PFItime, PFI)~MRscore, 
-                     data = subset(data,Stage=="Low_stage"))
+                     data = subset(meta,Stage=="High_stage"))
  cox_early_DSS<- coxph(Surv(DSStime, DSS)~MRscore, 
-                       data = subset(data,Stage=="Low_stage"))
+                       data = subset(meta,Stage=="Low_stage"))
  cox_late_DSS<- coxph(Surv(DSStime, DSS)~MRscore, 
-                      data = subset(data,Stage=="Low_stage"))
- cox_res<-list()
+                      data = subset(meta,Stage=="High_stage"))
+ 
  coef_early_OS<-summary(cox_early_OS)$coefficients%>%
    as.data.frame()%>%mutate(Group="early_OS")%>%
-   mutate(Variables=rownames(summary(cox_early_OS)))
+   mutate(Variables=rownames(summary(cox_early_OS)$coefficients))%>%
+   cbind(.,summary(cox_early_OS)$Concordance)
+ 
  coef_late_OS<-summary(cox_late_OS)$coefficients%>%
-   as.data.frame()%>%mutate(Group=early_OS)
+   as.data.frame()%>%mutate(Group="late_OS")%>%
+   mutate(Variables=rownames(summary(cox_late_OS)$coefficients))
+ 
  coef_early_PFI<-summary(cox_early_PFI)$coefficients%>%
-   as.data.frame()%>%mutate(Group=early_PFI)
+   as.data.frame()%>%mutate(Group="early_PFI")%>%
+   mutate(Variables=rownames(summary(cox_early_PFI)$coefficients))
+ 
  coef_late_PFI<-summary(cox_late_PFI)$coefficients%>%
-   as.data.frame()%>%mutate(Group=late_PFI)
+   as.data.frame()%>%mutate(Group="late_PFI")%>%
+   mutate(Variables=rownames(summary(cox_late_PFI)$coefficients))
+ 
  coef_early_DSS<-summary(cox_early_DSS)$coefficients%>%
-   as.data.frame()%>%mutate(Group=early_DSS)
+   as.data.frame()%>%mutate(Group="early_DSS")%>%
+   mutate(Variables=rownames(summary(cox_early_DSS)$coefficients))
+ 
  coef_late_DSS<-summary(cox_late_DSS)$coefficients%>%
-   as.data.frame()%>%mutate(Group=late_DSS)
- 
- 
- 
- res_table<-as.data.frame(cox_res$early_OS$coefficients)%>%
-   append(cox_res$early_OS$concordance)%>%
-   append(cox_res$early_OS$conf.int)
+   as.data.frame()%>%mutate(Group="late_DSS")%>%
+   mutate(Variables=rownames(summary(cox_late_DSS)$coefficients))
+ coef=bind_rows(list(coef_early_OS,coef_late_OS,
+                     coef_early_PFI, coef_late_PFI,
+                     coef_early_DSS, coef_late_DSS))
+ data = subset(meta,Stage=="Low_stage")
+ riskScore=predict(cox_early_OS,type="risk",newdata=data)
+ risk=as.vector(ifelse(riskScore>1,"high","low"))
+ COX_risk_result<-cbind(id=rownames(cbind(data[,8:9],riskScore,risk)),
+                             cbind(data[,8:9],riskScore,risk))
+ write.csv(COX_risk_result,"../dataset/TCGA_cox/MRscore_COX_riskinEarlystage.csv")
+ rt=read.csv("../dataset/TCGA_cox/MRscore_COX_riskinEarlystage.csv",check.names=F,row.names=1)
+ roc=survivalROC(Stime=rt$OStime, status=rt$OS, marker = rt$riskScore, 
+                 predict.time =3, method="KM")
+ pdf(file=paste0("../dataset/TCGA_cox/MRscore_COX_riskROC_early.pdf"))
+ par(oma=c(0.5,1,0,1),font.lab=1.5,font.axis=1.5)
+ plot(roc$FP, roc$TP, type="l", xlim=c(0,1), ylim=c(0,1),col='red', 
+      xlab="False positive rate", ylab="True positive rate",
+      main=paste("ROC curve (", "AUC = ",round(roc$AUC,3),")"),
+      lwd = 2, cex.main=1.3, cex.lab=1.2, cex.axis=1.2, font=1.2)
+ abline(0,1)
+ dev.off()
+ fit<- survfit(Surv(OStime/30, OS) ~ risk, data = rt)
+ diff=survdiff(Surv(OStime/30, OS) ~risk,data = rt)
+ pValue=1-pchisq(diff$chisq,df=1)
+ pValue=round(pValue,14)
+ plot(fit, lty = 2:3,col=c("red","blue"),xlab="time (months)",
+      ylab="survival rate",
+      main=paste("survival curve (p=", pValue ,")",sep=""),mark.time=T)
+ legend("topright", c("Low risk", "High risk"), lty = 2:3, col=c("blue","red"))
  
 for(i in c(1:6)){
     res_table[[i]]<-as.data.frame(cbind(cox_res[[i]]$coefficients,
