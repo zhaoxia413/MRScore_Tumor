@@ -43,19 +43,132 @@ meta$Treatment_outcome<-ifelse(meta$Treatment_outcome=="Complete Remission/Respo
  meta$Stage<-ifelse(meta$Stage=="High_stage"|meta$Stage=="Low_stage",meta$Stage,"NA")
  colnames(meta)[c(9,11,13)]<-c("OStime","DSStime","PFItime")
  meta$Stage_ct<-meta$AJCC_stage
- meta$Stage_ct<-gsub("Stage III[A-C]",3,meta$Stage_ct)
- meta$Stage_ct<-gsub("Stage IV[A-C]",4,meta$Stage_ct)
- meta$Stage_ct<-gsub("Stage II[A-C]",2,meta$Stage_ct)
- meta$Stage_ct<-gsub("Stage I[A-C]",1,meta$Stage_ct)
- meta$Stage_ct<-gsub("Stage III",3,meta$Stage_ct)
- meta$Stage_ct<-gsub("Stage IV",4,meta$Stage_ct)
- meta$Stage_ct<-gsub("Stage II",2,meta$Stage_ct)
- meta$Stage_ct<-gsub("Stage I",1,meta$Stage_ct)
- meta$Stage_ct<-ifelse(meta$Stage_ct%in%c(1,2,3,4),meta$Stage_ct,"NA")
+ meta$Stage_ct<-gsub("Stage III[A-C]","Stage III",meta$Stage_ct)
+ meta$Stage_ct<-gsub("Stage IV[A-C]","Stage IV",meta$Stage_ct)
+ meta$Stage_ct<-gsub("Stage II[A-C]","Stage II",meta$Stage_ct)
+ meta$Stage_ct<-gsub("Stage I[A-C]","Stage I",meta$Stage_ct)
+ meta$Stage_ct<-gsub("Stage III","Stage III",meta$Stage_ct)
+ meta$Stage_ct<-gsub("Stage IV","Stage IV",meta$Stage_ct)
+ meta$Stage_ct<-gsub("Stage II","Stage II",meta$Stage_ct)
+ meta$Stage_ct<-gsub("Stage I","Stage I",meta$Stage_ct)
+ meta$Stage_ct<-ifelse(meta$Stage_ct%in%c("Stage I","Stage II","Stage III","Stage IV"),meta$Stage_ct,"NA")
  levels(factor(meta$Stage)) 
  levels(factor(meta$Gender))
  levels(factor(meta$Stage_ct))
+ ##reponse
 
+ fun_to_plot <- function(data, group, variable,facet,comparisons) {
+   col16<-c("#b3e2cd","#fdcdac","#cbd5e8","#1b9e77","#d95f02","#7570b3",
+            "#e7298a","#66a61e","#e6ab02","#a6761d","#666666",
+            "#f4cae4","#e6f5c9","#fff2ae","#f1e2cc","#cccccc")
+   p <- ggboxplot(data, x=group, y=variable,fill = group, facet.by = facet,font.label = list(size=6),
+                  palette = col16[sample(c(1:13),10)])+ #palette = col16[sample(c(1:10),10)]
+     stat_compare_means(comparisons = comparisons)+
+     geom_jitter(col=rgb(0, 0, 00, 0.2),size=1)
+   return(p)
+ }
+ my_comparisons<-list(c("R","NR"))
+ my_comparisons<-list(c("MALE","FEMALE"))
+ my_comparisons<-list(c("High","Low"))
+ my_comparisons<-list(c("Stage I","Stage II"),
+                      c("Stage I","Stage III"),
+                      c("Stage I","Stage IV"),
+                      c("Stage II","Stage III"),
+                      c("Stage II","Stage IV"),
+                      c("Stage IV","Stage III"))
+ 
+ data1=subset(meta,Response!="NA")
+ data2=subset(meta,Response!="NA")%>%subset(.,Stage_ct!="NA")
+ data2$Stage_ct<-factor(data2$Stage_ct,levels = c("Stage I","Stage II","Stage III","Stage IV"))
+ data4=subset(meta,Gender!="NA")
+ data5=subset(meta,Age!="NA")%>%subset(.,Stage_ct!="NA")
+ fun_to_plot(data1,"Response","MRscore","Types",my_comparisons)
+ fun_to_plot(data2,"Response","MRscore","Stage_ct",my_comparisons)
+ fun_to_plot(data2,"Response","MRscore","Stage",my_comparisons)
+ fun_to_plot(data1,"Response","MRscore",NULL,my_comparisons)
+ fun_to_plot(data2,"Gender","MRscore","Stage_ct",my_comparisons)+theme(axis.text.x = element_text(angle = 90))
+ fun_to_plot(data1,"Gender","MRscore",NULL,my_comparisons)
+ fun_to_plot(data2,"Stage_ct","MRscore",NULL,my_comparisons)+theme(axis.text.x = element_text(angle = 90))
+ fun_to_plot(data1,"Gender","MRscore",NULL,my_comparisons)
+ data2$MRscore_group<-ifelse(data2$MRscore>=mean(meta$MRscore),"High","Low")
+ data5$Age_60<-ifelse(data5$Age>=60,"High","Low")
+ fun_to_plot(data5,"Age_60","MRscore","Stage_ct",my_comparisons)
+ fun_to_plot(data5,"Age_60","MRscore",NULL,my_comparisons)
+ 
+ fit<-survfit(Surv(OStime/365,OS) ~ MRscore_group,ctype = 1,
+              conf.type="log-log",
+              data = data2)
+ surv_median(fit)
+ ggsurvplot(fit = fit,facet.by = "Stage_ct",
+            data = data2,
+            pval.method = T,
+            risk.table = TRUE,
+            pval = TRUE,
+            ggtheme = theme_survminer(),
+            palette = c("red","blue"),
+            #facet.by = "Types",
+            legend.title="MRscore(mean)",
+            risk.table.col = "strata",
+            surv.median.line = "hv",
+            risk.table.y.text.col = T,
+            risk.table.y.text = T)
+ fit<-survfit(Surv(PFItime/365,PFI) ~ MRscore_group,ctype = 1,
+              conf.type="log-log",
+              data = data2)
+ surv_median(fit)
+ ggsurvplot(fit = fit,facet.by = "Stage_ct",
+            data = data2,
+            pval.method = T,
+            risk.table = TRUE,
+            pval = TRUE,
+            ggtheme = theme_survminer(),
+            palette = c("#08d9d6","#252a34"),
+            #facet.by = "Types",
+            legend.title="MRscore (mean)",
+            risk.table.col = "strata",
+            surv.median.line = "hv",
+            risk.table.y.text.col = T,
+            risk.table.y.text = T)
+ fit<-survfit(Surv(DSStime/365,DSS) ~ MRscore_group,ctype = 1,
+              conf.type="log-log",
+              data = data2)
+ surv_median(fit)
+ ggsurvplot(fit = fit,facet.by = "Stage_ct",
+            data = data2,
+            pval.method = T,
+            risk.table = TRUE,
+            pval = TRUE,
+            ggtheme = theme_survminer(),
+            palette = c("#ff9a3c","#283c63"),
+            #facet.by = "Types",
+            legend.title="MRscore (mean)",
+            risk.table.col = "strata",
+            surv.median.line = "hv",
+            risk.table.y.text.col = T,
+            risk.table.y.text = T)
+ ##stage specific survival
+ data3=subset(data2,Stage_ct=="Stage I")
+ data3=subset(data2,Stage_ct=="Stage II")
+ data3=subset(data2,Stage_ct=="Stage III")
+ data3=subset(data2,Stage_ct=="Stage IV")
+ data3=subset(data2,Types=="BLCA")
+ fit<-survfit(Surv(OStime/365,OS) ~ MRscore_group,ctype = 1,
+              conf.type="log-log",
+              data = data3)
+ surv_median(fit)
+ ggsurvplot(fit = fit,facet.by = "Stage_ct",
+            data = data3,
+            pval.method = T,
+            risk.table = TRUE,
+            pval = TRUE,
+            ggtheme = theme_survminer(),
+            palette = c("red","blue"),
+            #facet.by = "Types",
+            legend.title="MRscore(mean)",
+            risk.table.col = "strata",
+            surv.median.line = "hv",
+            risk.table.y.text.col = T,
+            risk.table.y.text = T)
  ##glmnet continus variables cox
  library(glmnet)
  library(survival)

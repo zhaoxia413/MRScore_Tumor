@@ -1,4 +1,4 @@
-[?25l[0mMicrosoft Windows [版本 10.0.17763.864][0K
+[0m[0K[?25lMicrosoft Windows [版本 10.0.17763.864][0K
 (c) 2018 Microsoft Corporation。保留所有权利。[0K
 [0K
 G:\signature\Git\MRScore_Tumor>[0K
@@ -19,284 +19,14 @@ G:\signature\Git\MRScore_Tumor>[0K
 [0K
 [0K
 [0K
+[0K
+[0K
+[0K
+[0K
+[0K
+[0K
+[0K
+[0K
 [0K[0m[1;1H[2J[0m[0K[?25l
-G:\signature\Git\MRScore_Tumor>[0K[?25h[?25l
-G:\signature\Git\MRScore_Tumor>[0K[?25hgit[0K[36G[?25lG:\signature\Git\MRScore_Tumor>git p[0K[?25hyu[0K[?25lG:\signature\Git\MRScore_Tumor>git py[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git p[0K[?25hu[0Kl[0Kl[0K]0;  - git  pull[?25l
-[0K[?25hConnection reset by 13.229.188.59 port 22[0K[?25l
-fatal: Could not read from remote repository.[0K
-[0K
-Please make sure you have the correct access rights[0K
-and the repository exists.[0K
-[0K[?25h]0; [?25l
-G:\signature\Git\MRScore_Tumor>[0K[?25hg[0Ki[0Kt[0K[36G[?25lG:\signature\Git\MRScore_Tumor>git d[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git[0K[36G[?25h[?25lG:\signature\Git\MRScore_Tumor>git s[0K[?25ht[0Ka[0Kt[0Ku[0Ks[0K]0;  - git  status[?25l
-[0K[?25hOn branch master[0K[?25l
-Your branch is up to date with 'origin/master'.[0K
-[0K
-Changes not staged for commit:[0K
-  (use "git add/rm <file>..." to update what will be committed)[0K
-  (use "git restore <file>..." to discard changes in working direct[0Ko
-ry)[0K
-        [0;31mmodified:   .Rproj.user/E316ACD9/console06/91E67BCA[0m[0K
-        [0;31mmodified:   .Rproj.user/E316ACD9/console06/INDEX001[0m[0K
-        [0;31mmodified:   .Rproj.user/E316ACD9/pcs/source-pane.pper[0m[0K
-        [0;31mmodified:   .Rproj.user/E316ACD9/pcs/windowlayoutstate.pper[0m[0K
-        [0;31mmodified:   .Rproj.user/E316ACD9/sources/prop/53E8857E[0m[0K
-        [0;31mmodified:   .Rproj.user/E316ACD9/sources/prop/8415C362[0m[0K
-        [0;31mmodified:   .Rproj.user/E316ACD9/sources/prop/A1BE7A7B[0m[0K
-        [0;31mdeleted:    .Rproj.user/E316ACD9/sources/s-CDB21868/1CE78AB[0K1
-[0m[0K
-        [0;31mdeleted:    .Rproj.user/E316ACD9/sources/s-CDB21868/1CE78AB[0K1
--contents[0m[0K
-        [0;31mdeleted:    .Rproj.user/E316ACD9/sources/s-CDB21868/7085249[0K8
--contents[0m[0K
-        [0;31mdeleted:    .Rproj.user/E316ACD9/sources/s-CDB21868/7871451[0K6
--contents[0m[0K
-        [0;31mdeleted:    .Rproj.user/E316ACD9/sources/s-CDB21868/C99D702[0K3
--contents[0m[0K
-        [0;31mdeleted:    .Rproj.user/E316ACD9/sources/s-CDB21868/CA78FBE[0KD
-[0m[0K
-        [0;31mdeleted:    .Rproj.user/E316ACD9/sources/s-CDB21868/CA78FBE[0KD
--contents[0m[0K
-        [0;31mdeleted:    .Rproj.user/E316ACD9/sources/s-CDB21868/D81C2FB[0K1
-[0m[0K
-        [0;31mdeleted:    .Rproj.user/E316ACD9/sources/s-CDB21868/D81C2FB[0K1
--contents[0m[0K
-        [0;31mdeleted:    .Rproj.user/E316ACD9/sources/s-CDB21868/E90C77D[0KB
-[0m[0K
-        [0;31mdeleted:    .Rproj.user/E316ACD9/sources/s-CDB21868/E90C77D[0KB
--contents[0m[0K
-        [0;31mdeleted:    .Rproj.user/E316ACD9/sources/s-CDB21868/F2D8805[0K9
--contents[0m[0K
-        [0;31mdeleted:    .Rproj.user/E316ACD9/sources/s-CDB21868/FAA743A[0K4
--contents[0m[0K
-        [0;31mdeleted:    .Rproj.user/E316ACD9/sources/s-CDB21868/lock_fi[0Kl
-e[0m[0K
-        [0;31mmodified:   Rcode/MITAfromCOX.R[0m[0K
-[0K
-Untracked files:[0K
-  (use "git add <file>..." to include in what will be committed)[0K
-        [0;31m.gitignore[0m[0K
-[0K
-no changes added to commit (use "git add" and/or "git commit -a")[0K
-[0K[?25h]0; [?25l
-G:\signature\Git\MRScore_Tumor>[0K[?25hgit status[0K[?25lG:\signature\Git\MRScore_Tumor>git statu[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git stat[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git sta[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git st[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git s[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git[0K[36G[?25h[?25lG:\signature\Git\MRScore_Tumor>git a[0K[?25hd[0Kd[0K[40G[?25lG:\signature\Git\MRScore_Tumor>git add .[0K[?25h]0;  - git  add .[?25l
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/pcs/so[0Ku[?25l
-rce-pane.pper.[0K
-The file will have its original line endings in your working direct[0Ko
-ry[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/pcs/wi[0Kn[?25l
-dowlayoutstate.pper.[0K
-The file will have its original line endings in your working direct[0Ko
-ry[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/source[0Ks[?25l
-/prop/53E8857E.[0K
-The file will have its original line endings in your working direct[0Ko
-ry[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/source[0Ks[?25l
-/prop/8415C362.[0K
-The file will have its original line endings in your working direct[0Ko
-ry[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/source[0Ks[?25l
-/prop/A1BE7A7B.[0K
-The file will have its original line endings in your working direct[0Ko
-ry[0K
-[0K[?25h]0; [?25l
-G:\signature\Git\MRScore_Tumor>[0K[?25hgit add .[0K[?25lG:\signature\Git\MRScore_Tumor>git add[0K[40G[?25h[39G[?25lG:\signature\Git\MRScore_Tumor>git ad[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git a[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git[0K[36G[?25h[?25lG:\signature\Git\MRScore_Tumor>git p[0K[?25hu[0Kl[0Kl[0K]0;  - git  pull[?25l
-[0K[?25hremote: Enumerating objects: 55, done.[0K[?25l
-remote: Counting objects: 100% (55/55), done.[0K
-remote: Compressing objects:  38% (13/34)[0K[?25h[?25lremote: Compressing objects: 100% (34/34), done.[0K
-[0K[?25h[?25lUnpacking objects:   2% (1/45)[0K[1G[?25h[?25lUnpacking objects:   4% (2/45)[0K[1G[?25h[?25lUnpacking objects:   6% (3/45)[0K[1G[?25h[?25lUnpacking objects:   8% (4/45)[0K[1G[?25hremote: Total 45 (delta 8), reused 45 (delta 8), pack-reused 0[0K[?25l
-[0K[?25h[?25lUnpacking objects:  13% (6/45)[0K[1G[?25h[?25lUnpacking objects:  15% (7/45)[0K[1G[?25h[?25lUnpacking objects:  17% (8/45)[0K[1G[?25h[?25lUnpacking objects:  20% (9/45)[0K[1G[?25h[?25lUnpacking objects:  22% (10/45)[0K[1G[?25h[?25lUnpacking objects:  24% (11/45)[0K[1G[?25h[?25lUnpacking objects:  26% (12/45)[0K[1G[?25h[?25lUnpacking objects:  28% (13/45)[0K[1G[?25h[?25lUnpacking objects:  31% (14/45)[0K[1G[?25h[?25lUnpacking objects:  33% (15/45)[0K[1G[?25h[?25lUnpacking objects:  35% (16/45)[0K[1G[?25h[?25lUnpacking objects:  37% (17/45)[0K[1G[?25h[?25lUnpacking objects:  40% (18/45)[0K[1G[?25h[?25lUnpacking objects:  42% (19/45)[0K[1G[?25h[?25lUnpacking objects:  44% (20/45)[0K[1G[?25h[?25lUnpacking objects:  46% (21/45)[0K[1G[?25h[?25lUnpacking objects:  48% (22/45)[0K[1G[?25h[?25lUnpacking objects:  51% (23/45)[0K[1G[?25h[?25lUnpacking objects:  53% (24/45)[0K[1G[?25h[?25lUnpacking objects:  55% (25/45)[0K[1G[?25h[?25lUnpacking objects:  57% (26/45)[0K[1G[?25h[?25lUnpacking objects:  60% (27/45)[0K[1G[?25h[?25lUnpacking objects:  62% (28/45)[0K[1G[?25h[?25lUnpacking objects:  64% (29/45)[0K[1G[?25h[?25lUnpacking objects:  66% (30/45)[0K[1G[?25h[?25lUnpacking objects:  68% (31/45)[0K[1G[?25h[?25lUnpacking objects:  71% (32/45)[0K[1G[?25h[?25lUnpacking objects:  73% (33/45)[0K[1G[?25h[?25lUnpacking objects:  75% (34/45)[0K[1G[?25h[?25lUnpacking objects:  77% (35/45)[0K[1G[?25h[?25lUnpacking objects:  80% (36/45)[0K[1G[?25h[?25lUnpacking objects:  82% (37/45)[0K[1G[?25h[?25lUnpacking objects:  84% (38/45)[0K[1G[?25h[?25lUnpacking objects:  88% (40/45)[0K[1G[?25h[?25lUnpacking objects:  91% (41/45)[0K[1G[?25h[?25lUnpacking objects:  93% (42/45)[0K[1G[?25h[?25lUnpacking objects:  95% (43/45)[0K[1G[?25h[?25lUnpacking objects:  97% (44/45)[0K[1G[?25hUnpacking objects: 100% (45/45), done.[0K[?25l
-[0K[?25hFrom github.com:zhaoxia413/MRScore_Tumor[0K[?25l
-   0f9b275..3df3b0f  master     -> origin/master[0K
-[0K[?25h]0; error: Your local changes to the following files would be overwritt[0Ke[?25l
-n by merge:[0K
-        Rcode/MITAfromCOX.R[0K
-Please commit your changes or stash them before you merge.[0K
-Aborting[0K
-Updating 0f9b275..3df3b0f[0K
-[0K
-G:\signature\Git\MRScore_Tumor>[0K[?25hgit pull[0K[?25lG:\signature\Git\MRScore_Tumor>git pul[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git pu[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git p[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git[0K[36G[?25h[?25lG:\signature\Git\MRScore_Tumor>git c[0K[?25ho[0Km[0Km[0Ki[0Kt[0K[43G[?25lG:\signature\Git\MRScore_Tumor>git commit -[0K[?25hm[0K[46G[?25lG:\signature\Git\MRScore_Tumor>git commit -m "[0K[?25h"[0K[47G[?25lG:\signature\Git\MRScore_Tumor>git commit -m "u"[0K[48G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "up"[0K[49G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "upd"[0K[50G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "upda"[0K[51G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "updat"[0K[52G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "updata"[0K[53G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "updatae"[0K[54G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "updatae "[0K[55G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "updatae"[0K[54G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "updata"[0K[53G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "updat"[0K[52G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "update"[0K[53G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "update "[0K[54G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "update f"[0K[55G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "update fr"[0K[56G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "update fro"[0K[57G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "update from"[0K[58G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "update from "[0K[59G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "update from o"[0K[60G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "update from of"[0K[61G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "update from off"[0K[62G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "update from offi"[0K[63G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "update from offic"[0K[64G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "update from office"[0K[65G[?25h]0;  - git  commit -m "update from office"[?25l
-[0K[?25h]0; [master bd1ebd6] update from office[0K[?25l
- 23 files changed, 102 insertions(+), 1224 deletions(-)[0K
- rewrite .Rproj.user/E316ACD9/console06/91E67BCA (99%)[0K
- rewrite .Rproj.user/E316ACD9/console06/INDEX001 (84%)[0K
- delete mode 100644 .Rproj.user/E316ACD9/sources/s-CDB21868/1CE78AB[0K1
-[0K
- delete mode 100644 .Rproj.user/E316ACD9/sources/s-CDB21868/1CE78AB[0K1
--contents[0K
- delete mode 100644 .Rproj.user/E316ACD9/sources/s-CDB21868/7085249[0K8
--contents[0K
- delete mode 100644 .Rproj.user/E316ACD9/sources/s-CDB21868/7871451[0K6
--contents[0K
- delete mode 100644 .Rproj.user/E316ACD9/sources/s-CDB21868/C99D702[0K3
--contents[0K
- delete mode 100644 .Rproj.user/E316ACD9/sources/s-CDB21868/CA78FBE[0KD
-[0K
- delete mode 100644 .Rproj.user/E316ACD9/sources/s-CDB21868/CA78FBE[0KD
--contents[0K
- delete mode 100644 .Rproj.user/E316ACD9/sources/s-CDB21868/D81C2FB[0K1
-[0K
- delete mode 100644 .Rproj.user/E316ACD9/sources/s-CDB21868/D81C2FB[0K1
--contents[0K
- delete mode 100644 .Rproj.user/E316ACD9/sources/s-CDB21868/E90C77D[0KB
-[0K
- delete mode 100644 .Rproj.user/E316ACD9/sources/s-CDB21868/E90C77D[0KB
--contents[0K
- delete mode 100644 .Rproj.user/E316ACD9/sources/s-CDB21868/F2D8805[0K9
--contents[0K
- delete mode 100644 .Rproj.user/E316ACD9/sources/s-CDB21868/FAA743A[0K4
--contents[0K
- delete mode 100644 .Rproj.user/E316ACD9/sources/s-CDB21868/lock_fi[0Kl
-e[0K
- create mode 100644 .gitignore[0K
-[0K
-G:\signature\Git\MRScore_Tumor>[0K[?25hgit commit -m "update from office"[0K[?25lG:\signature\Git\MRScore_Tumor>git pull[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git add .[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git status[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git add .[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git add[0K[40G[?25h[39G[?25lG:\signature\Git\MRScore_Tumor>git ad[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git a[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git[0K[36G[?25h[?25lG:\signature\Git\MRScore_Tumor>git o[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git[0K[36G[?25h[?25lG:\signature\Git\MRScore_Tumor>git p[0K[?25hu[0Ks[0K[?25lG:\signature\Git\MRScore_Tumor>git pu[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git p[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git[0K[36G[?25h[35G[?25lG:\signature\Git\MRScore_Tumor>gi[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>g[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>[0K[?25hp[0K[?25lG:\signature\Git\MRScore_Tumor>[0K[?25hg[0Kr[0Ki[0K[?25lG:\signature\Git\MRScore_Tumor>gr[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>g[0K[?25hi[0Kt[0K[36G[?25lG:\signature\Git\MRScore_Tumor>git p[0K[?25hu[0Ks[0Kh[0K[41G[40G[?25lG:\signature\Git\MRScore_Tumor>git pus[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git pu[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git p[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git[0K[36G[?25h[?25lG:\signature\Git\MRScore_Tumor>git m[0K[?25he[0Kr[0Kg[0Ke[0K]0;  - git  merge[?25l
-[0K[?25h]0; error: The following untracked working tree files would be overwrit[0Kt[?25l
-en by merge:[0K
-        .Rhistory[0K
-Please move or remove them before you merge.[0K
-Aborting[0K
-[0K
-G:\signature\Git\MRScore_Tumor>[0K[?25ht[0Km[0K[?25lG:\signature\Git\MRScore_Tumor>t[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>[0K[?25hr[0Km[0K[35G[?25lG:\signature\Git\MRScore_Tumor>rm ^V[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>rm[0K[35G[?25h[34G[35G[?25lG:\signature\Git\MRScore_Tumor>rm ^V[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>rm[0K[35G[?25h[34G[35G[?25lG:\signature\Git\MRScore_Tumor>rm ^V[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>rm[0K[35G[?25h[34G[35G[?25lG:\signature\Git\MRScore_Tumor>rm .Rhistory[0K[?25h[?25l
-'rm' 不是内部或外部命令，也不是可运行的程序[0K
-或批处理文件。[0K
-[0K
-G:\signature\Git\MRScore_Tumor>[0K[?25hr[0Ke[0K[?25lG:\signature\Git\MRScore_Tumor>r[0K[?25hm[0K[35G[?25lG:\signature\Git\MRScore_Tumor>rm .Rhistory[0K[?25h[?25l
-'rm' 不是内部或外部命令，也不是可运行的程序[0K
-或批处理文件。[0K
-[0K
-G:\signature\Git\MRScore_Tumor>[0K[?25hr[0Ke[0Km[0Ko[0Kv[0Ke[0K[39G[?25lG:\signature\Git\MRScore_Tumor>remove .Rhistory[0K[?25h[?25l
-'remove' 不是内部或外部命令，也不是可运行的程序[0K
-或批处理文件。[0K
-[0K
-G:\signature\Git\MRScore_Tumor>[0K[?25hremove .Rhistory[0K[?25lG:\signature\Git\MRScore_Tumor>rm .Rhistory[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git merge[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "update from office"[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git merge[0K[?25h]0;  - git  merge[?25l
-[0K[?25hAuto-merging Rcode/MITAfromCOX.R[0K[?25l
-[0K[?25hMerge made by the 'recursive' strategy.[0K[?25l
-[0K[?25h .DS_Store                                          | Bin [0;31m0[0m -> [0;32m8196[0m[0K[?25l
-bytes[0K
- .Rhistory                                          | 512 [0;32m+++++++++[0K+
-+++++++++++[0m[0K
- .Rproj.user/AFB608A5/pcs/files-pane.pper           |  13 [0;32m+[0m[0K
- .Rproj.user/AFB608A5/pcs/source-pane.pper          |   3 [0;32m+[0m[0K
- .Rproj.user/AFB608A5/pcs/windowlayoutstate.pper    |  14 [0;32m+[0m[0K
- .Rproj.user/AFB608A5/pcs/workbench-pane.pper       |   6 [0;32m+[0m[0K
- .Rproj.user/AFB608A5/rmd-outputs                   |   6 [0;32m+[0m[0K
- .Rproj.user/AFB608A5/saved_source_markers          |   1 [0;32m+[0m[0K
- .Rproj.user/AFB608A5/sources/prop/17F4F35E         |   4 [0;32m+[0m[0K
- .Rproj.user/AFB608A5/sources/prop/25C3B78A         |   4 [0;32m+[0m[0K
- .Rproj.user/AFB608A5/sources/prop/4D78F909         |   4 [0;32m+[0m[0K
- .Rproj.user/AFB608A5/sources/prop/8CCCB35B         |   4 [0;32m+[0m[0K
- .Rproj.user/AFB608A5/sources/prop/A04F3946         |   4 [0;32m+[0m[0K
- .Rproj.user/AFB608A5/sources/prop/B1405D3          |   4 [0;32m+[0m[0K
- .Rproj.user/AFB608A5/sources/prop/C1708DC9         |   4 [0;32m+[0m[0K
- .Rproj.user/AFB608A5/sources/prop/C276EC24         |   2 [0;32m+[0m[0K
- .Rproj.user/AFB608A5/sources/prop/C4D0753A         |   4 [0;32m+[0m[0K
- .Rproj.user/AFB608A5/sources/prop/C9189CDD         |   4 [0;32m+[0m[0K
- .Rproj.user/AFB608A5/sources/prop/CE08E1CF         |   2 [0;32m+[0m[0K
- .Rproj.user/AFB608A5/sources/prop/D1BA6BAF         |   4 [0;32m+[0m[0K
- .Rproj.user/AFB608A5/sources/prop/DB3F4BA1         |   4 [0;32m+[0m[0K
- .Rproj.user/AFB608A5/sources/prop/DF9386A8         |   4 [0;32m+[0m[0K
- .Rproj.user/AFB608A5/sources/prop/E5F429F5         |   2 [0;32m+[0m[0K
- .Rproj.user/AFB608A5/sources/prop/INDEX            |  15 [0;32m+[0m[0K
- .Rproj.user/AFB608A5/sources/s-A19EA811/21122131   |  33 [0;32m++[0m[0K
- .../AFB608A5/sources/s-A19EA811/21122131-contents  |   0[0K
- .../AFB608A5/sources/s-A19EA811/3354261-contents   |   0[0K
- .../AFB608A5/sources/s-A19EA811/97B50816-contents  |   0[0K
- .Rproj.user/AFB608A5/sources/s-A19EA811/C227413    |  25 [0;32m+[0m[0K
- .../AFB608A5/sources/s-A19EA811/C227413-contents   | 256 [0;32m+++++++++[0K+
-+[0m[0K
- .../AFB608A5/sources/s-A19EA811/D0284C2F-contents  | Bin [0;31m0[0m -> [0;32m4096[0m[0K
-bytes[0K
- .Rproj.user/AFB608A5/sources/s-A19EA811/D3E7C982   |  25 [0;32m+[0m[0K
- .../AFB608A5/sources/s-A19EA811/D3E7C982-contents  | 119 [0;32m+++++[0m[0K
- .../AFB608A5/sources/s-A19EA811/E17810A1-contents  |   0[0K
- .../AFB608A5/sources/s-A19EA811/FE8EAC43-contents  |   0[0K
- .Rproj.user/AFB608A5/sources/s-A19EA811/lock_file  |   0[0K
- .../C25DD257-home/1/AFB608A5D335AA56/chunks.json   |   1 [0;32m+[0m[0K
- .../shared/notebooks/C25DD257-home/1/s/chunks.json |   1 [0;32m+[0m[0K
- Rcode/MITAfromCOX.R                                |   5 [0;32m+[0m[0K
- Rcode/TCGA_cox.R                                   |  10 [0;32m+[0m[0K
- 40 files changed, 1099 insertions(+)[0K
- create mode 100644 .DS_Store[0K
- create mode 100644 .Rhistory[0K
- create mode 100644 .Rproj.user/AFB608A5/pcs/files-pane.pper[0K
- create mode 100644 .Rproj.user/AFB608A5/pcs/source-pane.pper[0K
- create mode 100644 .Rproj.user/AFB608A5/pcs/windowlayoutstate.pper[0K
- create mode 100644 .Rproj.user/AFB608A5/pcs/workbench-pane.pper[0K
- create mode 100644 .Rproj.user/AFB608A5/rmd-outputs[0K
- create mode 100644 .Rproj.user/AFB608A5/saved_source_markers[0K
- create mode 100644 .Rproj.user/AFB608A5/sources/prop/17F4F35E[0K
- create mode 100644 .Rproj.user/AFB608A5/sources/prop/25C3B78A[0K
- create mode 100644 .Rproj.user/AFB608A5/sources/prop/4D78F909[0K
- create mode 100644 .Rproj.user/AFB608A5/sources/prop/8CCCB35B[0K
- create mode 100644 .Rproj.user/AFB608A5/sources/prop/A04F3946[0K
- create mode 100644 .Rproj.user/AFB608A5/sources/prop/B1405D3[0K
- create mode 100644 .Rproj.user/AFB608A5/sources/prop/C1708DC9[0K
- create mode 100644 .Rproj.user/AFB608A5/sources/prop/C276EC24[0K
- create mode 100644 .Rproj.user/AFB608A5/sources/prop/C4D0753A[0K
- create mode 100644 .Rproj.user/AFB608A5/sources/prop/C9189CDD[0K
- create mode 100644 .Rproj.user/AFB608A5/sources/prop/CE08E1CF[0K
- create mode 100644 .Rproj.user/AFB608A5/sources/prop/D1BA6BAF[0K
- create mode 100644 .Rproj.user/AFB608A5/sources/prop/DB3F4BA1[0K
- create mode 100644 .Rproj.user/AFB608A5/sources/prop/DF9386A8[0K
- create mode 100644 .Rproj.user/AFB608A5/sources/prop/E5F429F5[0K
- create mode 100644 .Rproj.user/AFB608A5/sources/prop/INDEX[0K
- create mode 100644 .Rproj.user/AFB608A5/sources/s-A19EA811/2112213[0K1
-[0K
- create mode 100644 .Rproj.user/AFB608A5/sources/s-A19EA811/2112213[0K1
--contents[0K
- create mode 100644 .Rproj.user/AFB608A5/sources/s-A19EA811/3354261[0K-
-contents[0K
- create mode 100644 .Rproj.user/AFB608A5/sources/s-A19EA811/97B5081[0K6
--contents[0K
- create mode 100644 .Rproj.user/AFB608A5/sources/s-A19EA811/C227413[0K
- create mode 100644 .Rproj.user/AFB608A5/sources/s-A19EA811/C227413[0K-
-contents[0K
- create mode 100644 .Rproj.user/AFB608A5/sources/s-A19EA811/D0284C2[0KF
--contents[0K
- create mode 100644 .Rproj.user/AFB608A5/sources/s-A19EA811/D3E7C98[0K2
-[0K
- create mode 100644 .Rproj.user/AFB608A5/sources/s-A19EA811/D3E7C98[0K2
--contents[0K
- create mode 100644 .Rproj.user/AFB608A5/sources/s-A19EA811/E17810A[0K1
--contents[0K
- create mode 100644 .Rproj.user/AFB608A5/sources/s-A19EA811/FE8EAC4[0K3
--contents[0K
- create mode 100644 .Rproj.user/AFB608A5/sources/s-A19EA811/lock_fi[0Kl
-e[0K
- create mode 100644 .Rproj.user/shared/notebooks/C25DD257-home/1/AF[0KB
-608A5D335AA56/chunks.json[0K
- create mode 100644 .Rproj.user/shared/notebooks/C25DD257-home/1/s/[0Kc
-hunks.json[0K
-[0K[?25h]0; [?25l
 G:\signature\Git\MRScore_Tumor>[0K[?25hg[0Ki[0Kt[0K[36G[?25lG:\signature\Git\MRScore_Tumor>git a[0K[?25hd[0Kd[0K[40G[?25lG:\signature\Git\MRScore_Tumor>git add .[0K[?25h]0;  - git  add .[?25l
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/sources/pr[0Ko[?25l
-p/53E8857E.[0K
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/sources/pr[0Ko[?25l
-p/A1BE7A7B.[0K
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/sources/pr[0Ko[?25l
-p/B3D7BA18.[0K
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/sources/pr[0Ko[?25l
-p/F6D79E4.[0K
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/sources/pr[0Ko[?25l
-p/INDEX.[0K
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/shared/notebooks/pa[0Kt[?25l
-hs.[0K
-The file will have its original line endings in your working directory[0K
-[0K[?25h]0; [?25l
-G:\signature\Git\MRScore_Tumor>[0K[?25hg[0Ki[0Kt[0K[36G[35G[?25lG:\signature\Git\MRScore_Tumor>gi[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>g[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>[0K[?25hf[0Ki[0Kt[0K[36G[35G[?25lG:\signature\Git\MRScore_Tumor>fi[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>f[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>[0K[?25hg[0Ki[0Kt[0K[36G[?25lG:\signature\Git\MRScore_Tumor>git a[0K[?25hd[0Kd[0K[40G[?25lG:\signature\Git\MRScore_Tumor>git add .[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git add[0K[40G[?25h[39G[?25lG:\signature\Git\MRScore_Tumor>git ad[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git a[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git[0K[36G[?25h[?25lG:\signature\Git\MRScore_Tumor>git c[0K[?25ho[0Km[0Km[0Ki[0Kt[0K[43G[?25lG:\signature\Git\MRScore_Tumor>git commit -[0K[?25hm[0K[46G[?25lG:\signature\Git\MRScore_Tumor>git commit -m "[0K[?25h"[0K[47G[?25lG:\signature\Git\MRScore_Tumor>git commit -m "a"[0K[48G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "ad"[0K[49G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "add"[0K[50G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "add "[0K[51G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "add ."[0K[52G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "add "[0K[51G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "add T"[0K[52G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "add TC"[0K[53G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "add TCG"[0K[54G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "add TCGA"[0K[55G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "add TCGA "[0K[56G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "add TCGA c"[0K[57G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "add TCGA co"[0K[58G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "add TCGA cox"[0K[59G[?25h]0;  - git  commit -m "add TCGA cox"[?25l
-[0K[?25h]0; [master 17fab0f] add TCGA cox[0K[?25l
- 10 files changed, 295 insertions(+), 19 deletions(-)[0K
-[0K
-G:\signature\Git\MRScore_Tumor>[0K[?25hg[0Ki[0Kt[0K[36G[?25lG:\signature\Git\MRScore_Tumor>git a[0K[?25hd[0Kd[0K]0;  - git  add[?25l
-[0K[?25h]0; Nothing specified, nothing added.[0K[?25l
-Maybe you wanted to say 'git add .'?[0K
-[0K
-G:\signature\Git\MRScore_Tumor>[0K[?25hgit add[0K[40G[?25lG:\signature\Git\MRScore_Tumor>git add .[0K[?25h]0;  - git  add .[?25l
 [0K[?25h
