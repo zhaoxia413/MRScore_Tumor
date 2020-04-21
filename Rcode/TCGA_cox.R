@@ -29,6 +29,7 @@ meta$Treatment_outcome<-ifelse(meta$Treatment_outcome=="Complete Remission/Respo
                       ifelse(meta$Treatment_outcome=="NA","NA","R"))
  levels(factor(meta$Treatment_outcome))
  levels(factor(meta$Response))
+<<<<<<< HEAD
  ##glmnet continus variables cox
  library(glmnet)
  library(survival)
@@ -46,6 +47,9 @@ meta$Treatment_outcome<-ifelse(meta$Treatment_outcome=="Complete Remission/Respo
  plot(cv_fit)
  plot(cv_fit_2)
  plot(cv.fit)
+=======
+
+>>>>>>> 6255cae2aadc6bf9f411b1ac81dc243fbe02c9cf
  #癌症零期（Stage 0）：检测到异常细胞，但异常细胞没有扩散到别处，这个时期也称为原位癌（carcinoma in situ）
  meta$Stage<-meta$AJCC_stage
  meta$Stage<-gsub("Stage III[A-C]","High_stage",meta$Stage)
@@ -57,8 +61,160 @@ meta$Treatment_outcome<-ifelse(meta$Treatment_outcome=="Complete Remission/Respo
  meta$Stage<-gsub("Stage II","Low_stage",meta$Stage)
  meta$Stage<-gsub("Stage I","Low_stage",meta$Stage)
  meta$Stage<-ifelse(meta$Stage=="High_stage"|meta$Stage=="Low_stage",meta$Stage,"NA")
+ colnames(meta)[c(9,11,13)]<-c("OStime","DSStime","PFItime")
+ meta$Stage_ct<-meta$AJCC_stage
+ meta$Stage_ct<-gsub("Stage III[A-C]","Stage III",meta$Stage_ct)
+ meta$Stage_ct<-gsub("Stage IV[A-C]","Stage IV",meta$Stage_ct)
+ meta$Stage_ct<-gsub("Stage II[A-C]","Stage II",meta$Stage_ct)
+ meta$Stage_ct<-gsub("Stage I[A-C]","Stage I",meta$Stage_ct)
+ meta$Stage_ct<-gsub("Stage III","Stage III",meta$Stage_ct)
+ meta$Stage_ct<-gsub("Stage IV","Stage IV",meta$Stage_ct)
+ meta$Stage_ct<-gsub("Stage II","Stage II",meta$Stage_ct)
+ meta$Stage_ct<-gsub("Stage I","Stage I",meta$Stage_ct)
+ meta$Stage_ct<-ifelse(meta$Stage_ct%in%c("Stage I","Stage II","Stage III","Stage IV"),meta$Stage_ct,"NA")
  levels(factor(meta$Stage)) 
  levels(factor(meta$Gender))
+ levels(factor(meta$Stage_ct))
+ ##reponse
+
+ fun_to_plot <- function(data, group, variable,facet,comparisons) {
+   col16<-c("#b3e2cd","#fdcdac","#cbd5e8","#1b9e77","#d95f02","#7570b3",
+            "#e7298a","#66a61e","#e6ab02","#a6761d","#666666",
+            "#f4cae4","#e6f5c9","#fff2ae","#f1e2cc","#cccccc")
+   p <- ggboxplot(data, x=group, y=variable,fill = group, facet.by = facet,font.label = list(size=6),
+                  palette = col16[sample(c(1:13),10)])+ #palette = col16[sample(c(1:10),10)]
+     stat_compare_means(comparisons = comparisons)+
+     geom_jitter(col=rgb(0, 0, 00, 0.2),size=1)
+   return(p)
+ }
+ my_comparisons<-list(c("R","NR"))
+ my_comparisons<-list(c("MALE","FEMALE"))
+ my_comparisons<-list(c("High","Low"))
+ my_comparisons<-list(c("Stage I","Stage II"),
+                      c("Stage I","Stage III"),
+                      c("Stage I","Stage IV"),
+                      c("Stage II","Stage III"),
+                      c("Stage II","Stage IV"),
+                      c("Stage IV","Stage III"))
+ 
+ data1=subset(meta,Response!="NA")
+ data2=subset(meta,Response!="NA")%>%subset(.,Stage_ct!="NA")
+ data2$Stage_ct<-factor(data2$Stage_ct,levels = c("Stage I","Stage II","Stage III","Stage IV"))
+ data4=subset(meta,Gender!="NA")
+ data5=subset(meta,Age!="NA")%>%subset(.,Stage_ct!="NA")
+ fun_to_plot(data1,"Response","MRscore","Types",my_comparisons)
+ fun_to_plot(data2,"Response","MRscore","Stage_ct",my_comparisons)
+ fun_to_plot(data2,"Response","MRscore","Stage",my_comparisons)
+ fun_to_plot(data1,"Response","MRscore",NULL,my_comparisons)
+ fun_to_plot(data2,"Gender","MRscore","Stage_ct",my_comparisons)+theme(axis.text.x = element_text(angle = 90))
+ fun_to_plot(data1,"Gender","MRscore",NULL,my_comparisons)
+ fun_to_plot(data2,"Stage_ct","MRscore",NULL,my_comparisons)+theme(axis.text.x = element_text(angle = 90))
+ fun_to_plot(data1,"Gender","MRscore",NULL,my_comparisons)
+ data2$MRscore_group<-ifelse(data2$MRscore>=mean(meta$MRscore),"High","Low")
+ data5$Age_60<-ifelse(data5$Age>=60,"High","Low")
+ fun_to_plot(data5,"Age_60","MRscore","Stage_ct",my_comparisons)
+ fun_to_plot(data5,"Age_60","MRscore",NULL,my_comparisons)
+ 
+ fit<-survfit(Surv(OStime/365,OS) ~ MRscore_group,ctype = 1,
+              conf.type="log-log",
+              data = data2)
+ surv_median(fit)
+ ggsurvplot(fit = fit,facet.by = "Stage_ct",
+            data = data2,
+            pval.method = T,
+            risk.table = TRUE,
+            pval = TRUE,
+            ggtheme = theme_survminer(),
+            palette = c("red","blue"),
+            #facet.by = "Types",
+            legend.title="MRscore(mean)",
+            risk.table.col = "strata",
+            surv.median.line = "hv",
+            risk.table.y.text.col = T,
+            risk.table.y.text = T)
+ fit<-survfit(Surv(PFItime/365,PFI) ~ MRscore_group,ctype = 1,
+              conf.type="log-log",
+              data = data2)
+ surv_median(fit)
+ ggsurvplot(fit = fit,facet.by = "Stage_ct",
+            data = data2,
+            pval.method = T,
+            risk.table = TRUE,
+            pval = TRUE,
+            ggtheme = theme_survminer(),
+            palette = c("#08d9d6","#252a34"),
+            #facet.by = "Types",
+            legend.title="MRscore (mean)",
+            risk.table.col = "strata",
+            surv.median.line = "hv",
+            risk.table.y.text.col = T,
+            risk.table.y.text = T)
+ fit<-survfit(Surv(DSStime/365,DSS) ~ MRscore_group,ctype = 1,
+              conf.type="log-log",
+              data = data2)
+ surv_median(fit)
+ ggsurvplot(fit = fit,facet.by = "Stage_ct",
+            data = data2,
+            pval.method = T,
+            risk.table = TRUE,
+            pval = TRUE,
+            ggtheme = theme_survminer(),
+            palette = c("#ff9a3c","#283c63"),
+            #facet.by = "Types",
+            legend.title="MRscore (mean)",
+            risk.table.col = "strata",
+            surv.median.line = "hv",
+            risk.table.y.text.col = T,
+            risk.table.y.text = T)
+ ##stage specific survival
+ data3=subset(data2,Stage_ct=="Stage I")
+ data3=subset(data2,Stage_ct=="Stage II")
+ data3=subset(data2,Stage_ct=="Stage III")
+ data3=subset(data2,Stage_ct=="Stage IV")
+ data3=subset(data2,Types=="BLCA")
+ fit<-survfit(Surv(OStime/365,OS) ~ MRscore_group,ctype = 1,
+              conf.type="log-log",
+              data = data3)
+ surv_median(fit)
+ ggsurvplot(fit = fit,facet.by = "Stage_ct",
+            data = data3,
+            pval.method = T,
+            risk.table = TRUE,
+            pval = TRUE,
+            ggtheme = theme_survminer(),
+            palette = c("red","blue"),
+            #facet.by = "Types",
+            legend.title="MRscore(mean)",
+            risk.table.col = "strata",
+            surv.median.line = "hv",
+            risk.table.y.text.col = T,
+            risk.table.y.text = T)
+ ##glmnet continus variables cox
+ library(glmnet)
+ library(survival)
+ d <- subset(meta,select = c(OStime,OS,MRscore,Age,Stage_ct))
+ d<-d%>%subset(.,Age!="NA")%>%subset(.,Stage_ct!="NA")%>%subset(.,OStime!=0)
+ x <- model.matrix( ~ MRscore + Age + Stage_ct, d)
+ y <- Surv(d$OStime, d$OS)
+ fit <- glmnet(x, y, family="cox", alpha=1)
+ plot(fit, label=T)#顶端的横坐标应该是当前Lambda下非零变量的个数：
+ #glmnet()返回的是一系列不同Lambda对应的值（一组模型），
+ coef(fit)
+ #需要user来选择一个Lambda，交叉验证是最常用挑选Lambda的方法
+ #LASSO回归复杂度调整的程度由参数λ来控制，λ越大对变量较多的线性模型的惩罚力度就越大，从而最终获得一个变量较少的模型
+ cv.fit <- cv.glmnet(x, y, family="cox", alpha=1,nfolds = 10)
+ plot(cv.fit)
+ #lambda.min（cross-validation误差最小）、
+ #lambda.1se（cross-validation误差最小一个标准差内，模型最简单），对应图中两根竖线的地方
+ #It includes the cross-validation curve (red dotted line), and upper and lower standard deviation（标准差） curves along
+ #the lambda sequence (error bars). Two selected lambda’s are indicated by the vertical dotted lines (see below).
+
+ #lambda.min is the value of Lambda that gives minimum mean cross-validated error. 
+ coefficient <- coef(cv.fit, s = cv.fit$lambda.min)
+ Active.index<-which(as.numeric(coefficient)!=0)
+ Active.coefficients<-as.numeric(coefficient)[Active.index]
+ multi_cox_res<-rownames(coefficient)[Active.coefficients]
+ 
  colnames(meta)
  data<-subset(meta,Stage!="NA")
  g2<-surv_cutpoint(
@@ -72,6 +228,7 @@ plot(g2)#Age==65
 data$MRscore<-ifelse(data$MRscore>=median(data$MRscore),"High_MRscore","Low_MRscore")
 data$Age<-ifelse(data$Age>=65,"High_age","Low_age")
 coxfit<-coxph(Surv(OStime,OS) ~ MRscore+Stage+Age+Gender,data = data) 
+library(forestmodel)
 p<-forest_model(coxfit,factor_separate_line=F, 
                  format_options = list(colour= "black", 
                                        shape = 12, 
@@ -79,8 +236,85 @@ p<-forest_model(coxfit,factor_separate_line=F,
                                        banded = T), 
                  theme = theme_forest())
  p
+ 
+ #cox indifferent stage
+ cox_early_OS<- coxph(Surv(OStime, OS)~MRscore, 
+             data = subset(meta,Stage=="Low_stage"))
+ cox_late_OS<- coxph(Surv(OStime, OS)~MRscore, 
+                   data = subset(data,Stage=="High_stage"))
+ cox_early_PFI<- coxph(Surv(PFItime, PFI)~MRscore, 
+                      data = subset(meta,Stage=="Low_stage"))
+ cox_late_PFI<- coxph(Surv(PFItime, PFI)~MRscore, 
+                     data = subset(meta,Stage=="High_stage"))
+ cox_early_DSS<- coxph(Surv(DSStime, DSS)~MRscore, 
+                       data = subset(meta,Stage=="Low_stage"))
+ cox_late_DSS<- coxph(Surv(DSStime, DSS)~MRscore, 
+                      data = subset(meta,Stage=="High_stage"))
+ 
+ coef_early_OS<-summary(cox_early_OS)$coefficients%>%
+   as.data.frame()%>%mutate(Group="early_OS")%>%
+   mutate(Variables=rownames(summary(cox_early_OS)$coefficients))%>%
+   cbind(.,summary(cox_early_OS)$Concordance)
+ 
+ coef_late_OS<-summary(cox_late_OS)$coefficients%>%
+   as.data.frame()%>%mutate(Group="late_OS")%>%
+   mutate(Variables=rownames(summary(cox_late_OS)$coefficients))
+ 
+ coef_early_PFI<-summary(cox_early_PFI)$coefficients%>%
+   as.data.frame()%>%mutate(Group="early_PFI")%>%
+   mutate(Variables=rownames(summary(cox_early_PFI)$coefficients))
+ 
+ coef_late_PFI<-summary(cox_late_PFI)$coefficients%>%
+   as.data.frame()%>%mutate(Group="late_PFI")%>%
+   mutate(Variables=rownames(summary(cox_late_PFI)$coefficients))
+ 
+ coef_early_DSS<-summary(cox_early_DSS)$coefficients%>%
+   as.data.frame()%>%mutate(Group="early_DSS")%>%
+   mutate(Variables=rownames(summary(cox_early_DSS)$coefficients))
+ 
+ coef_late_DSS<-summary(cox_late_DSS)$coefficients%>%
+   as.data.frame()%>%mutate(Group="late_DSS")%>%
+   mutate(Variables=rownames(summary(cox_late_DSS)$coefficients))
+ coef=bind_rows(list(coef_early_OS,coef_late_OS,
+                     coef_early_PFI, coef_late_PFI,
+                     coef_early_DSS, coef_late_DSS))
+ data = subset(meta,Stage=="Low_stage")
+ riskScore=predict(cox_early_OS,type="risk",newdata=data)
+ risk=as.vector(ifelse(riskScore>1,"high","low"))
+ COX_risk_result<-cbind(id=rownames(cbind(data[,8:9],riskScore,risk)),
+                             cbind(data[,8:9],riskScore,risk))
+ write.csv(COX_risk_result,"../dataset/TCGA_cox/MRscore_COX_riskinEarlystage.csv")
+ rt=read.csv("../dataset/TCGA_cox/MRscore_COX_riskinEarlystage.csv",check.names=F,row.names=1)
+ roc=survivalROC(Stime=rt$OStime, status=rt$OS, marker = rt$riskScore, 
+                 predict.time =3, method="KM")
+ pdf(file=paste0("../dataset/TCGA_cox/MRscore_COX_riskROC_early.pdf"))
+ par(oma=c(0.5,1,0,1),font.lab=1.5,font.axis=1.5)
+ plot(roc$FP, roc$TP, type="l", xlim=c(0,1), ylim=c(0,1),col='red', 
+      xlab="False positive rate", ylab="True positive rate",
+      main=paste("ROC curve (", "AUC = ",round(roc$AUC,3),")"),
+      lwd = 2, cex.main=1.3, cex.lab=1.2, cex.axis=1.2, font=1.2)
+ abline(0,1)
+ dev.off()
+ fit<- survfit(Surv(OStime/30, OS) ~ risk, data = rt)
+ diff=survdiff(Surv(OStime/30, OS) ~risk,data = rt)
+ pValue=1-pchisq(diff$chisq,df=1)
+ pValue=round(pValue,14)
+ plot(fit, lty = 2:3,col=c("red","blue"),xlab="time (months)",
+      ylab="survival rate",
+      main=paste("survival curve (p=", pValue ,")",sep=""),mark.time=T)
+ legend("topright", c("Low risk", "High risk"), lty = 2:3, col=c("blue","red"))
+ 
+for(i in c(1:6)){
+    res_table[[i]]<-as.data.frame(cbind(cox_res[[i]]$coefficients,
+                                   cox_res[[i]]$conf.int[,-c(1,2)]))
+    }
+ res_table<-as.data.frame(cbind(cox_res$coefficients,cox_res$conf.int[,-c(1,2)]))
+ rownames(res_table)<-gsub("low","",rownames(mutil_res$coefficients))
+ res_table<-subset(res_table,`Pr(>|z|)`<=0.05)
+ 
+ 
+ 
  covariates<-list("MRscore","Stage","Age","Gender")
-
  univ_formulas<-list()
  for (i in seq_len(length(covariates))) {
    univ_formulas[[i]] <- sapply(covariates[[i]],

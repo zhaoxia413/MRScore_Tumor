@@ -1,347 +1,0 @@
-[0m[0KMicrosoft Windows [版本 10.0.17763.864][0K[?25l
-(c) 2018 Microsoft Corporation。保留所有权利。[0K
-[0K
-G:\signature\Git\MRScore_Tumor>[0K[?25h给i他[0K[?25lG:\signature\Git\MRScore_Tumor>给i[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>给[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>[0K[?25hg[0Ki[0Kt[0K[36G[?25lG:\signature\Git\MRScore_Tumor>git p[0K[?25hu[0Kl[0Kl[0K]0;  - git  pull[?25l
-[0K[?25h]0; error: Pulling is not possible because you have unmerged files.[0K[?25l
-[0;33mhint: Fix them up in the work tree, and then use 'git add/rm <file>'[0m[0K
-[0;33mhint: as appropriate to mark resolution and make a commit.[0m[0K
-fatal: Exiting because of an unresolved conflict.[0K
-[0K
-G:\signature\Git\MRScore_Tumor>[0K[?25hg[0Ki[0Kt[0K[36G[?25lG:\signature\Git\MRScore_Tumor>git a[0K[?25hd[0Kd[0K[40G[?25lG:\signature\Git\MRScore_Tumor>git add .[0K[?25h]0;  - git  add .[?25l
-[0K[?25hwarning: LF will be replaced by CRLF in Rcode/BiocManager Install dependencies.R.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in Rcode/MRgeneset_circle.R.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in Rcode/TCGA_microreads_dna_rnaMeta.R.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in Rcode/colors.R.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in Rcode/microreadsTCGA.R.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in Rcode/requirements.R.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25h]0; [?25l
-G:\signature\Git\MRScore_Tumor>[0K[?25hgit add .[0K[?25lG:\signature\Git\MRScore_Tumor>git pull[0K[?25h]0;  - git  pull[?25l
-[0K[?25h]0; error: You have not concluded your merge (MERGE_HEAD exists).[0K[?25l
-[0;33mhint: Please, commit your changes before merging.[0m[0K
-fatal: Exiting because of unfinished merge.[0K
-[0K
-G:\signature\Git\MRScore_Tumor>[0K[?25hgit pull[0K[?25lG:\signature\Git\MRScore_Tumor>git pul[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git pu[0K[?25hs[0Kh[0K[41G[?25lG:\signature\Git\MRScore_Tumor>git push o[0K[?25hr[0Ki[0Kg[0Ki[0Kn[0K[48G[?25lG:\signature\Git\MRScore_Tumor>git push origin m[0K[?25ha[0Ks[0Kt[0Ke[0Kr[0K]0;  - git  push origin master[?25l
-[0K[?25h]0; To github.com:zhaoxia413/MRScore_Tumor.git[0K[?25l
- [0;31m! [rejected]       [0m master -> master (fetch first)[0K
-[0;31merror: failed to push some refs to 'git@github.com:zhaoxia413/MRScore_Tumor.git'[0m[0K
-[0;33mhint: Updates were rejected because the remote contains work that you do[0m[0K
-[0;33mhint: not have locally. This is usually caused by another repository pushing[0m[0K
-[0;33mhint: to the same ref. You may want to first integrate the remote changes[0m[0K
-[0;33mhint: (e.g., 'git pull ...') before pushing again.[0m[0K
-[0;33mhint: See the 'Note about fast-forwards' in 'git push --help' for details.[0m[0K
-[0K
-G:\signature\Git\MRScore_Tumor>[0K[?25hg[0Ki[0Kt[0K[36G[?25lG:\signature\Git\MRScore_Tumor>git s[0K[?25ht[0Ka[0Kt[0Ku[0Ks[0K]0;  - git  status[?25l
-[0K[?25h]0; On branch master[0K[?25l
-Your branch and 'origin/master' have diverged,[0K
-and have 2 and 12 different commits each, respectively.[0K
-  (use "git pull" to merge the remote branch into yours)[0K
-[0K
-All conflicts fixed but you are still merging.[0K
-  (use "git commit" to conclude merge)[0K
-[0K
-Changes to be committed:[0K
-        [0;32mnew file:   .DS_Store[0m[0K
-        [0;32mnew file:   ._.DS_Store[0m[0K
-        [0;32mnew file:   ._MRScore_Tumor.Rproj[0m[0K
-        [0;32mmodified:   .gitignore[0m[0K
-        [0;32mdeleted:    DEseq_files_pre.Rdata[0m[0K
-        [0;32mnew file:   Rcode/._MRscore_predict_response.R[0m[0K
-        [0;32mmodified:   Rcode/BiocManager Install dependencies.R[0m[0K
-        [0;32mrenamed:    MITAfromCOX.R -> Rcode/MITAfromCOX.R[0m[0K
-        [0;32mmodified:   Rcode/MRgeneset_circle.R[0m[0K
-        [0;32mmodified:   Rcode/TCGA_TMB_clinical_reanalysis.R[0m[0K
-        [0;32mmodified:   Rcode/TCGA_microreads_dna_rnaMeta.R[0m[0K
-        [0;32mmodified:   Rcode/TCGAfinal_heatmap.R[0m[0K
-        [0;32mmodified:   Rcode/colors.R[0m[0K
-        [0;32mmodified:   Rcode/microreadsTCGA.R[0m[0K
-        [0;32mmodified:   Rcode/requirements.R[0m[0K
-        [0;32mdeleted:    python/Machine_learning/results/LUSC_kfoldcv.pdf[0m[0K
-        [0;32mdeleted:    python/Machine_learning/results/kfoldcv.pdf[0m[0K
-[0K
-[0K
-G:\signature\Git\MRScore_Tumor>[0K[?25hg[0Ki[0Kr[0K[?25lG:\signature\Git\MRScore_Tumor>gi[0K[?25ht[0K[36G[37G[?25lG:\signature\Git\MRScore_Tumor>git  a[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git[0K[37G[?25h[36G[35G[36G[?25lG:\signature\Git\MRScore_Tumor>git a[0K[?25hd[0Kd[0K[40G[?25lG:\signature\Git\MRScore_Tumor>git add .[0K[?25h]0;  - git  add .[?25l
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/pcs/debug-breakpoints.pper.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/pcs/files-pane.pper.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/pcs/source-pane.pper.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/pcs/windowlayoutstate.pper.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/pcs/workbench-pane.pper.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/persistent-state.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/rmd-outputs.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/per/t/5F923949.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25h[?25lwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/per/t/5F923949-contents.[0K[1G[?25h[?25l
-The file will have its original line endings in your working directory[0K
-warning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/per/t/6241D37A.[0K
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/per/t/6241D37A-contents.[0K[?25l
-The file will have its original line endings in your working directory[0K
-warning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/per/t/6988E1A9.[0K
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/per/t/6988E1A9-contents.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/per/t/A69ECE1A.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/per/t/A69ECE1A-contents.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/per/t/B4D4F3E.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/per/t/B4D4F3E-contents.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/prop/127462CA.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/prop/1AC4B8BC.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/prop/28D4B52C.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/prop/297CF756.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/prop/2CB0FFB.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/prop/31EB93CA.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/prop/399AA0A7.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/prop/3B214F72.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/prop/412162BC.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/prop/420404BD.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/prop/52C494BE.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/prop/5C167838.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/prop/65815E04.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/prop/67E1FB29.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/prop/73BDFA14.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/prop/7C4D69BA.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/prop/8810D981.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/prop/8A8EF6D.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/prop/960EABDF.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/prop/96E8461A.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/prop/974B9B7B.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/prop/A17380C5.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/prop/A3E71841.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/prop/AE1C1FA8.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/prop/AF678D04.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/prop/B090BEB2.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/prop/B18B477A.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/prop/BAA5CFE1.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/prop/BFC0FC89.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/prop/CC8C7653.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/prop/CE0106F0.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/prop/D81F2E30.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/prop/DD75E90D.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/prop/E22E51D2.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/prop/E5C7FCF9.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/prop/E850C5FB.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/prop/ED559575.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/prop/F1715110.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/prop/F4D1ACC9.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/1B355305/sources/prop/INDEX.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/pcs/debug-breakpoints.pper.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/pcs/files-pane.pper.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/pcs/packages-pane.pper.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/pcs/source-pane.pper.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/pcs/windowlayoutstate.pper.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/pcs/workbench-pane.pper.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/rmd-outputs.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/sources/prop/15B057F9.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25h[?25lwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/sources/prop/27E134B3.[0K[1G[?25h[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/sources/prop/39DBAE6A.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/sources/prop/4E66A4A4.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/sources/prop/53E8857E.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25h[?25lwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/sources/prop/6296B8EC.[0K[1G[?25h[?25l
-The file will have its original line endings in your working directory[0K
-warning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/sources/prop/645F360A.[0K
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/sources/prop/6B08686B.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/sources/prop/7508BCAF.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/sources/prop/76289AFA.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/sources/prop/76F5571D.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/sources/prop/79955C77.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/sources/prop/7FD0E2E5.[0K[?25l
-The file will have its original line endings in your working directory[0K
-warning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/sources/prop/9154E4FD.[0K
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/sources/prop/A1BE7A7B.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/sources/prop/A495B12D.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/sources/prop/A58886A4.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/sources/prop/B3D7BA18.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/sources/prop/B5136DB9.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/sources/prop/C3D67220.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/sources/prop/D0796BDD.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/sources/prop/D07FC60F.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/sources/prop/D63896D.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/sources/prop/DEA20A2B.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/sources/prop/F0C9F37C.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/sources/prop/F6D79E4.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/sources/prop/INDEX.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/shared/notebooks/paths.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25h]0; [?25l
-G:\signature\Git\MRScore_Tumor>[0K
-G:\signature\Git\MRScore_Tumor>[0K
-G:\signature\Git\MRScore_Tumor>[0K[?25hgit add .[0K[?25lG:\signature\Git\MRScore_Tumor>git status[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git add .[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git add[0K[40G[?25h[39G[?25lG:\signature\Git\MRScore_Tumor>git ad[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git a[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git[0K[36G[?25h[?25lG:\signature\Git\MRScore_Tumor>git c[0K[?25ho[0Km[0Km[0Ki[0Kt[0K[43G[?25lG:\signature\Git\MRScore_Tumor>git commit -[0K[?25hc[0K[46G[45G[?25lG:\signature\Git\MRScore_Tumor>git commit -[0K[?25hm[0K[46G[?25lG:\signature\Git\MRScore_Tumor>git commit -m "[0K[?25h"[0K[47G[?25lG:\signature\Git\MRScore_Tumor>git commit -m "c"[0K[48G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "cr"[0K[49G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "cre"[0K[50G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "cr"[0K[49G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "c"[0K[48G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "co"[0K[49G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "cor"[0K[50G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "core"[0K[51G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "coree"[0K[52G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "coreec"[0K[53G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "coreecr"[0K[54G[?25h]0;  - git  commit -m "coreecr"[?25l
-[0K[?25h]0; [master 7745134] coreecr[0K[?25l
-[0K
-G:\signature\Git\MRScore_Tumor>[0K[?25hgit commit -m "coreecr"[0K[?25lG:\signature\Git\MRScore_Tumor>git add .[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git status[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git push origin master[0K[?25h[?25l
-[0K[?25h]0;  - git  push origin master]0; To github.com:zhaoxia413/MRScore_Tumor.git[0K[?25l
- [0;31m! [rejected]       [0m master -> master (fetch first)[0K
-[0;31merror: failed to push some refs to 'git@github.com:zhaoxia413/MRScore_Tumor.git'[0m[0K
-[0;33mhint: Updates were rejected because the remote contains work that you do[0m[0K
-[0;33mhint: not have locally. This is usually caused by another repository pushing[0m[0K
-[0;33mhint: to the same ref. You may want to first integrate the remote changes[0m[0K
-[0;33mhint: (e.g., 'git pull ...') before pushing again.[0m[0K
-[0;33mhint: See the 'Note about fast-forwards' in 'git push --help' for details.[0m[0K
-[0K
-G:\signature\Git\MRScore_Tumor>[0K[?25hgit push origin master[0K[?25lG:\signature\Git\MRScore_Tumor>git pull[0K[?25h]0;  - git  pull[?25l
-[0K[?25h[?25lremote: Enumerating objects: 40, done.[0K[1G[?25h[?25l
-remote: Counting objects: 100% (36/36), done.[0K
-remote: Compressing objects:  64% (9/14)[0K[1G[?25hremote: Compressing objects:  78% (11/14)[0K[?25lremote: Compressing objects: 100% (14/14), done.[0K
-[0K[?25h[?25lUnpacking objects:   3% (1/26)[0K[1G[?25h[?25lUnpacking objects:   7% (2/26)[0K[1G[?25h[?25lUnpacking objects:  11% (3/26)[0K[1G[?25h[?25lUnpacking objects:  15% (4/26)[0K[1G[?25h[?25lUnpacking objects:  19% (5/26)[0K[1G[?25h[?25lUnpacking objects:  23% (6/26)[0K[1G[?25h[?25lUnpacking objects:  26% (7/26)[0K[1G[?25h[?25lUnpacking objects:  30% (8/26)[0K[1G[?25h[?25lUnpacking objects:  34% (9/26)[0K[1G[?25h[?25lUnpacking objects:  38% (10/26)[0K[1G[?25h[?25lUnpacking objects:  42% (11/26)[0K[1G[?25h[?25lUnpacking objects:  46% (12/26)[0K[1G[?25h[?25lUnpacking objects:  57% (15/26)[0K[1G[?25h[?25lUnpacking objects:  65% (17/26)[0K[1G[?25h[?25lUnpacking objects:  69% (18/26)[0K[1G[?25h[?25lUnpacking objects:  76% (20/26)[0K[1G[?25h[?25lUnpacking objects:  80% (21/26)[0K[1G[?25h[?25lUnpacking objects:  84% (22/26)[0K[1G[?25h[?25lUnpacking objects:  88% (23/26)[0K[1G[?25h[?25lUnpacking objects:  92% (24/26)[0K[1G[?25hremote: Total 26 (delta 12), reused 26 (delta 12), pack-reused 0[0K[?25l
-[0K[?25hUnpacking objects: 100% (26/26), done.[0K[?25l
-[0K[?25hFrom github.com:zhaoxia413/MRScore_Tumor[0K[?25l
-   8bb5eb8..32197c2  master     -> origin/master[0K
-[0K[?25hwarning: Cannot merge binary files: python/Machine_learning/.DS_Store (HEAD:python/Machine_learning/.DS_Store [0Kv[?25l
-s. 32197c2e3151ae72c722e3180bb1e88ec8426eda:.DS_Store)[0K
-[0K[?25hAuto-merging python/Machine_learning/.DS_Store[0K[?25l
-CONFLICT (content): Merge conflict in python/Machine_learning/.DS_Store[0K
-CONFLICT (modify/delete): Rcode/TCGAfinal_heatmap.R deleted in 32197c2e3151ae72c722e3180bb1e88ec8426eda and mo[0Kd
-ified in HEAD. Version HEAD of Rcode/TCGAfinal_heatmap.R left in tree.[0K
-CONFLICT (add/add): Merge conflict in Rcode/TCGA_cox.R[0K
-Auto-merging Rcode/TCGA_cox.R[0K
-Auto-merging Rcode/TCGA_TMB_clinical_reanalysis.R[0K
-CONFLICT (add/add): Merge conflict in Rcode/MITAfromCOX.R[0K
-Auto-merging Rcode/MITAfromCOX.R[0K
-[0K[?25h]0; Automatic merge failed; fix conflicts and then commit the result.[0K[?25l
-[0K
-G:\signature\Git\MRScore_Tumor>[0K
-G:\signature\Git\MRScore_Tumor>[0K[?25hgit pull[0K[?25lG:\signature\Git\MRScore_Tumor>git add .[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git pull[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git pul[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git pu[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git p[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git[0K[36G[?25h[35G[?25lG:\signature\Git\MRScore_Tumor>gi[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>g[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>[0K[?25hk[0K[?25lG:\signature\Git\MRScore_Tumor>[0K[?25h[?25l[10ACONFLICT (modify/delete): Rcode/TCGAfinal_heatmap.R deleted in 32197c2e3151ae72c722e3180bb1e88ec8426eda an[0Kd
- modified in HEAD. Version HEAD of Rcode/TCGAfinal_heatmap.R left in tree.[0K
-CONFLICT (add/add): Merge conflict in Rcode/TCGA_cox.R[0K
-Auto-merging Rcode/TCGA_cox.R[0K
-Auto-merging Rcode/TCGA_TMB_clinical_reanalysis.R[0K
-CONFLICT (add/add): Merge conflict in Rcode/MITAfromCOX.R[0K
-Auto-merging Rcode/MITAfromCOX.R[0K
-Automatic merge failed; fix conflicts and then commit the result.[0K
-[0K
-G:\signature\Git\MRScore_Tumor>[0K
-G:\signature\Git\MRScore_Tumor>[0K[?25h.git[0K[?25lG:\signature\Git\MRScore_Tumor>.Rproj.user[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>.Rproj.use[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>.Rproj.us[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>.Rproj.u[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>.Rproj.[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>.Rproj[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>.Rpro[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>.Rpr[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>.Rp[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>.R[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>.[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>[0K[?25hg[0Ki[0Kt[0K[36G[?25lG:\signature\Git\MRScore_Tumor>git a[0K[?25hd[0Kd[0K[40G[?25lG:\signature\Git\MRScore_Tumor>git add .[0K[?25h]0;  - git  add .[?25l
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/sources/prop/53E8857E.[0K[?25l
-The file will have its original line endings in your working directory[0K
-warning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/sources/prop/INDEX.[0K[1G[?25h[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/shared/notebooks/paths.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/sources/prop/5B609F61.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/sources/prop/8415C362.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/sources/prop/E3C3D717.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/sources/s-CDB21868/1CE78AB1.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/sources/s-CDB21868/1CE78AB1-contents.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/sources/s-CDB21868/CA78FBED.[0K[?25l
-The file will have its original line endings in your working directory[0K
-[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/sources/s-CDB21868/CA78FBED-contents.[0K[?25l
-The file will have its original line endings in your working directory[0K
-warning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/sources/s-CDB21868/E90C77DB.[0K
-The file will have its original line endings in your working directory[0K
-[0K[?25h[?25lwarning: LF will be replaced by CRLF in .Rproj.user/E316ACD9/sources/s-CDB21868/E90C77DB-contents.[0K[1G[?25h]0; [?25l
-The file will have its original line endings in your working directory[0K
-[0K
-G:\signature\Git\MRScore_Tumor>[0K[?25hg[0Ko[0K[?25lG:\signature\Git\MRScore_Tumor>g[0K[?25hi[0Kt[0K[36G[?25lG:\signature\Git\MRScore_Tumor>git c[0K[?25ho[0Km[0Km[0Ki[0K[?25lG:\signature\Git\MRScore_Tumor>git comm[0K[?25hi[0Kt[0K[43G[?25lG:\signature\Git\MRScore_Tumor>git commit -[0K[?25hm[0K[46G[?25lG:\signature\Git\MRScore_Tumor>git commit -m "[0K[?25h"[0K[47G[?25lG:\signature\Git\MRScore_Tumor>git commit -m "a"[0K[48G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "ad"[0K[49G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "add"[0K[50G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "add "[0K[51G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "add e"[0K[52G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "add "[0K[51G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "add c"[0K[52G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "add co"[0K[53G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "add cox"[0K[54G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "add cox "[0K[55G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "add cox g"[0K[56G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "add cox ge"[0K[57G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "add cox gen"[0K[58G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "add cox gene"[0K[59G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "add cox gene "[0K[60G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "add cox gene k"[0K[61G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "add cox gene ke"[0K[62G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "add cox gene keg"[0K[63G[?25h[?25lG:\signature\Git\MRScore_Tumor>git commit -m "add cox gene kegg"[0K[64G[?25h]0;  - git  commit -m "add cox gene kegg"[?25l
-[0K[?25h]0; [master 64d7d37] add cox gene kegg[0K[?25l
-[0K
-G:\signature\Git\MRScore_Tumor>[0K[?25hg[0Ki[0Kt[0K[36G[?25lG:\signature\Git\MRScore_Tumor>git p[0K[?25hu[0Ks[0Kh[0K[41G[?25lG:\signature\Git\MRScore_Tumor>git push p[0K[?25hr[0Ki[0Kgh[0K[?25lG:\signature\Git\MRScore_Tumor>git push prig[0K[?25hg[0Ki[0Knm[0K[?25lG:\signature\Git\MRScore_Tumor>git push priggin[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git push priggi[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git push prigg[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git push prig[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git push pri[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git push pr[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git push p[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git push[0K[41G[?25h[?25lG:\signature\Git\MRScore_Tumor>git push o[0K[?25hr[0Ki[0Kg[0Ki[0Kn[0K[?25lG:\signature\Git\MRScore_Tumor>git push origi[0K[?25hn[0K[48G[?25lG:\signature\Git\MRScore_Tumor>git push origin m[0K[?25ha[0Ks[0Kt[0Ke[0Kr[0K]0;  - git  push origin master[?25l
-[0K[?25hEnumerating objects: 1261, done.[0K[?25l
-Counting objects:   1% (13/1251)[0K[1G[?25h[?25lCounting objects:  11% (138/1251)[0K[1G[?25h[?25lCounting objects:  23% (288/1251)[0K[1G[?25h[?25lCounting objects:  32% (401/1251)[0K[1G[?25h[?25lCounting objects:  45% (563/1251)[0K[1G[?25h[?25lCounting objects:  58% (726/1251)[0K[1G[?25h[?25lCounting objects:  70% (876/1251)[0K[1G[?25h[?25lCounting objects:  80% (1001/1251)[0K[1G[?25h[?25lCounting objects:  95% (1189/1251)[0K[1G[?25hCounting objects: 100% (1251/1251), done.[0K[?25l
-Delta compression using up to 12 threads[0K
-Compressing objects:   8% (97/1205)[0K[1G[?25h[?25lCompressing objects:  17% (205/1205)[0K[1G[?25h[?25lCompressing objects:  26% (314/1205)[0K[1G[?25h[?25lCompressing objects:  36% (434/1205)[0K[1G[?25h[?25lCompressing objects:  44% (531/1205)[0K[1G[?25h[?25lCompressing objects:  56% (675/1205)[0K[1G[?25h[?25lCompressing objects:  65% (784/1205)[0K[1G[?25h[?25lCompressing objects:  74% (892/1205)[0K[1G[?25h[?25lCompressing objects:  81% (977/1205)[0K[1G[?25h[?25lCompressing objects:  95% (1145/1205)[0K[1G[?25hCompressing objects: 100% (1205/1205), done.[0K[?25l
-Writing objects:   2% (25/1232)[0K[1G[?25h[?25lWriting objects:  10% (124/1232)[0K[1G[?25h[?25lWriting objects:  11% (136/1232)[0K[1G[?25h[?25lWriting objects:  11% (136/1232), 1.24 MiB | 825.00 KiB/s[0K[1G[?25h[?25lWriting objects:  14% (173/1232), 1.24 MiB | 825.00 KiB/s[0K[1G[?25h[?25lWriting objects:  17% (210/1232), 1.24 MiB | 825.00 KiB/s[0K[1G[?25h[?25lWriting objects:  20% (247/1232), 1.24 MiB | 825.00 KiB/s[0K[1G[?25h[?25lWriting objects:  25% (308/1232), 1.24 MiB | 825.00 KiB/s[0K[1G[?25h[?25lWriting objects:  29% (358/1232), 1.24 MiB | 825.00 KiB/s[0K[1G[?25h[?25lWriting objects:  32% (395/1232), 1.24 MiB | 825.00 KiB/s[0K[2G[?25h[?25lWriting objects:  33% (407/1232), 1.24 MiB | 825.00 KiB/s[0K[1G[?25h[?25lWriting objects:  35% (432/1232), 1.24 MiB | 825.00 KiB/s[0K[1G[?25h[?25lWriting objects:  36% (444/1232), 1.24 MiB | 825.00 KiB/s[0K[1G[?25h[?25lWriting objects:  38% (469/1232), 1.24 MiB | 825.00 KiB/s[0K[1G[?25h[?25lWriting objects:  42% (518/1232), 1.98 MiB | 996.00 KiB/s[0K[1G[?25h[?25lWriting objects:  45% (555/1232), 1.98 MiB | 996.00 KiB/s[0K[1G[?25h[?25lWriting objects:  46% (567/1232), 1.98 MiB | 996.00 KiB/s[0K[1G[?25h[?25lWriting objects:  50% (616/1232), 1.98 MiB | 996.00 KiB/s[0K[1G[?25h[?25lWriting objects:  51% (629/1232), 1.98 MiB | 996.00 KiB/s[0K[1G[?25h[?25lWriting objects:  53% (653/1232), 1.98 MiB | 996.00 KiB/s[0K[1G[?25h[?25lWriting objects:  54% (666/1232), 1.98 MiB | 996.00 KiB/s[0K[1G[?25h[?25lWriting objects:  57% (703/1232), 1.98 MiB | 996.00 KiB/s[0K[2G[?25h[?25lWriting objects:  58% (715/1232), 1.98 MiB | 996.00 KiB/s[0K[1G[?25h[?25lWriting objects:  60% (740/1232), 3.09 MiB | 1.22 MiB/s[0K[1G[?25h[?25lWriting objects:  61% (752/1232), 3.09 MiB | 1.22 MiB/s[0K[1G[?25h[?25lWriting objects:  62% (764/1232), 3.09 MiB | 1.22 MiB/s[0K[1G[?25h[?25lWriting objects:  66% (814/1232), 3.09 MiB | 1.22 MiB/s[0K[1G[?25h[?25lWriting objects:  67% (826/1232), 3.09 MiB | 1.22 MiB/s[0K[1G[?25h[?25lWriting objects:  70% (863/1232), 3.09 MiB | 1.22 MiB/s[0K[1G[?25h[?25lWriting objects:  71% (875/1232), 3.73 MiB | 1.17 MiB/s[0K[1G[?25h[?25lWriting objects:  75% (924/1232), 3.73 MiB | 1.17 MiB/s[0K[1G[?25h[?25lWriting objects:  80% (986/1232), 3.73 MiB | 1.17 MiB/s[0K[1G[?25h[?25lWriting objects:  81% (998/1232), 3.73 MiB | 1.17 MiB/s[0K[1G[?25h[?25lWriting objects:  83% (1023/1232), 3.73 MiB | 1.17 MiB/s[0K[1G[?25h[?25lWriting objects:  84% (1035/1232), 3.73 MiB | 1.17 MiB/s[0K[1G[?25h[?25lWriting objects:  87% (1072/1232), 3.73 MiB | 1.17 MiB/s[0K[1G[?25h[?25lWriting objects:  88% (1085/1232), 3.73 MiB | 1.17 MiB/s[0K[1G[?25h[?25lWriting objects:  89% (1097/1232), 3.73 MiB | 1.17 MiB/s[0K[1G[?25h[?25lWriting objects:  91% (1122/1232), 3.73 MiB | 1.17 MiB/s[0K[1G[?25h[?25lWriting objects:  94% (1159/1232), 4.56 MiB | 1.23 MiB/s[0K[1G[?25h[?25lWriting objects:  98% (1208/1232), 4.56 MiB | 1.23 MiB/s[0K[1G[?25h[?25lWriting objects:  98% (1216/1232), 5.60 MiB | 1.27 MiB/s[0K[1G[?25h[?25lWriting objects:  98% (1216/1232), 6.85 MiB | 1.31 MiB/s[0K[1G[?25h[?25lWriting objects:  98% (1216/1232), 9.35 MiB | 1.37 MiB/s[0K[1G[?25h[?25lWriting objects:  98% (1216/1232), 10.60 MiB | 1.53 MiB/s[0K[1G[?25hWriting objects: 100% (1232/1232), 11.43 MiB | 1.41 MiB/s, done.[0K[?25l
-Total 1232 (delta 151), reused 0 (delta 0)[0K[14G[?25h[?25l
-[0K[?25h[?25lremote: Resolving deltas:   0% (0/151)[0K[1G[?25hremote: Resolving deltas: 100% (151/151), completed with 9 local objects.[0K[?25l
-[0K[?25hTo github.com:zhaoxia413/MRScore_Tumor.git[0K[?25l
-   32197c2..64d7d37  master -> master[0K
-[0K[?25h]0; [?25l
-G:\signature\Git\MRScore_Tumor>[0K[?25h[?25l[4Aremote: Resolving deltas: 100% (151/151), completed with 9 local ob[0Kj
-ects.[0K
-To github.com:zhaoxia413/MRScore_Tumor.git[0K
-   32197c2..64d7d37  master -> master[0K
-[0K
-G:\signature\Git\MRScore_Tumor>[0K[?25hgit push origin master[0K[?25lG:\signature\Git\MRScore_Tumor>git commit -m "add cox gene kegg"[0K[?25h[?25lG:\signature\Git\MRScore_Tumor>git add .[0K[?25h]0;  - git  add .[?25l
-[0K[?25h
