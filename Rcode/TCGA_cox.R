@@ -32,12 +32,19 @@ meta$Treatment_outcome<-ifelse(meta$Treatment_outcome=="Complete Remission/Respo
  ##glmnet continus variables cox
  library(glmnet)
  library(survival)
- d <- meta
- x <- model.matrix( ~ MRscore + Age + Stage, d)
+ d <- subset(meta,select = c(OStime,OS,MRscore,Age,Stage))
+ d<-subset(d,Age!="NA")%>%subset(.,OStime!="NA")
+ d$OStime=round(d$OStime/30,2)%>%as.numeric()
  y <- Surv(d$OStime, d$OS)
- fit <- glmnet(x, y, family="cox", alpha=1)
+ x <- model.matrix(y ~ MRscore + Age + Stage, d)
+ fit <- glmnet(x, y, alpha=1,family="mgaussian")
  plot(fit, label=T)
  cv.fit <- cv.glmnet(x, y, family="cox", alpha=1)
+ cv_fit <- cv.glmnet(x, y, nfolds = 5) #just with numeric variables
+ cv_fit_2 <- cv.glmnet(cbind(x ,x_train), y, nfolds = 5) #both factor and numeric variables
+ par(mfrow = c(2,1))
+ plot(cv_fit)
+ plot(cv_fit_2)
  plot(cv.fit)
  #癌症零期（Stage 0）：检测到异常细胞，但异常细胞没有扩散到别处，这个时期也称为原位癌（carcinoma in situ）
  meta$Stage<-meta$AJCC_stage

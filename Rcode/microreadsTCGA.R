@@ -49,6 +49,9 @@ meta_sumreads$OStime<-round(meta_sumreads$days_to_death/365,0)
 meta_sumreads$OS<-as.numeric(meta_sumreads$OS)
 meta_sumreads$OStime<-as.numeric(meta_sumreads$OStime)
 write.csv(meta_sumreads,"../dataset/TCGA_microreads/userProcessedData/meta_sumreads_TCGA_10229.csv",row.names = F)
+meta_sumreads<-fread("../dataset/TCGA_microreads/userProcessedData/meta_sumreads_TCGA_10229.csv",data.table = F)
+meta_sumreads[1:3,1:3]
+colnames(meta_sumreads)
 library(survminer)
 library(survival)
 library(survivalROC)
@@ -333,9 +336,21 @@ MRsxpr_genus$Types<-gsub("TCGA-","",MRsxpr_genus$Types)
 MRsxpr_genus[1:3,1:3]
 write.csv(MRsxpr_genus,"../dataset/TCGA_microreads/userProcessedData/MRexpr_genus_reads.csv")
 source("../../../Git/TuMicroAnalysor/R/requirements.R")
-
+##microreads,genus,tcga analysis
 MRexpr_genus<-fread("../dataset/TCGA_microreads/userProcessedData/MRexpr_genus_reads.csv")[,-c(1,3)]
 MRexpr_genus[1:3,1:5]
+colnames(MRexpr_genus)[grep("Clostridium",colnames(MRexpr_genus))]
+#corralation
+
+meta<-fread("../dataset/TCGA_microreads/userProcessedData/meta_sumreads_TCGA_10229.csv",data.table = F)
+colnames(meta)
+meta[1:3,1:3]
+meta$tcgaID[1:3]
+meta$sampleID[1:3]
+MRexpr_genus$sampleID[1:3]
+
+
+
 data1<-split.data.frame(MRexpr_genus,f = MRexpr_genus$Types,drop = F)
 flattenCorrMatrix <- function(cormat, pmat) {
   ut <- upper.tri(cormat)
